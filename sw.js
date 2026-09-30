@@ -14,7 +14,7 @@ const ASSETS_TO_CACHE = [
     '/js/flashcards.js',
     '/js/ui.js'
 ];
-
+ 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
