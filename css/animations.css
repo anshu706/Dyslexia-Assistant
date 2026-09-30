@@ -1,0 +1,100 @@
+/* Animations and Transitions */
+
+/* Scroll Trigger Utility Classes (Used via Intersection Observer) */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* Letter Float Animation for Hero */
+.floating-letters {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.floating-letter {
+  position: absolute;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 20vw;
+  color: var(--text-primary);
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(10vw, 5vh) rotate(10deg); }
+  100% { transform: translate(-5vw, 15vh) rotate(-15deg); }
+}
+
+.letter-b { top: 10%; left: 10%; animation-delay: 0s; }
+.letter-d { top: 60%; left: 80%; animation-delay: -5s; }
+.letter-p { top: 70%; left: 20%; animation-delay: -10s; }
+.letter-q { top: 20%; left: 70%; animation-delay: -15s; }
+
+/* Number Counter Animation */
+.counter-number {
+  display: inline-block;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dyslexic text simulation (Letters jumbling effect) */
+.dyslexic-sim {
+  position: relative;
+  display: inline-block;
+}
+
+.dyslexic-sim span {
+  display: inline-block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.dyslexic-sim.active span {
+  animation: jumble 3s infinite linear alternate;
+}
+
+@keyframes jumble {
+  0% { transform: translate(0, 0); filter: blur(0px); }
+  25% { transform: translate(1px, -1px); filter: blur(0.5px); }
+  50% { transform: translate(-1px, 2px); filter: blur(0px); }
+  75% { transform: translate(2px, 0px); filter: blur(0.5px); }
+  100% { transform: translate(-1px, -2px); filter: blur(0px); }
+}
+
+/* Staggered text reveal */
+.stagger-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.stagger-word span {
+  display: inline-block;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
+}
+
+.stagger-text.active .stagger-word span {
+  transform: translateY(0);
+  opacity: 1;
+}

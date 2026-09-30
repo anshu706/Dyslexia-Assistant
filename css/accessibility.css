@@ -1,0 +1,82 @@
+/* Accessibility Helpers and Focus Management */
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-primary);
+  color: var(--text-primary);
+  padding: 8px;
+  z-index: 10000;
+  transition: top 0.2s ease;
+  font-family: var(--font-body);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus Indicators */
+:focus {
+  outline: 2px dashed var(--accent-primary);
+  outline-offset: 4px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-secondary);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 8px rgba(255, 196, 0, 0.2);
+}
+
+/* Visually Hidden */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .floating-letters {
+    display: none;
+  }
+}
+
+/* High Contrast Mode Toggle (Class added via JS) */
+.high-contrast-mode {
+  --bg-color: #000000;
+  --surface-color: #000000;
+  --text-primary: #ffffff;
+  --text-muted: #ffffff;
+  --accent-primary: #ffff00;
+  --accent-secondary: #00ffff;
+}
+
+.high-contrast-mode * {
+  border-color: #ffffff !important;
+}
+
+.high-contrast-mode .noise-overlay {
+  display: none;
+}
