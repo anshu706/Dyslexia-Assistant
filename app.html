@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dyslexia Assistant </title>
-    <meta name="description" content="Dyslexia Assistant Application Workspace.">
+    <title>Dyslexia Assistant | Workspace</title>
+    <meta name="description" content="Dyslexia Assistant Application Workspace. Premium reading, writing, and learning assistant.">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/animations.css">
 
     <!-- External Parsers -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -16,43 +17,45 @@
 
 <body class="app-body">
     <a href="#workspace" class="skip-link">Skip to workspace</a>
+    <div class="noise-overlay"></div>
 
     <div class="app-container">
         <!-- SIDEBAR -->
         <aside class="app-sidebar" aria-label="Application Tools">
             <div class="sidebar-header">
-                <a href="/" class="logo-small" aria-label="Home">D.A.</a>
+                <a href="index.html" class="logo-small" aria-label="Home" title="Dyslexia Assistant Home">D.A.</a>
             </div>
             <nav class="sidebar-nav">
-                <button class="nav-btn active" data-view="reader" data-i18n-aria="nav.read" aria-current="page">
+                <button class="nav-btn active" data-view="reader" aria-current="page" title="Reader View (Alt+1)">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                     </svg>
-                    <span data-i18n="nav.read">Read</span>
+                    <span>Read</span>
                 </button>
-                <button class="nav-btn" data-view="writer" data-i18n-aria="nav.write">
+                <button class="nav-btn" data-view="writer" title="Writer View (Alt+2)">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 20h9"></path>
                         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                     </svg>
-                    <span data-i18n="nav.write">Write</span>
+                    <span>Write</span>
                 </button>
-                <button class="nav-btn" data-view="flashcards" data-i18n-aria="nav.cards">
+                <button class="nav-btn" data-view="flashcards" title="Flashcards View (Alt+3)">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         <line x1="3" y1="9" x2="21" y2="9"></line>
                         <line x1="9" y1="21" x2="9" y2="21"></line>
                     </svg>
-                    <span data-i18n="nav.cards">Cards</span>
+                    <span>Cards</span>
                 </button>
             </nav>
             <div class="sidebar-footer">
-                <button class="nav-btn" id="toggle-settings" aria-label="Settings">
+                <button class="nav-btn" id="toggle-settings" aria-label="Open Settings" title="Assistant Settings">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
+                    <span>Settings</span>
                 </button>
             </div>
         </aside>
@@ -63,18 +66,29 @@
             <!-- TOOLBAR (Contextual) -->
             <header class="app-toolbar">
                 <div class="toolbar-group reader-tools">
-                    <label class="btn-tool upload-btn">
+                    <label class="btn-tool upload-btn" title="Upload .txt, .pdf, or .docx file">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                        <span data-i18n="toolbar.upload">Upload Document</span>
+                        <span>Upload File</span>
                         <input type="file" id="file-upload" accept=".txt,.pdf,.docx" class="sr-only">
                     </label>
+
                     <div class="divider"></div>
-                    <button class="btn-tool" id="tool-font" data-i18n-aria="toolbar.toggleFont" data-i18n-title="toolbar.toggleFont" data-i18n="toolbar.font">Aa</button>
-                    <button class="btn-tool" id="tool-spacing" data-i18n-aria="toolbar.spacing" data-i18n-title="toolbar.spacing">
+
+                    <!-- Font Toggle -->
+                    <button class="btn-tool" id="tool-font" title="Toggle Font (OpenDyslexic / Lexend / System)" aria-label="Toggle Font">
+                        <span style="font-weight: 800;">Aa</span>
+                    </button>
+
+                    <!-- Font Size Adjusters -->
+                    <button class="btn-tool" id="tool-font-dec" title="Decrease Font Size" aria-label="Decrease Font Size">A-</button>
+                    <button class="btn-tool" id="tool-font-inc" title="Increase Font Size" aria-label="Increase Font Size">A+</button>
+
+                    <!-- Spacing -->
+                    <button class="btn-tool" id="tool-spacing" title="Toggle Line & Letter Spacing" aria-label="Toggle Spacing">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="21" y1="10" x2="3" y2="10"></line>
                             <line x1="21" y1="6" x2="3" y2="6"></line>
@@ -82,50 +96,77 @@
                             <line x1="21" y1="18" x2="3" y2="18"></line>
                         </svg>
                     </button>
-                    <button class="btn-tool" id="tool-overlay" data-i18n-aria="toolbar.overlay" data-i18n-title="toolbar.overlay">
+
+                    <!-- Color Overlay / Tint -->
+                    <button class="btn-tool" id="tool-overlay" title="Toggle Color Tint Overlay (Cream / Peach / Mint / Blue / Dark)" aria-label="Toggle Color Tint">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <path d="M12 2a10 10 0 0 0 0 20"></path>
                         </svg>
                     </button>
-                    <button class="btn-tool" id="tool-ruler" data-i18n-aria="toolbar.ruler" data-i18n-title="toolbar.ruler">
+
+                    <!-- Reading Ruler -->
+                    <button class="btn-tool" id="tool-ruler" title="Toggle Reading Ruler (Follows mouse / arrows)" aria-label="Toggle Reading Ruler">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                             <line x1="3" y1="9" x2="21" y2="9"></line>
                         </svg>
                     </button>
+
+                    <!-- Bionic Reading Toggle -->
+                    <button class="btn-tool" id="tool-bionic" title="Toggle Bionic Reading (Fixation bolding)" aria-label="Toggle Bionic Reading">
+                        <span style="font-weight: 800; color: var(--accent-secondary);">Bio</span>nic
+                    </button>
+
+                    <!-- Syllables Toggle -->
+                    <button class="btn-tool" id="tool-syllables" title="Toggle Syllable Dots" aria-label="Toggle Syllables">
+                        Syl·la·ble
+                    </button>
+
+                    <!-- Clear Document -->
+                    <button class="btn-tool" id="tool-clear-doc" title="Clear Document" aria-label="Clear Document" style="display: none;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
                 </div>
 
+                <!-- TTS Controls -->
                 <div class="toolbar-group tts-tools" style="margin-left: auto;">
-                    <button class="btn-tool" id="tts-play" data-i18n-aria="toolbar.play">
+                    <button class="btn-tool" id="tts-play" title="Play / Resume Speech (Space)" aria-label="Play Speech">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                         </svg>
+                        <span>Listen</span>
                     </button>
-                    <button class="btn-tool" id="tts-pause" data-i18n-aria="toolbar.pause" style="display: none;">
+                    <button class="btn-tool" id="tts-pause" title="Pause Speech" aria-label="Pause Speech" style="display: none;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="6" y="4" width="4" height="16"></rect>
                             <rect x="14" y="4" width="4" height="16"></rect>
                         </svg>
+                        <span>Pause</span>
                     </button>
-                    <button class="btn-tool" id="tts-stop" data-i18n-aria="toolbar.stop">
+                    <button class="btn-tool" id="tts-stop" title="Stop Speech" aria-label="Stop Speech">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="6" y="6" width="12" height="12"></rect>
                         </svg>
                     </button>
                     <div class="divider"></div>
-                    
-                    <label for="tts-voice" class="sr-only" data-i18n="toolbar.voiceLabel">Voice & Language</label>
-                    <select id="tts-voice" class="tool-select" style="max-width: 150px; text-overflow: ellipsis;" data-i18n-title="toolbar.voiceLabel">
-                        <option value="" data-i18n="toolbar.defaultVoice">Default Voice</option>
+
+                    <label for="tts-voice" class="sr-only">Voice & Language</label>
+                    <select id="tts-voice" class="tool-select" style="max-width: 150px; text-overflow: ellipsis;" title="Select Speech Voice">
+                        <option value="">Default Voice</option>
                     </select>
-                    <label for="tts-speed" class="sr-only" data-i18n="toolbar.speedLabel">Speech Speed</label>
-                    <select id="tts-speed" class="tool-select">
+
+                    <label for="tts-speed" class="sr-only">Speech Speed</label>
+                    <select id="tts-speed" class="tool-select" title="Speech Speed">
                         <option value="0.5">0.5x</option>
                         <option value="0.75">0.75x</option>
                         <option value="1" selected>1.0x</option>
                         <option value="1.25">1.25x</option>
                         <option value="1.5">1.5x</option>
+                        <option value="1.75">1.75x</option>
                     </select>
                 </div>
             </header>
@@ -134,43 +175,154 @@
             <section id="view-reader" class="view-panel active" aria-label="Reading Environment">
                 <div id="reader-content" class="reader-container empty" tabindex="0">
                     <div class="empty-state">
-                        <h2 class="text-xl" data-i18n="reader.title">Ready to Read.</h2>
-                        <p class="text-muted" data-i18n="reader.subtitle">Upload a .txt, .pdf, or .docx file to begin.</p>
+                        <h2 class="text-xl">Ready to Read.</h2>
+                        <p class="text-muted" style="text-align: center; max-width: 480px;">Upload your homework, book, or article (.txt, .pdf, .docx), or load a sample story to experience dyslexia-friendly reading.</p>
+                        
+                        <div class="empty-state-actions">
+                            <label class="btn" style="cursor: pointer;">
+                                <input type="file" id="file-upload-empty" accept=".txt,.pdf,.docx" class="sr-only">
+                                Upload Document
+                            </label>
+                            <button class="btn" id="btn-load-sample" style="background: rgba(255, 255, 255, 0.1); color: var(--text-primary);">
+                                Load Sample Story
+                            </button>
+                            <button class="btn" id="btn-paste-modal" style="background: rgba(255, 255, 255, 0.1); color: var(--text-primary);">
+                                Paste Custom Text
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div id="reading-ruler" class="reading-ruler hidden"></div>
+                <!-- Reading Ruler Overlay -->
+                <div id="reading-ruler" class="reading-ruler hidden" aria-hidden="true"></div>
+                <!-- Interactive Word Lookup Popover -->
+                <div id="word-lookup-card" class="word-lookup-card hidden" role="dialog" aria-label="Word Details"></div>
             </section>
 
             <!-- VIEW: WRITER -->
             <section id="view-writer" class="view-panel" aria-label="Writing Environment" hidden>
                 <div class="writer-container">
                     <div class="writer-stats">
-                        <span><span id="word-count-num">0</span> <span data-i18n="writer.words">words</span></span>
-                        <span id="reading-level" class="badge" data-i18n="writer.gradeLevel">Grade 4 Level</span>
+                        <div class="writer-stat-group">
+                            <span><span id="word-count-num">0</span> words</span>
+                            <span class="text-muted">•</span>
+                            <span><span id="char-count-num">0</span> chars</span>
+                            <span class="text-muted">•</span>
+                            <span><span id="read-time-num">0</span> min read</span>
+                            <span id="reading-level" class="badge">Grade 4 Level</span>
+                            <span id="reading-ease" class="badge badge-accent">Easy</span>
+                        </div>
+
+                        <!-- Writer Quick Action Buttons -->
+                        <div class="writer-actions">
+                            <button class="btn-tool" id="btn-dictate" title="Voice Dictation (Speech to Text)" aria-label="Dictate Text">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                </svg>
+                                <span id="dictate-label">Dictate</span>
+                            </button>
+                            <button class="btn-tool" id="btn-speak-writer" title="Read Aloud Your Text" aria-label="Read Writing Aloud">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                </svg>
+                                <span>Read Back</span>
+                            </button>
+                            <button class="btn-tool" id="btn-send-reader" title="Send Text to Reader View" aria-label="Send to Reader">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                </svg>
+                                <span>Read in Reader</span>
+                            </button>
+                            <button class="btn-tool" id="btn-copy-writer" title="Copy to Clipboard" aria-label="Copy to Clipboard">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <button class="btn-tool" id="btn-download-writer" title="Download Text (.txt)" aria-label="Download File">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </button>
+                            <button class="btn-tool" id="btn-clear-writer" title="Clear Editor" aria-label="Clear Editor">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
+
                     <textarea id="writer-editor" class="writer-textarea"
-                        data-i18n-placeholder="writer.placeholder" placeholder="Start typing your story here..."></textarea>
-                    <!-- Phonetic suggestions will pop up here dynamically -->
-                    <div id="phonetic-suggestions" class="suggestions-popover hidden"></div>
+                        placeholder="Start typing or click 'Dictate' to speak your thoughts. Gentle dyslexic phonetic spelling help and stats will assist you in real time..."></textarea>
+                    
+                    <!-- Phonetic suggestions popup -->
+                    <div id="phonetic-suggestions" class="suggestions-popover hidden" role="alert"></div>
                 </div>
             </section>
 
             <!-- VIEW: FLASHCARDS -->
             <section id="view-flashcards" class="view-panel" aria-label="Flashcards Environment" hidden>
                 <div class="flashcards-container">
-                    <h2 class="text-xl" data-i18n="cards.title">Flashcards.</h2>
-                    <p class="text-muted" data-i18n="cards.subtitle">Your spaced repetition learning hub.</p>
-
-                    <div class="flashcard-creator">
-                        <input type="text" id="fc-front" class="card-input" data-i18n-placeholder="cards.frontPlaceholder" placeholder="Front (e.g. Word)"
-                            aria-label="Flashcard Front">
-                        <input type="text" id="fc-back" class="card-input" data-i18n-placeholder="cards.backPlaceholder" placeholder="Back (e.g. Meaning)"
-                            aria-label="Flashcard Back">
-                        <button class="btn" id="fc-add" data-i18n="cards.addCard">Add Card</button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm);">
+                        <div>
+                            <h2 class="text-xl">Flashcards.</h2>
+                            <p class="text-muted">Master tricky words and confusing letter pairs with spaced repetition.</p>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn" id="btn-load-starter-cards" style="background: rgba(255, 255, 255, 0.1); color: var(--text-primary); font-size: 0.9rem; padding: 8px 16px;">
+                                Load Dyslexia Starter Decks
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- Flashcard Creator -->
+                    <div class="flashcard-creator">
+                        <input type="text" id="fc-front" class="card-input" placeholder="Front (e.g. Word, b/d pair, or tricky spelling)" aria-label="Flashcard Front">
+                        <input type="text" id="fc-back" class="card-input" placeholder="Back (e.g. Meaning, sound hint, or trick)" aria-label="Flashcard Back">
+                        <button class="btn" id="fc-add">Add Card</button>
+                    </div>
+
+                    <!-- Flashcard Controls Toolbar -->
+                    <div class="cards-toolbar">
+                        <div class="pill-group">
+                            <button class="pill-btn active" id="tab-all-cards" data-filter="all">All Cards (<span id="total-cards-count">0</span>)</button>
+                            <button class="pill-btn" id="tab-due-cards" data-filter="due">Due Review (<span id="due-cards-count">0</span>)</button>
+                        </div>
+
+                        <div class="pill-group">
+                            <button class="pill-btn active" id="view-mode-grid" data-mode="grid">Grid View</button>
+                            <button class="pill-btn" id="view-mode-study" data-mode="study">Study Focus Mode</button>
+                        </div>
+                    </div>
+
+                    <!-- GRID VIEW -->
                     <div class="cards-grid" id="cards-grid">
                         <!-- Cards injected by JS -->
+                    </div>
+
+                    <!-- STUDY FOCUS MODE (Carousel / One-by-One) -->
+                    <div class="study-mode-container" id="study-mode-container" style="display: none;">
+                        <div class="study-progress">
+                            <span id="study-counter">Card 1 of 1</span>
+                            <span class="text-muted" style="font-size: 0.85rem;">Press Space to Flip • Arrows to Navigate</span>
+                        </div>
+                        
+                        <div class="study-card-wrapper" id="study-card-slot">
+                            <!-- Active study card injected here -->
+                        </div>
+
+                        <div class="study-nav-controls">
+                            <button class="btn" id="btn-study-prev" style="padding: 10px 20px; font-size: 0.9rem; background: rgba(255,255,255,0.1); color: #fff;">Previous</button>
+                            <button class="btn" id="btn-study-flip" style="padding: 10px 24px; font-size: 0.9rem;">Flip Card</button>
+                            <button class="btn" id="btn-study-next" style="padding: 10px 20px; font-size: 0.9rem; background: rgba(255,255,255,0.1); color: #fff;">Next</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -178,12 +330,194 @@
         </main>
     </div>
 
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="settings-title" class="text-lg">Assistant Settings</h3>
+                <button class="icon-btn-sm" id="close-settings-modal" aria-label="Close Settings">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Visual & Typography -->
+                <div class="setting-section">
+                    <span class="setting-section-title">Typography & Layout</span>
+                    
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Font Family</div>
+                            <div class="setting-desc">Tailored fonts that reduce letter inversion and visual crowding</div>
+                        </div>
+                        <select id="setting-font-family" class="tool-select">
+                            <option value="OpenDyslexic">OpenDyslexic</option>
+                            <option value="Lexend">Lexend (Modern Clean)</option>
+                            <option value="Comic">Comic Sans (Accessible Sans)</option>
+                            <option value="System">System Clean Sans</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Font Size</div>
+                            <div class="setting-desc">Base reading size</div>
+                        </div>
+                        <select id="setting-font-size" class="tool-select">
+                            <option value="16px">Normal (16px)</option>
+                            <option value="18px">Medium (18px)</option>
+                            <option value="20px" selected>Comfortable (20px)</option>
+                            <option value="24px">Large (24px)</option>
+                            <option value="28px">Extra Large (28px)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Line Spacing</div>
+                            <div class="setting-desc">Vertical spacing between lines</div>
+                        </div>
+                        <select id="setting-line-height" class="tool-select">
+                            <option value="1.6">Normal (1.6x)</option>
+                            <option value="2.0" selected>Relaxed (2.0x)</option>
+                            <option value="2.4">Wide (2.4x)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Letter & Word Spacing</div>
+                            <div class="setting-desc">Prevents words from blurring together</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-letter-spacing" checked>
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Theme & Irlen Overlays -->
+                <div class="setting-section">
+                    <span class="setting-section-title">Theme & Color Overlays</span>
+                    
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Reading Tint Filter</div>
+                            <div class="setting-desc">Proven to alleviate visual stress & letter movement (Irlen syndrome)</div>
+                        </div>
+                        <select id="setting-tint-overlay" class="tool-select">
+                            <option value="dark" selected>Midnight Dark (Default)</option>
+                            <option value="cream">Soft Cream / Warm Sepia</option>
+                            <option value="peach">Soft Peach Tint</option>
+                            <option value="mint">Pale Mint Green Tint</option>
+                            <option value="blue">Cool Sky Blue Tint</option>
+                            <option value="rose">Soft Rose Tint</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">High Contrast Mode</div>
+                            <div class="setting-desc">Max contrast pure black & neon yellow</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-high-contrast">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Dyslexia Assist Tools -->
+                <div class="setting-section">
+                    <span class="setting-section-title">Reading & Focus Aids</span>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Bionic Reading Fixations</div>
+                            <div class="setting-desc">Bolds first half of words for guided reading focus</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-bionic-reading">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Reading Ruler Type</div>
+                            <div class="setting-desc">Choose between focus mask or spotlight underline guide</div>
+                        </div>
+                        <select id="setting-ruler-type" class="tool-select">
+                            <option value="mask" selected>Reading Mask (Dims background)</option>
+                            <option value="line">Spotlight Guide Line</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Syllable Division (Syllabification)</div>
+                            <div class="setting-desc">Highlights syllables with subtle dots</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-syllables">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Speech Options -->
+                <div class="setting-section">
+                    <span class="setting-section-title">Speech & Audio</span>
+                    
+                    <div class="setting-row">
+                        <div>
+                            <div class="setting-label">Auto-Scroll with Speech</div>
+                            <div class="setting-desc">Smoothly scrolls to keep spoken words in center view</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-auto-scroll" checked>
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" id="btn-reset-settings" style="background: rgba(255, 77, 77, 0.15); color: var(--error); font-size: 0.85rem; padding: 8px 16px;">
+                    Reset to Defaults
+                </button>
+                <button class="btn" id="btn-save-settings" style="padding: 8px 20px; font-size: 0.85rem;">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASTE TEXT MODAL -->
+    <div id="paste-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="paste-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="paste-title" class="text-lg">Paste Text into Reader</h3>
+                <button class="icon-btn-sm" id="close-paste-modal" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted" style="font-size: 0.9rem;">Paste any article, book excerpt, or homework below to view it with dyslexia-friendly formatting:</p>
+                <textarea id="paste-textarea" class="writer-textarea" style="min-height: 240px;" placeholder="Paste your text here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancel-paste-btn" style="background: transparent; color: var(--text-muted); font-size: 0.9rem;">Cancel</button>
+                <button class="btn" id="submit-paste-btn" style="padding: 8px 24px; font-size: 0.9rem;">Load into Reader</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
     <!-- Scripts -->
+    <script src="js/storage.js"></script>
     <script src="js/app.js"></script>
     <script src="js/reader.js"></script>
     <script src="js/speech.js"></script>
     <script src="js/editor.js"></script>
-    <script src="js/storage.js"></script>
     <script src="js/flashcards.js"></script>
 </body>
 
