@@ -13,6 +13,7 @@ html { scroll-behavior: smooth; background: #050607; }
 body { margin: 0; min-width: 320px; background: #050607; }
 a { color: inherit; text-decoration: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.shader-frame { width: 100vw; height: 100svh; min-height: 520px; overflow: hidden; background: #050607; }
 
 .landing-page { position: relative; isolation: isolate; overflow: hidden; background: #050607; }
 .liquid-field, .landing-noise { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -25,6 +26,11 @@ a { color: inherit; text-decoration: none; }
 .landing-nav nav a { transition: color 180ms ease; }
 .landing-nav nav a:hover, .landing-nav nav a:focus-visible { color: #ff7544; }
 .nav-launch { color: #f2eee7; border-bottom: 1px solid rgba(242, 238, 231, .4); padding-bottom: 5px; }
+.chapter-rail { position: fixed; z-index: 9; top: 50%; left: clamp(22px, 3vw, 54px); display: flex; flex-direction: column; gap: 16px; transform: translateY(-50%); font-family: 'DM Mono', monospace; }
+.chapter-rail a { display: flex; align-items: center; gap: 10px; color: rgba(242, 238, 231, .36); font-size: .56rem; letter-spacing: .08em; text-transform: uppercase; transition: color 180ms ease, transform 180ms ease; }
+.chapter-rail a span { color: rgba(242, 238, 231, .2); }
+.chapter-rail a:hover, .chapter-rail a:focus-visible, .chapter-rail .rail-active { color: #ff7544; transform: translateX(4px); }
+.chapter-rail .rail-active span { color: #ff7544; }
 
 .landing-hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 150px clamp(22px, 8vw, 140px) 100px; }
 .hero-kicker, .section-label, .hero-index, .hero-note, .landing-footer { font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
@@ -37,6 +43,8 @@ a { color: inherit; text-decoration: none; }
 .hero-description { max-width: 420px; margin: 38px 0 0 7px; color: rgba(242, 238, 231, .64); font-size: clamp(.95rem, 1.5vw, 1.18rem); font-weight: 400; line-height: 1.75; }
 .hero-cta { display: inline-flex; align-items: center; gap: 35px; margin: 42px 0 0 7px; border-bottom: 1px solid rgba(255, 117, 68, .7); padding: 0 0 12px; color: #f2eee7; font-family: 'DM Mono', monospace; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; transition: gap 220ms ease, color 220ms ease; }
 .hero-cta:hover, .hero-cta:focus-visible { gap: 48px; color: #ff7544; }
+.hero-metadata { display: flex; gap: clamp(16px, 3vw, 40px); margin: 86px 0 0 7px; color: rgba(242, 238, 231, .42); font-family: 'DM Mono', monospace; font-size: .58rem; letter-spacing: .09em; }
+.hero-metadata span:first-child { color: rgba(255, 117, 68, .82); }
 .hero-note { position: absolute; right: clamp(22px, 8vw, 140px); bottom: 54px; display: flex; align-items: center; gap: 12px; color: rgba(242, 238, 231, .42); font-size: .59rem; }
 .note-line { display: block; width: 46px; height: 1px; background: #ff7544; }
 
@@ -69,9 +77,13 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 720px) {
   .landing-nav { padding: 20px 20px; }
   .landing-nav nav a:not(.nav-launch) { display: none; }
+  .chapter-rail { top: auto; right: 20px; bottom: 24px; left: auto; flex-direction: row; gap: 12px; transform: none; }
+  .chapter-rail a b { display: none; }
+  .chapter-rail a:hover, .chapter-rail a:focus-visible, .chapter-rail .rail-active { transform: translateY(-3px); }
   .landing-hero { padding: 130px 22px 85px; }
   .hero-copy { margin-top: 82px; }
   .hero-copy h1 { font-size: clamp(3.7rem, 17vw, 7rem); }
+  .hero-metadata { flex-wrap: wrap; gap: 10px 18px; margin-top: 58px; }
   .hero-note { right: 22px; bottom: 32px; }
   .statement-grid { grid-template-columns: 1fr; gap: 48px; }
   .statement-body { margin-left: 7px; }

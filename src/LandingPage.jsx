@@ -118,16 +118,23 @@ function LandingPage() {
           <a href="app.html" className="nav-launch">Open workspace <span aria-hidden="true">↗</span></a>
         </nav>
       </header>
+      <aside className="chapter-rail" aria-label="Landing page chapters">
+        <a href="#top" className="rail-active"><span>00</span><b>Begin</b></a>
+        <a href="#path"><span>01</span><b>Read</b></a>
+        <a href="#practice"><span>02</span><b>Practice</b></a>
+        <a href="#afterlight"><span>03</span><b>Afterlight</b></a>
+      </aside>
 
-      <main id="top">
+      <main id="main-content">
         <section className="landing-hero" aria-labelledby="landing-title">
-          <div className="hero-kicker">A reading space for different minds <span>·</span> 2026</div>
+          <div className="hero-kicker">Chapter 00 <span>·</span> The quiet start</div>
           <div className="hero-copy">
             <p className="hero-index">01 / 04</p>
             <h1 id="landing-title">Reading,<br /><em>made gentler.</em></h1>
             <p className="hero-description">A focused place to read, write, listen, and learn without asking your attention to work harder than it has to.</p>
             <a className="hero-cta" href="app.html"><span>Enter the workspace</span><span aria-hidden="true">↓</span></a>
           </div>
+          <div className="hero-metadata"><span>04 MODES</span><span>01 WORKSPACE</span><span>∞ ROOM TO READ</span></div>
           <div className="hero-note"><span className="note-line" /> Built for focus, tuned for you</div>
         </section>
 
@@ -152,7 +159,7 @@ function LandingPage() {
           </div>
         </section>
 
-        <section className="quote-section" aria-labelledby="quote-title">
+        <section className="quote-section" id="afterlight" aria-labelledby="quote-title">
           <p className="quote-mark" aria-hidden="true">“</p>
           <h2 id="quote-title">The right setting<br /><em>changes the whole page.</em></h2>
           <a className="text-link" href="app.html">Find your setting <span aria-hidden="true">↗</span></a>
