@@ -225,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = editor.value.trim();
             if (!text) { window.showToast && window.showToast('Write something first!', '⚠'); return; }
             document.dispatchEvent(new CustomEvent('da:loadText', { detail: { text, title: 'My Writing' } }));
+            window.DA_switchView?.('reader');
             window.showToast && window.showToast('Sent to Reader!', '📖');
         });
     }

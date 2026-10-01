@@ -21,7 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // STATE
     // =========================================================================
-    let flashcards = JSON.parse(localStorage.getItem('dyslexia_flashcards')) || [];
+    let flashcards = [];
+    try {
+        const savedCards = JSON.parse(localStorage.getItem('dyslexia_flashcards') || '[]');
+        flashcards = Array.isArray(savedCards) ? savedCards : [];
+    } catch (error) {
+        console.warn('Saved flashcards were invalid; starting with an empty deck.', error);
+        window.showToast?.('Saved flashcards could not be read and were reset.', '⚠');
+    }
     let currentFilter = 'all';
     let currentMode = 'grid'; // 'grid' or 'study'
     let studyIndex = 0;
@@ -104,7 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // SAVE & LOAD
     // =========================================================================
     function saveCards() {
-        localStorage.setItem('dyslexia_flashcards', JSON.stringify(flashcards));
+        try {
+            localStorage.setItem('dyslexia_flashcards', JSON.stringify(flashcards));
+        } catch (error) {
+            window.showToast?.('Flashcards could not be saved in this browser.', '⚠');
+        }
         updateCounts();
     }
 

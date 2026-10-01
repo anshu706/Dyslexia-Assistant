@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    window.DA_switchView = switchView;
+
     navBtns.forEach(btn => {
         btn.addEventListener('click', e => {
             const viewId = e.currentTarget.getAttribute('data-view');
@@ -56,8 +58,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Toast notifications — disabled (silent no-op)
-    window.showToast = function() {};
+    // Toast notifications
+    window.showToast = function(message, icon = '•') {
+        const container = document.getElementById('toast-container');
+        if (!container || !message) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        const iconEl = document.createElement('span');
+        iconEl.className = 'toast-icon';
+        iconEl.textContent = icon;
+        const messageEl = document.createElement('span');
+        messageEl.textContent = message;
+        toast.append(iconEl, messageEl);
+        container.appendChild(toast);
+        window.setTimeout(() => toast.remove(), 3200);
+    };
 
 
     // =========================================================================
@@ -83,12 +98,36 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function loadSettings() {
-        const saved = JSON.parse(localStorage.getItem('da_settings') || 'null');
-        return saved ? { ...DEFAULT_SETTINGS, ...saved } : { ...DEFAULT_SETTINGS };
+        try {
+            const saved = JSON.parse(localStorage.getItem('da_settings') || 'null');
+            if (!saved || typeof saved !== 'object' || Array.isArray(saved)) {
+                return { ...DEFAULT_SETTINGS };
+            }
+            return {
+                ...DEFAULT_SETTINGS,
+                fontFamily: ['OpenDyslexic', 'Lexend', 'Comic', 'System'].includes(saved.fontFamily) ? saved.fontFamily : DEFAULT_SETTINGS.fontFamily,
+                fontSize: ['16px', '18px', '20px', '24px', '28px'].includes(saved.fontSize) ? saved.fontSize : DEFAULT_SETTINGS.fontSize,
+                lineHeight: ['1.6', '2.0', '2.4'].includes(saved.lineHeight) ? saved.lineHeight : DEFAULT_SETTINGS.lineHeight,
+                letterSpacing: Boolean(saved.letterSpacing),
+                tintOverlay: ['dark', 'cream', 'peach', 'mint', 'blue', 'rose', 'none'].includes(saved.tintOverlay) ? saved.tintOverlay : DEFAULT_SETTINGS.tintOverlay,
+                highContrast: Boolean(saved.highContrast),
+                bionicReading: Boolean(saved.bionicReading),
+                rulerType: ['mask', 'line'].includes(saved.rulerType) ? saved.rulerType : DEFAULT_SETTINGS.rulerType,
+                syllables: Boolean(saved.syllables),
+                autoScroll: Boolean(saved.autoScroll)
+            };
+        } catch (error) {
+            console.warn('Saved settings were invalid; using defaults.', error);
+            return { ...DEFAULT_SETTINGS };
+        }
     }
 
     function saveSettings(settings) {
-        localStorage.setItem('da_settings', JSON.stringify(settings));
+        try {
+            localStorage.setItem('da_settings', JSON.stringify(settings));
+        } catch (error) {
+            window.showToast('Settings could not be saved in this browser.', '⚠');
+        }
     }
 
     function applySettings(settings) {
@@ -143,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Store settings globally for other modules
         window.DA_SETTINGS = settings;
+        document.dispatchEvent(new CustomEvent('da:settingsChanged', { detail: settings }));
     }
 
     function populateSettingsUI(settings) {

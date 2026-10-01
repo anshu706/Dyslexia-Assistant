@@ -58,25 +58,57 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
     // =========================================================================
     // FILE HANDLING
     // =========================================================================
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    const ALLOWED_EXTENSIONS = new Set(['txt', 'docx', 'pdf']);
+
+    function getFileExtension(fileName) {
+        return fileName.toLowerCase().split('.').pop();
+    }
+
+    function persistDocument(title, text) {
+        const safeText = text.substring(0, 100000);
+        try {
+            localStorage.setItem('da_last_document', JSON.stringify({ title, text: safeText }));
+        } catch (error) {
+            console.warn('Could not persist the last document.', error);
+        }
+        if (window.DA_DB?.saveDocument) window.DA_DB.saveDocument(title, safeText);
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function handleFile(file) {
         if (!file) return;
+        const extension = getFileExtension(file.name);
+        if (!ALLOWED_EXTENSIONS.has(extension)) {
+            window.showToast?.('Unsupported file type. Use TXT, PDF, or DOCX.', '⚠');
+            return;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            window.showToast?.('File is too large. Please choose a file under 10 MB.', '⚠');
+            return;
+        }
         setLoadingState();
         setTimeout(async () => {
             try {
-                if (file.name.endsWith('.txt')) {
+                if (extension === 'txt') {
                     const text = await file.text();
                     renderText(text, file.name);
-                } else if (file.name.endsWith('.docx')) {
+                } else if (extension === 'docx') {
                     await parseDocx(file);
-                } else if (file.name.endsWith('.pdf')) {
+                } else if (extension === 'pdf') {
                     await parsePdf(file);
-                } else {
-                    alert('Unsupported file format. Please use .txt, .pdf, or .docx');
-                    showEmptyState();
                 }
             } catch (err) {
-                console.error(err);
-                alert('Error reading file. Please try a plain text (.txt) file.');
+                console.error('Document import failed.', err);
+                window.showToast?.('Could not read that file. Please try another document.', '⚠');
                 showEmptyState();
             }
         }, 50);
@@ -149,11 +181,11 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         const paragraphs = text.split(/\n+/).filter(p => p.trim() !== '');
         let html = '';
         if (title && title !== 'Pasted Text') {
-            html += `<h2 class="text-lg" style="color: var(--accent-secondary); margin-bottom: 1.5em;">${title}</h2>`;
+            html += `<h2 class="text-lg" style="color: var(--accent-secondary); margin-bottom: 1.5em;">${escapeHtml(title)}</h2>`;
         }
         html += paragraphs.map(p => {
-            const escapedP = p.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return `<p style="margin-bottom: 1.4em;">${escapedP}</p>`;
+            const escapedP = escapeHtml(p);
+            return `<p style="margin-bottom: 1.4em;">${isSyllablesActive ? decorateSyllables(escapedP) : escapedP}</p>`;
         }).join('');
 
         readerContent.classList.remove('empty');
@@ -164,33 +196,26 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         // Re-apply active display settings
         reapplyActiveModifiers();
         
-        // Save to IndexedDB / localStorage
-        try {
-            localStorage.setItem('da_last_document', JSON.stringify({ title, text: text.substring(0, 50000) }));
-        } catch(e) {}
+        persistDocument(title, text);
         
         if (window.showToast) window.showToast(`Document loaded! (${paragraphs.length} paragraphs)`, '📖');
     }
 
     async function parseDocx(file) {
         if (typeof mammoth === 'undefined') {
-            alert('DOCX parser not loaded. Check your internet connection.');
+            window.showToast?.('DOCX parser is unavailable. Check your internet connection.', '⚠');
             showEmptyState();
             return;
         }
         const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.convertToHtml({ arrayBuffer });
-        readerContent.classList.remove('empty');
-        readerContent.innerHTML = `<div class="document-content" id="document-body">${result.value}</div>`;
-        hasDocument = true;
-        if (btnClearDoc) btnClearDoc.style.display = 'inline-flex';
-        reapplyActiveModifiers();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        renderText(result.value, file.name);
         if (window.showToast) window.showToast('DOCX document loaded!', '📄');
     }
 
     async function parsePdf(file) {
         if (typeof pdfjsLib === 'undefined') {
-            alert('PDF parser not loaded. Check your internet connection.');
+            window.showToast?.('PDF parser is unavailable. Check your internet connection.', '⚠');
             showEmptyState();
             return;
         }
@@ -199,20 +224,19 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         const uint8Array = new Uint8Array(arrayBuffer);
         const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
 
-        readerContent.classList.remove('empty');
-        readerContent.innerHTML = `<div class="document-content" id="document-body"><p class="text-muted">Extracting ${pdf.numPages} pages...</p></div>`;
-
-        let fullHtml = '';
+        let extractedText = '';
         for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
             const pageText = textContent.items.map(item => item.str).join(' ').trim();
-            if (pageText) fullHtml += `<p style="margin-bottom: 1.4em;">${pageText.replace(/</g,'&lt;')}</p>`;
+            if (pageText) extractedText += `${pageText}\n\n`;
         }
-        document.getElementById('document-body').innerHTML = fullHtml || '<p class="text-muted">No readable text found in PDF.</p>';
-        hasDocument = true;
-        if (btnClearDoc) btnClearDoc.style.display = 'inline-flex';
-        reapplyActiveModifiers();
+        if (!extractedText.trim()) {
+            window.showToast?.('No readable text found. This may be a scanned PDF.', '⚠');
+            showEmptyState();
+            return;
+        }
+        renderText(extractedText.trim(), file.name);
         if (window.showToast) window.showToast(`PDF loaded! (${pdf.numPages} pages)`, '📑');
     }
 
@@ -242,6 +266,8 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
             }
         } catch(e) {}
     }
+
+    tryRestoreLastDocument();
 
     // =========================================================================
     // DRAG & DROP SUPPORT
@@ -452,6 +478,22 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         return result.length > 1 ? result : null;
     }
 
+    function decorateSyllables(text) {
+        return text.replace(/[A-Za-z][A-Za-z'-]*/g, word => {
+            const syllables = syllabifyText(word);
+            if (!syllables) return word;
+            let offset = 0;
+            return syllables.map((syllable, index) => {
+                const part = word.slice(offset, offset + syllable.length);
+                offset += syllable.length;
+                const separator = index < syllables.length - 1
+                    ? '<span class="syllable-dot" aria-hidden="true">·</span>'
+                    : '';
+                return `${part}${separator}`;
+            }).join('');
+        });
+    }
+
     if (btnSyllables) {
         btnSyllables.addEventListener('click', () => {
             if (!hasDocument) { window.showToast && window.showToast('Load a document first!', '⚠'); return; }
@@ -572,5 +614,28 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
             }
         }
     }
+
+    function syncSettings(settings) {
+        if (!settings) return;
+        isBionicActive = Boolean(settings.bionicReading);
+        isSyllablesActive = Boolean(settings.syllables);
+        if (btnBionic) btnBionic.classList.toggle('active', isBionicActive);
+        if (btnSyllables) btnSyllables.classList.toggle('active', isSyllablesActive);
+        const tintIndexFromSettings = tintCycles.indexOf(settings.tintOverlay);
+        if (tintIndexFromSettings >= 0) tintIndex = tintIndexFromSettings;
+        if (hasDocument) {
+            try {
+                const saved = JSON.parse(localStorage.getItem('da_last_document') || 'null');
+                if (saved?.text) renderText(saved.text, saved.title || 'Last Session');
+            } catch (error) {
+                console.warn('Could not re-render document settings.', error);
+            }
+        } else {
+            reapplyActiveModifiers();
+        }
+    }
+
+    document.addEventListener('da:settingsChanged', e => syncSettings(e.detail));
+    syncSettings(window.DA_SETTINGS);
 
 });
