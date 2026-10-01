@@ -1,171 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dyslexia Assistant | Every Student Deserves To Read</title>
-    <meta name="description" content="A premium, dyslexia-friendly reading and writing platform designed to empower students.">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/accessibility.css">
-</head>
-<body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <div class="noise-overlay"></div>
-
-    <nav class="navbar" aria-label="Main Navigation">
-        <a href="/" class="logo" aria-label="Dyslexia Assistant Home">Dyslexia Assistant.</a>
-        <a href="app.html" class="btn">Launch App</a>
-    </nav>
-
-    <main id="main-content">
-        <!-- SECTION 1: HERO -->
-        <section class="section-full hero" aria-labelledby="hero-title">
-            <div class="floating-letters" aria-hidden="true">
-                <span class="floating-letter letter-b">b</span>
-                <span class="floating-letter letter-d">d</span>
-                <span class="floating-letter letter-p">p</span>
-                <span class="floating-letter letter-q">q</span>
-            </div>
-            <div class="container" style="text-align: center; z-index: 10;">
-                <h1 id="hero-title" class="text-hero reveal" style="text-transform: uppercase; max-width: 1200px; margin: 0 auto; letter-spacing: -3px;">
-                    Reading shouldn't <br> <span class="text-accent">feel like a battle.</span>
-                </h1>
-                <p class="text-lg text-muted reveal reveal-delay-1" style="margin: var(--space-md) auto; max-width: 800px;">
-                    More than 10 million Indian students struggle with dyslexia every day. It's time for a change.
-                </p>
-                <div class="reveal reveal-delay-2" style="margin-top: var(--space-lg);">
-                    <a href="app.html" class="btn btn-large">TRY THE EXPERIENCE</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: THE PROBLEM -->
-        <section class="section" id="problem" aria-labelledby="problem-title" style="background-color: var(--surface-color);">
-            <div class="container">
-                <h2 id="problem-title" class="sr-only">The Problem with Dyslexia Support</h2>
-                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg); text-align: center;">
-                    <div class="stat-card reveal">
-                        <div class="text-xxl text-accent counter" data-target="10">0</div>
-                        <div class="text-xl">Million+</div>
-                        <p class="text-md text-muted">Students affected in India</p>
-                    </div>
-                    <div class="stat-card reveal reveal-delay-1">
-                        <div class="text-xxl text-accent counter" data-target="70">0</div>
-                        <div class="text-xl">%</div>
-                        <p class="text-md text-muted">Never receive proper support</p>
-                    </div>
-                    <div class="stat-card reveal reveal-delay-2">
-                        <div class="text-xxl text-accent counter" data-target="3">0</div>
-                        <div class="text-xl">x</div>
-                        <p class="text-md text-muted">Longer reading times</p>
-                    </div>
-                    <div class="stat-card reveal reveal-delay-3">
-                        <div class="text-xxl text-accent counter" data-target="0">0</div>
-                        <p class="text-md text-muted" style="margin-top: 10px;">Modern Indian solutions</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: WHAT IT FEELS LIKE -->
-        <section class="section" id="empathy" aria-labelledby="empathy-title">
-            <div class="container">
-                <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                    <h2 id="empathy-title" class="text-xl reveal">What it feels like.</h2>
-                    <p class="text-md text-muted reveal reveal-delay-1" style="margin-top: var(--space-sm); margin-bottom: var(--space-lg);">Experience reading through the lens of a dyslexic student.</p>
-                    
-                    <div class="simulation-box reveal reveal-delay-2" style="background: var(--surface-color); padding: var(--space-lg); border-radius: 20px; font-size: var(--text-lg); line-height: 1.8; text-align: left; min-height: 300px;">
-                        <p id="sim-text" class="dyslexic-sim active">
-                            <span>The</span> <span>quick</span> <span>brown</span> <span>fox</span> <span>jumps</span> <span>over</span> <span>the</span> <span>lazy</span> <span>dog.</span> <span>Reading</span> <span>can</span> <span>feel</span> <span>like</span> <span>the</span> <span>letters</span> <span>are</span> <span>swimming</span> <span>on</span> <span>the</span> <span>page,</span> <span>making</span> <span>it</span> <span>hard</span> <span>to</span> <span>focus.</span>
-                        </p>
-                    </div>
-                    
-                    <div class="reveal reveal-delay-3" style="margin-top: var(--space-md);">
-                        <button id="toggle-sim" class="btn" aria-pressed="true">Turn off simulation</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: THE SOLUTION -->
-        <section class="section" id="solution" aria-labelledby="solution-title" style="background-color: var(--surface-color);">
-            <div class="container" style="text-align: center;">
-                <h2 id="solution-title" class="text-xl reveal">The Solution.</h2>
-                <div style="display: flex; flex-direction: column; gap: var(--space-lg); margin-top: var(--space-xl);">
-                    <div class="feature-reveal reveal">
-                        <h3 class="text-xxl stagger-text">
-                            <span class="stagger-word"><span>Reading.</span></span>
-                        </h3>
-                    </div>
-                    <div class="feature-reveal reveal reveal-delay-1">
-                        <h3 class="text-xxl stagger-text text-muted">
-                            <span class="stagger-word"><span>Writing.</span></span>
-                        </h3>
-                    </div>
-                    <div class="feature-reveal reveal reveal-delay-2">
-                        <h3 class="text-xxl stagger-text text-muted">
-                            <span class="stagger-word"><span>Listening.</span></span>
-                        </h3>
-                    </div>
-                    <div class="feature-reveal reveal reveal-delay-3">
-                        <h3 class="text-xxl stagger-text text-muted">
-                            <span class="stagger-word"><span>Empowerment.</span></span>
-                        </h3>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 5: INTERACTIVE DEMOS -->
-        <section class="section" id="demos" aria-labelledby="demos-title">
-            <div class="container">
-                <h2 id="demos-title" class="text-xl reveal" style="text-align: center; margin-bottom: var(--space-xl);">Designed for you.</h2>
-                
-                <div class="demo-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: center;">
-                    <!-- Reading Demo -->
-                    <div class="demo-card reveal" style="background: var(--surface-color); padding: var(--space-lg); border-radius: 24px;">
-                        <h3 class="text-lg text-accent mb-sm" style="margin-bottom: var(--space-sm);">Reading Assistant</h3>
-                        <p class="text-muted" style="margin-bottom: var(--space-md);">Instantly format any text for maximum readability.</p>
-                        <div class="demo-controls" style="display: flex; gap: 10px; margin-bottom: var(--space-md);">
-                            <button class="btn demo-btn" data-action="font" style="padding: 10px 20px; font-size: 14px;">OpenDyslexic</button>
-                            <button class="btn demo-btn" data-action="space" style="padding: 10px 20px; font-size: 14px;">Spacing</button>
-                            <button class="btn demo-btn" data-action="overlay" style="padding: 10px 20px; font-size: 14px;">Overlay</button>
-                        </div>
-                        <div id="reading-preview" style="padding: 20px; background: var(--bg-color); border-radius: 12px; transition: all 0.3s ease;">
-                            This is a preview of the reading environment. Watch how the text adapts to your needs.
-                        </div>
-                    </div>
-
-                    <!-- TTS Demo -->
-                    <div class="demo-card reveal reveal-delay-1" style="background: var(--surface-color); padding: var(--space-lg); border-radius: 24px;">
-                        <h3 class="text-lg text-accent mb-sm" style="margin-bottom: var(--space-sm);">Listen & Follow</h3>
-                        <p class="text-muted" style="margin-bottom: var(--space-md);">High-quality voices with synchronized highlighting.</p>
-                        <div class="demo-controls" style="display: flex; gap: 10px; margin-bottom: var(--space-md);">
-                            <button class="btn" id="demo-play" style="padding: 10px 20px; font-size: 14px;">Play Audio</button>
-                        </div>
-                        <div id="tts-preview" style="padding: 20px; background: var(--bg-color); border-radius: 12px; font-size: 1.2rem;">
-                            <span id="tts-word">Listen</span> to how the application reads out loud to assist comprehension.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 6: FINAL CTA -->
-        <section class="section-full" style="background-color: var(--accent-primary); color: var(--bg-color); text-align: center;">
-            <div class="container reveal">
-                <h2 class="text-hero" style="color: var(--bg-color); letter-spacing: -2px;">
-                    EVERY STUDENT<br>DESERVES<br>TO READ.
-                </h2>
-                <div style="margin-top: var(--space-lg);">
-                    <a href="app.html" class="btn btn-large" style="background-color: var(--bg-color); color: var(--accent-primary);">START READING NOW</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script src="js/ui.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050607" />
+    <meta
+      name="description"
+      content="Dyslexia Assistant: a quieter way to read, write, listen, and learn."
+    />
+    <title>Dyslexia Assistant | Reading, made gentler.</title>
+  </head>
+  <body>
+    <a class="sr-only" href="#main-content">Skip to main content</a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
- 

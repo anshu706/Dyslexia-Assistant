@@ -352,7 +352,28 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 40px;
   background-color: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.16);
+  color-scheme: dark;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='m3 5 4 4 4-4' stroke='%23f5f5f5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
   outline: none;
+}
+
+.tool-select option,
+.tool-select optgroup {
+  background: #17191c;
+  color: #f5f5f5;
+}
+
+.tool-select:hover {
+  border-color: rgba(255, 196, 0, 0.62);
+}
+
+.tool-select:focus-visible {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 0 3px rgba(255, 196, 0, 0.16);
 }
 
 .tool-select:focus-visible,
