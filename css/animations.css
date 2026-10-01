@@ -98,3 +98,126 @@
   transform: translateY(0);
   opacity: 1;
 }
+
+/* Workspace motion: a calm focus flow rather than constant movement. */
+.app-container {
+  animation: workspaceIn 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.app-sidebar {
+  animation: sidebarIn 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.app-toolbar {
+  animation: toolbarIn 480ms 80ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.view-panel.active {
+  animation: viewIn 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reader-container.empty .empty-state {
+  animation: emptyStateIn 520ms 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.document-content {
+  animation: paperIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.nav-btn.active {
+  position: relative;
+}
+
+.nav-btn.active::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  right: -18px;
+  top: 50%;
+  border-radius: 4px;
+  background: var(--accent-primary);
+  transform: translateY(-50%) scaleY(0.35);
+  transform-origin: center;
+  animation: activeMarkerIn 240ms ease-out both;
+}
+
+.flashcard {
+  animation: cardIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cards-grid .flashcard:nth-child(2) { animation-delay: 45ms; }
+.cards-grid .flashcard:nth-child(3) { animation-delay: 90ms; }
+.cards-grid .flashcard:nth-child(4) { animation-delay: 135ms; }
+.cards-grid .flashcard:nth-child(5) { animation-delay: 180ms; }
+.cards-grid .flashcard:nth-child(6) { animation-delay: 225ms; }
+
+@keyframes workspaceIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sidebarIn {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toolbarIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes emptyStateIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes paperIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes activeMarkerIn {
+  from { transform: translateY(-50%) scaleY(0); opacity: 0; }
+  to { transform: translateY(-50%) scaleY(1); opacity: 1; }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 680px) {
+  .nav-btn.active::after {
+    width: 22px;
+    height: 3px;
+    right: auto;
+    top: auto;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0.35);
+  }
+
+  @keyframes activeMarkerIn {
+    from { transform: translateX(-50%) scaleX(0); opacity: 0; }
+    to { transform: translateX(-50%) scaleX(1); opacity: 1; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-container,
+  .app-sidebar,
+  .app-toolbar,
+  .view-panel.active,
+  .reader-container.empty .empty-state,
+  .document-content,
+  .flashcard,
+  .nav-btn.active::after {
+    animation: none;
+  }
+}

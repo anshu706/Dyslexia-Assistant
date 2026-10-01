@@ -58,21 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Toast notifications
-    window.showToast = function(message, icon = '•') {
-        const container = document.getElementById('toast-container');
-        if (!container || !message) return;
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        const iconEl = document.createElement('span');
-        iconEl.className = 'toast-icon';
-        iconEl.textContent = icon;
-        const messageEl = document.createElement('span');
-        messageEl.textContent = message;
-        toast.append(iconEl, messageEl);
-        container.appendChild(toast);
-        window.setTimeout(() => toast.remove(), 3200);
-    };
+    // Toast notifications are intentionally silent to keep the workspace calm.
+    window.showToast = function() {};
 
 
     // =========================================================================
