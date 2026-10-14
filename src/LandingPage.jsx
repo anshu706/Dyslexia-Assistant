@@ -63,6 +63,15 @@ const calmingTints = [
     weight: 0.88,
     tag: 'Gentle Contrast',
     desc: 'Calms hypersensitivity to stark monitors and bright ambient room lighting.'
+  },
+  {
+    id: 'amber',
+    name: 'Warm Amber',
+    swatch: '#f9ecc8',
+    rgb: [0.72, 0.58, 0.28],
+    weight: 0.88,
+    tag: 'Gentle Warmth',
+    desc: 'Golden amber warmth that relieves evening eye strain and softens harsh white light.'
   }
 ];
 
@@ -72,6 +81,7 @@ const chapters = [
     title: 'Make the page quieter.',
     text: 'Shape type, spacing, and contrast around the way your eyes actually read.',
     detail: 'Reader',
+    view: 'reader',
     colorName: 'Sage Green',
     colorHex: '#4ade80',
     colorBg: 'rgba(74, 222, 128, 0.12)',
@@ -82,6 +92,7 @@ const chapters = [
     title: 'Give thoughts room.',
     text: 'Write without fighting the cursor. Gentle guidance stays close when you need it.',
     detail: 'Writer',
+    view: 'writer',
     colorName: 'Sky Blue',
     colorHex: '#38bdf8',
     colorBg: 'rgba(56, 189, 248, 0.12)',
@@ -92,6 +103,7 @@ const chapters = [
     title: 'Keep what matters.',
     text: 'Turn difficult words into small, repeatable moments of progress with focused cards.',
     detail: 'Flashcards',
+    view: 'flashcards',
     colorName: 'Lavender',
     colorHex: '#c084fc',
     colorBg: 'rgba(192, 132, 252, 0.12)',
@@ -102,6 +114,8 @@ const chapters = [
     title: 'Listen at your pace.',
     text: 'Follow along with speech, highlighted words, and controls that never rush you.',
     detail: 'Listen',
+    view: 'reader',
+    tts: true,
     colorName: 'Soft Peach',
     colorHex: '#fb923c',
     colorBg: 'rgba(251, 146, 60, 0.12)',
@@ -259,6 +273,42 @@ function LandingPage() {
   const [demoFont, setDemoFont] = useState('Lexend');
   const [demoSpaced, setDemoSpaced] = useState(true);
   const [demoBionic, setDemoBionic] = useState(true);
+  const [demoSpeaking, setDemoSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const getWorkspaceUrl = (view = '', isTts = false) => {
+    const tintParam = activeTint.id === 'sage' ? 'mint' : activeTint.id === 'default' ? 'dark' : activeTint.id;
+    const params = new URLSearchParams();
+    if (view) params.set('view', view);
+    if (tintParam) params.set('tint', tintParam);
+    if (isTts) params.set('tts', '1');
+    return `app.html?${params.toString()}`;
+  };
+
+  const toggleDemoTTS = () => {
+    if (!('speechSynthesis' in window)) return;
+    if (demoSpeaking) {
+      window.speechSynthesis.cancel();
+      setDemoSpeaking(false);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const text =
+      'The rhythm of reading changes the moment the page stops fighting your eyes. With gentle pastel tints, letters settle into place, allowing your mind to absorb meaning effortlessly.';
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate = 0.9;
+    utt.onend = () => setDemoSpeaking(false);
+    utt.onerror = () => setDemoSpeaking(false);
+    window.speechSynthesis.speak(utt);
+    setDemoSpeaking(true);
+  };
 
   return (
     <div className={`landing-page tint-theme-${activeTint.id}`}>
@@ -276,7 +326,7 @@ function LandingPage() {
           <a href="#tints">Calming Tints</a>
           <a href="#simulator">Live Demo</a>
           <a href="#practice">4 Modes</a>
-          <a href="app.html" className="nav-launch">
+          <a href={getWorkspaceUrl()} className="nav-launch">
             Open workspace <span aria-hidden="true">↗</span>
           </a>
         </nav>
@@ -305,7 +355,7 @@ function LandingPage() {
             </p>
 
             <div className="hero-actions">
-              <a className="hero-cta" href="app.html">
+              <a className="hero-cta" href={getWorkspaceUrl()}>
                 <span>Enter the workspace</span>
                 <span aria-hidden="true">→</span>
               </a>
@@ -398,6 +448,14 @@ function LandingPage() {
                   >
                     {demoBionic ? 'Bionic Focus ✓' : 'Bionic Off'}
                   </button>
+                  <button
+                    type="button"
+                    className={`demo-btn ${demoSpeaking ? 'active' : ''}`}
+                    onClick={toggleDemoTTS}
+                    title="Listen to gentle audio narration"
+                  >
+                    {demoSpeaking ? 'Stop Speech ◼' : 'Listen Preview 🔊'}
+                  </button>
                 </div>
               </div>
 
@@ -423,7 +481,7 @@ function LandingPage() {
 
               <div className="demo-footer">
                 <span>Color filter active: <strong>{activeTint.name}</strong></span>
-                <a href="app.html" className="demo-launch-btn">
+                <a href={getWorkspaceUrl('reader')} className="demo-launch-btn">
                   Open in Workspace →
                 </a>
               </div>
@@ -457,7 +515,11 @@ function LandingPage() {
                   </div>
                   <p>{chapter.text}</p>
                 </div>
-                <a href="app.html" className="chapter-detail" style={{ color: chapter.colorHex }}>
+                <a
+                  href={getWorkspaceUrl(chapter.view, chapter.tts)}
+                  className="chapter-detail"
+                  style={{ color: chapter.colorHex }}
+                >
                   <span>{chapter.detail}</span>
                   <span aria-hidden="true">↗</span>
                 </a>
@@ -479,7 +541,7 @@ function LandingPage() {
           <p className="quote-sub">
             Designed for dyslexic minds, neurodiverse readers, and everyone who values visual peace.
           </p>
-          <a className="text-link" href="app.html" style={{ borderColor: activeTint.swatch }}>
+          <a className="text-link" href={getWorkspaceUrl()} style={{ borderColor: activeTint.swatch }}>
             Launch Dyslexia Assistant <span aria-hidden="true">↗</span>
           </a>
         </section>
@@ -492,7 +554,7 @@ function LandingPage() {
         </div>
         <div>
           <span>SOOTHING PASTEL OVERLAYS BUILT-IN</span>
-          <a href="app.html">OPEN WORKSPACE →</a>
+          <a href={getWorkspaceUrl()}>OPEN WORKSPACE →</a>
         </div>
       </footer>
     </div>
