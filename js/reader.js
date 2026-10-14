@@ -32,7 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let fontSizeBase = 1.25; // rem
     let isSpaced = false;
     let tintIndex = 0;
-    const tintCycles = ['dark', 'cream', 'peach', 'mint', 'blue', 'rose'];
+    const tintCycles = ['dark', 'mint', 'cream', 'blue', 'lavender', 'peach', 'rose', 'amber'];
+    const tintLabels = {
+        dark: 'Midnight Dark (Default)',
+        mint: 'Sage Green (Calming)',
+        cream: 'Soft Cream (Warm Sepia)',
+        blue: 'Sky Blue (Soothes Focus)',
+        lavender: 'Gentle Lavender (Visual Rest)',
+        peach: 'Soft Peach (Stress Relief)',
+        rose: 'Soft Rose (Comfort Tint)',
+        amber: 'Warm Amber (Gentle Warmth)'
+    };
     let isRulerActive = false;
     let isBionicActive = false;
     let isSyllablesActive = false;
@@ -337,19 +347,68 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
     }
 
     // =========================================================================
-    // COLOUR TINT OVERLAY CYCLE
+    // COLOUR TINT OVERLAY & SWATCHES
     // =========================================================================
+    function applyTint(tint, notify = false) {
+        if (!tintCycles.includes(tint)) tint = 'dark';
+        tintIndex = tintCycles.indexOf(tint);
+
+        // Apply to reader content
+        if (readerContent) {
+            readerContent.className = readerContent.className.replace(/tint-\S+/g, '').trim();
+            if (tint !== 'none') readerContent.classList.add(`tint-${tint}`);
+        }
+
+        // Apply to writer
+        const writerContainer = document.querySelector('.writer-container');
+        if (writerContainer) {
+            writerContainer.className = writerContainer.className.replace(/tint-\S+/g, '').trim();
+            if (tint !== 'none') writerContainer.classList.add(`tint-${tint}`);
+        }
+
+        // Toggle button active state
+        if (btnOverlay) {
+            btnOverlay.classList.toggle('active', tint !== 'dark');
+        }
+
+        // Update swatch buttons
+        document.querySelectorAll('.swatch-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tint === tint);
+        });
+
+        // Sync settings modal dropdown
+        const settingTint = document.getElementById('setting-tint-overlay');
+        if (settingTint && settingTint.value !== tint) {
+            settingTint.value = tint;
+        }
+
+        // Persist to DA_SETTINGS and localStorage
+        if (window.DA_SETTINGS) {
+            window.DA_SETTINGS.tintOverlay = tint;
+            try {
+                const saved = JSON.parse(localStorage.getItem('da_settings') || '{}');
+                saved.tintOverlay = tint;
+                localStorage.setItem('da_settings', JSON.stringify(saved));
+            } catch (_) {}
+        }
+
+        if (notify && window.showToast) {
+            window.showToast(`Color overlay: ${tintLabels[tint] || tint}`, '🎨');
+        }
+    }
+
+    // Connect individual swatch buttons
+    document.querySelectorAll('.swatch-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tint = btn.dataset.tint;
+            applyTint(tint, true);
+        });
+    });
+
     if (btnOverlay) {
         btnOverlay.addEventListener('click', () => {
             tintIndex = (tintIndex + 1) % tintCycles.length;
-            const tint = tintCycles[tintIndex];
-            readerContent.className = readerContent.className.replace(/tint-\S+/g, '').trim();
-            if (tint !== 'none') readerContent.classList.add(`tint-${tint}`);
-            btnOverlay.classList.toggle('active', tint !== 'dark');
-            const tintLabels = {
-                dark: 'Dark (Default)', cream: 'Cream', peach: 'Peach', mint: 'Mint', blue: 'Sky Blue', rose: 'Rose'
-            };
-            if (window.showToast) window.showToast(`Color overlay: ${tintLabels[tint]}`, '🎨');
+            applyTint(tintCycles[tintIndex], true);
         });
     }
 
@@ -621,8 +680,9 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         isSyllablesActive = Boolean(settings.syllables);
         if (btnBionic) btnBionic.classList.toggle('active', isBionicActive);
         if (btnSyllables) btnSyllables.classList.toggle('active', isSyllablesActive);
-        const tintIndexFromSettings = tintCycles.indexOf(settings.tintOverlay);
-        if (tintIndexFromSettings >= 0) tintIndex = tintIndexFromSettings;
+        if (settings.tintOverlay) {
+            applyTint(settings.tintOverlay, false);
+        }
         if (hasDocument) {
             try {
                 const saved = JSON.parse(localStorage.getItem('da_last_document') || 'null');

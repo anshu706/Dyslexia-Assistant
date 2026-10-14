@@ -8,9 +8,9 @@
       name="description"
       content="Dyslexia Assistant Application Workspace. Premium reading, writing, and learning assistant."
     />
-    <link rel="stylesheet" href="/css/styles.css?direct" />
-    <link rel="stylesheet" href="/css/accessibility.css?direct" />
-    <link rel="stylesheet" href="/css/animations.css?direct" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/accessibility.css" />
+    <link rel="stylesheet" href="./css/animations.css" />
 
     <!-- External Parsers -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -202,12 +202,12 @@
               </svg>
             </button>
 
-            <!-- Color Overlay / Tint -->
+            <!-- Color Overlay / Tint Swatches & Cycle -->
             <button
               class="btn-tool"
               id="tool-overlay"
-              title="Toggle Color Tint Overlay (Cream / Peach / Mint / Blue / Dark)"
-              aria-label="Toggle Color Tint"
+              title="Cycle Color Tint Overlay"
+              aria-label="Cycle Color Tint"
             >
               <svg
                 width="20"
@@ -221,6 +221,80 @@
                 <path d="M12 2a10 10 0 0 0 0 20"></path>
               </svg>
             </button>
+
+            <!-- Quick Color Swatches Bar -->
+            <div
+              class="color-swatch-bar"
+              id="color-swatch-bar"
+              role="radiogroup"
+              aria-label="Calming Reading Tints"
+            >
+              <span class="swatch-label">Tint</span>
+              <button
+                type="button"
+                class="swatch-btn active"
+                data-tint="dark"
+                title="Midnight Dark (Default)"
+                aria-label="Midnight Dark Tint"
+                style="--swatch-color: #16181b;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="mint"
+                title="Sage Green (Calming & Reduces Glare)"
+                aria-label="Sage Green Tint"
+                style="--swatch-color: #cde4d6;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="cream"
+                title="Soft Cream / Warm Sepia"
+                aria-label="Soft Cream Tint"
+                style="--swatch-color: #fbf6e8;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="blue"
+                title="Sky Blue (Soothes Letter Movement)"
+                aria-label="Sky Blue Tint"
+                style="--swatch-color: #d6e8f6;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="lavender"
+                title="Gentle Lavender (Visual Calming)"
+                aria-label="Gentle Lavender Tint"
+                style="--swatch-color: #e8dcf5;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="peach"
+                title="Soft Peach (Visual Stress Relief)"
+                aria-label="Soft Peach Tint"
+                style="--swatch-color: #fde5d7;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="rose"
+                title="Soft Rose (Comfort High Contrast)"
+                aria-label="Soft Rose Tint"
+                style="--swatch-color: #fce2ec;"
+              ></button>
+              <button
+                type="button"
+                class="swatch-btn"
+                data-tint="amber"
+                title="Warm Amber (Gentle Warmth)"
+                aria-label="Warm Amber Tint"
+                style="--swatch-color: #f9ecc8;"
+              ></button>
+            </div>
 
             <!-- Reading Ruler -->
             <button
@@ -848,11 +922,13 @@
               </div>
               <select id="setting-tint-overlay" class="tool-select">
                 <option value="dark" selected>Midnight Dark (Default)</option>
+                <option value="mint">Sage Green Tint (Visual Stress Relief)</option>
                 <option value="cream">Soft Cream / Warm Sepia</option>
-                <option value="peach">Soft Peach Tint</option>
-                <option value="mint">Pale Mint Green Tint</option>
                 <option value="blue">Cool Sky Blue Tint</option>
+                <option value="lavender">Gentle Lavender Tint</option>
+                <option value="peach">Soft Peach Tint</option>
                 <option value="rose">Soft Rose Tint</option>
+                <option value="amber">Warm Amber Tint</option>
               </select>
             </div>
 

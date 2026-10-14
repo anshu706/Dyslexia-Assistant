@@ -1078,40 +1078,110 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Reader Tint Themes (Irlen syndrome friendly) */
-.reader-container.tint-cream .document-content {
+.reader-container.tint-cream .document-content,
+.writer-container.tint-cream #writer-editor {
   background: #fbf6e8 !important;
   color: #242118 !important;
   border-color: #ede2c2 !important;
 }
 
-.reader-container.tint-peach .document-content {
+.reader-container.tint-peach .document-content,
+.writer-container.tint-peach #writer-editor {
   background: #fdf0e9 !important;
   color: #2b1f1a !important;
   border-color: #ebd3c8 !important;
 }
 
-.reader-container.tint-mint .document-content {
+.reader-container.tint-mint .document-content,
+.reader-container.tint-sage .document-content,
+.writer-container.tint-mint #writer-editor,
+.writer-container.tint-sage #writer-editor {
   background: #eef6f1 !important;
   color: #17281f !important;
   border-color: #cde4d6 !important;
 }
 
-.reader-container.tint-blue .document-content {
+.reader-container.tint-blue .document-content,
+.writer-container.tint-blue #writer-editor {
   background: #edf3f8 !important;
   color: #1a2430 !important;
   border-color: #cfe0ef !important;
 }
 
-.reader-container.tint-rose .document-content {
+.reader-container.tint-lavender .document-content,
+.writer-container.tint-lavender #writer-editor {
+  background: #f4eefb !important;
+  color: #261738 !important;
+  border-color: #dfceef !important;
+}
+
+.reader-container.tint-rose .document-content,
+.writer-container.tint-rose #writer-editor {
   background: #fdf0f4 !important;
   color: #301a22 !important;
   border-color: #ecd3de !important;
 }
 
-.reader-container.tint-dark .document-content {
+.reader-container.tint-amber .document-content,
+.writer-container.tint-amber #writer-editor {
+  background: #fcf7e6 !important;
+  color: #2b2311 !important;
+  border-color: #eddcb2 !important;
+}
+
+.reader-container.tint-dark .document-content,
+.writer-container.tint-dark #writer-editor {
   background: #111111 !important;
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Color Swatch Bar */
+.color-swatch-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 5px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.color-swatch-bar .swatch-label {
+  font-size: 0.7rem;
+  font-family: var(--font-heading);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-right: 2px;
+  user-select: none;
+}
+
+.swatch-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background-color: var(--swatch-color);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+  outline: none;
+}
+
+.swatch-btn:hover {
+  transform: scale(1.25);
+  border-color: #ffffff;
+  box-shadow: 0 0 12px var(--swatch-color);
+  z-index: 2;
+}
+
+.swatch-btn.active {
+  border-color: #ffffff;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--accent-primary);
 }
 
 /* Empty State Enhancements */

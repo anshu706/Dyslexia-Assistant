@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fontSize: ['16px', '18px', '20px', '24px', '28px'].includes(saved.fontSize) ? saved.fontSize : DEFAULT_SETTINGS.fontSize,
                 lineHeight: ['1.6', '2.0', '2.4'].includes(saved.lineHeight) ? saved.lineHeight : DEFAULT_SETTINGS.lineHeight,
                 letterSpacing: Boolean(saved.letterSpacing),
-                tintOverlay: ['dark', 'cream', 'peach', 'mint', 'blue', 'rose', 'none'].includes(saved.tintOverlay) ? saved.tintOverlay : DEFAULT_SETTINGS.tintOverlay,
+                tintOverlay: ['dark', 'cream', 'peach', 'mint', 'blue', 'lavender', 'rose', 'amber', 'none'].includes(saved.tintOverlay) ? saved.tintOverlay : DEFAULT_SETTINGS.tintOverlay,
                 highContrast: Boolean(saved.highContrast),
                 bionicReading: Boolean(saved.bionicReading),
                 rulerType: ['mask', 'line'].includes(saved.rulerType) ? saved.rulerType : DEFAULT_SETTINGS.rulerType,
@@ -159,6 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 readerContent.classList.add(`tint-${settings.tintOverlay}`);
             }
         }
+        const writerContainer = document.querySelector('.writer-container');
+        if (writerContainer) {
+            writerContainer.className = writerContainer.className.replace(/tint-\S+/g, '').trim();
+            if (settings.tintOverlay !== 'none') {
+                writerContainer.classList.add(`tint-${settings.tintOverlay}`);
+            }
+        }
+        document.querySelectorAll('.swatch-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tint === settings.tintOverlay);
+        });
 
         // High contrast
         if (settings.highContrast) {
