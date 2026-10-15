@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fontSize: '20px',
         lineHeight: '2.0',
         letterSpacing: true,
-        tintOverlay: 'dark',
+        tintOverlay: 'cream',
         highContrast: false,
         bionicReading: false,
         rulerType: 'mask',
