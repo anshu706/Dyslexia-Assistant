@@ -546,6 +546,18 @@ a {
   border: 1px solid #ecd3de;
 }
 
+.demo-reader-surface.tint-amber {
+  background: #fcf7e6;
+  color: #2b2311;
+  border: 1px solid #eddcb2;
+}
+
+.demo-reader-surface.tint-mint {
+  background: #eef6f1;
+  color: #17281f;
+  border: 1px solid #cde4d6;
+}
+
 .demo-footer {
   display: flex;
   justify-content: space-between;

@@ -264,7 +264,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Apply settings on load
     const initialSettings = loadSettings();
+
+    // Check URL parameters (e.g. from landing page navigation)
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramView = urlParams.get('view');
+    const paramTint = urlParams.get('tint');
+    const paramTts = urlParams.get('tts');
+
+    if (paramTint) {
+        const validTints = ['dark', 'cream', 'peach', 'mint', 'sage', 'blue', 'lavender', 'rose', 'amber'];
+        const resolvedTint = paramTint === 'sage' ? 'mint' : paramTint;
+        if (validTints.includes(resolvedTint)) {
+            initialSettings.tintOverlay = resolvedTint;
+            saveSettings(initialSettings);
+        }
+    }
+
     applySettings(initialSettings);
+
+    if (paramView && ['reader', 'writer', 'flashcards'].includes(paramView)) {
+        switchView(paramView);
+    }
+
+    if (paramTts === '1') {
+        window.setTimeout(() => {
+            const btnPlay = document.getElementById('tts-play');
+            if (btnPlay) btnPlay.click();
+        }, 500);
+    }
 
 
     // =========================================================================

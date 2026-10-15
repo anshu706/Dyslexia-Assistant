@@ -350,6 +350,7 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
     // COLOUR TINT OVERLAY & SWATCHES
     // =========================================================================
     function applyTint(tint, notify = false) {
+        if (tint === 'sage') tint = 'mint';
         if (!tintCycles.includes(tint)) tint = 'dark';
         tintIndex = tintCycles.indexOf(tint);
 
