@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         bionicReading: false,
         rulerType: 'mask',
         syllables: false,
-        autoScroll: true
+        autoScroll: true,
+        wordFocusBox: true
     };
 
     function loadSettings() {
@@ -101,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 bionicReading: Boolean(saved.bionicReading),
                 rulerType: ['mask', 'line'].includes(saved.rulerType) ? saved.rulerType : DEFAULT_SETTINGS.rulerType,
                 syllables: Boolean(saved.syllables),
-                autoScroll: Boolean(saved.autoScroll)
+                autoScroll: Boolean(saved.autoScroll),
+                wordFocusBox: saved.wordFocusBox !== undefined ? Boolean(saved.wordFocusBox) : true
             };
         } catch (error) {
             console.warn('Saved settings were invalid; using defaults.', error);
@@ -177,9 +179,48 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.remove('high-contrast-mode');
         }
 
+        // Word Tracking Box UI Sync
+        const wordBoxBtn = document.getElementById('tool-word-box');
+        if (wordBoxBtn) {
+            const isBoxOn = settings.wordFocusBox !== false;
+            wordBoxBtn.classList.toggle('active', isBoxOn);
+            const label = wordBoxBtn.querySelector('.word-box-label');
+            if (label) label.textContent = isBoxOn ? 'Box: ON' : 'Box: OFF';
+        }
+        const activeHighlightedWord = document.querySelector('.tts-word.tts-highlight');
+        if (activeHighlightedWord) {
+            if (settings.wordFocusBox !== false) {
+                activeHighlightedWord.classList.add('tts-word-boxed');
+            } else {
+                activeHighlightedWord.classList.remove('tts-word-boxed');
+            }
+        }
+
         // Store settings globally for other modules
         window.DA_SETTINGS = settings;
         document.dispatchEvent(new CustomEvent('da:settingsChanged', { detail: settings }));
+    }
+
+    // Connect toolbar Word Tracking Box button
+    const toolWordBox = document.getElementById('tool-word-box');
+    if (toolWordBox) {
+        toolWordBox.addEventListener('click', () => {
+            const currentSettings = window.DA_SETTINGS || loadSettings();
+            currentSettings.wordFocusBox = !(currentSettings.wordFocusBox !== false);
+            saveSettings(currentSettings);
+            applySettings(currentSettings);
+            populateSettingsUI(currentSettings);
+        });
+    }
+
+    // Real-time coordinates HUD tracker
+    const coordX = document.getElementById('coord-x');
+    const coordY = document.getElementById('coord-y');
+    if (coordX && coordY) {
+        window.addEventListener('pointermove', e => {
+            coordX.textContent = ((e.clientX / window.innerWidth) * 100).toFixed(2);
+            coordY.textContent = ((e.clientY / window.innerHeight) * 100).toFixed(2);
+        }, { passive: true });
     }
 
     function populateSettingsUI(settings) {
@@ -193,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bionicReading: document.getElementById('setting-bionic-reading'),
             rulerType: document.getElementById('setting-ruler-type'),
             syllables: document.getElementById('setting-syllables'),
-            autoScroll: document.getElementById('setting-auto-scroll')
+            autoScroll: document.getElementById('setting-auto-scroll'),
+            wordFocusBox: document.getElementById('setting-word-box')
         };
         if (els.fontFamily) els.fontFamily.value = settings.fontFamily;
         if (els.fontSize) els.fontSize.value = settings.fontSize;
@@ -205,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (els.rulerType) els.rulerType.value = settings.rulerType;
         if (els.syllables) els.syllables.checked = settings.syllables;
         if (els.autoScroll) els.autoScroll.checked = settings.autoScroll;
+        if (els.wordFocusBox) els.wordFocusBox.checked = settings.wordFocusBox !== false;
     }
 
     function collectSettingsFromUI() {
@@ -218,7 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bionicReading: document.getElementById('setting-bionic-reading')?.checked ?? false,
             rulerType: document.getElementById('setting-ruler-type')?.value || 'mask',
             syllables: document.getElementById('setting-syllables')?.checked ?? false,
-            autoScroll: document.getElementById('setting-auto-scroll')?.checked ?? true
+            autoScroll: document.getElementById('setting-auto-scroll')?.checked ?? true,
+            wordFocusBox: document.getElementById('setting-word-box')?.checked ?? true
         };
     }
 

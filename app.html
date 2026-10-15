@@ -8,6 +8,13 @@
       name="description"
       content="Dyslexia Assistant Application Workspace. Premium reading, writing, and learning assistant."
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Geist+Mono:wght@400;500;600&family=Lexend:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic" />
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/accessibility.css" />
     <link rel="stylesheet" href="./css/animations.css" />
@@ -21,16 +28,30 @@
     <a href="#workspace" class="skip-link">Skip to workspace</a>
     <div class="noise-overlay"></div>
 
+    <!-- PLAMO MARGINALIA HUD (Real-time Coordinates) -->
+    <div class="coords-marginalia" id="workspace-coords" aria-hidden="true">
+      <div class="coord-item"><span>X</span> <span id="coord-x">0.00</span></div>
+      <div class="coord-item"><span>Y</span> <span id="coord-y">0.00</span></div>
+    </div>
+
     <div class="app-container">
       <!-- SIDEBAR -->
       <aside class="app-sidebar" aria-label="Application Tools">
         <div class="sidebar-header">
           <a
             href="index.html"
-            class="logo-small"
+            class="logo-small plamo-logo-badge"
             aria-label="Home"
             title="Dyslexia Assistant Home"
-            >D.A.</a
+          >
+            <div class="plamo-logo-tile">
+              <svg viewBox="0 0 37 37" width="20" height="20" fill="none">
+                <rect width="37" height="37" rx="3" fill="#EC633D" />
+                <path d="M28 28C28 18.0589 19.9411 10 10 10" stroke="white" strokeOpacity="0.6" strokeDasharray="1.5 1.5" />
+              </svg>
+            </div>
+            <span>D.A.</span>
+          </a
           >
         </div>
         <nav class="sidebar-nav">
@@ -338,6 +359,27 @@
               Syl·la·ble
             </button>
 
+            <!-- Word Tracking Box Toggle (Bounding Box on Read Word) -->
+            <button
+              class="btn-tool active"
+              id="tool-word-box"
+              title="Toggle Word Focus Box [ON/OFF] (Tracks word read aloud)"
+              aria-label="Toggle Word Focus Box"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <rect x="7" y="7" width="10" height="10" stroke-dasharray="2 2"></rect>
+              </svg>
+              <span class="word-box-label">Box: ON</span>
+            </button>
+
             <!-- Clear Document -->
             <button
               class="btn-tool"
@@ -425,11 +467,32 @@
             <select
               id="tts-voice"
               class="tool-select"
-              style="max-width: 150px; text-overflow: ellipsis"
-              title="Select Speech Voice"
+              style="max-width: 175px; text-overflow: ellipsis"
+              title="Select Speech Voice (Indian Voices, Global English, Multi-Language)"
             >
               <option value="">Default Voice</option>
             </select>
+
+            <!-- Test Selected Voice Button -->
+            <button
+              class="btn-tool"
+              id="btn-test-voice"
+              title="Preview / Test Selected Voice Audio"
+              aria-label="Test Selected Voice"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <span>Test</span>
+            </button>
 
             <label for="tts-speed" class="sr-only">Speech Speed</label>
             <select id="tts-speed" class="tool-select" title="Speech Speed">
@@ -449,6 +512,14 @@
           class="view-panel active"
           aria-label="Reading Environment"
         >
+          <!-- Plamo Architectural Folder Tab -->
+          <div class="workspace-sheet-tab">
+            <svg viewBox="0 0 296.86 55.23" class="tab-svg" preserveAspectRatio="none">
+              <path fill="#E2D2B3" d="M.68,55.09c18,0,33.61-11.42,37.64-27.55h.01C42.39,11.43,58,0,75.98,0h145.6c18,0,33.61,11.42,37.64,27.55,4.05,16.12,19.66,27.55,37.64,27.55L0,55.23" />
+            </svg>
+            <span class="tab-label">01 · READER SHEET</span>
+          </div>
+
           <div id="reader-content" class="reader-container empty" tabindex="0">
             <div class="empty-state">
               <h2 class="text-xl">Ready to Read.</h2>
@@ -515,6 +586,14 @@
           aria-label="Writing Environment"
           hidden
         >
+          <!-- Plamo Architectural Folder Tab -->
+          <div class="workspace-sheet-tab">
+            <svg viewBox="0 0 296.86 55.23" class="tab-svg" preserveAspectRatio="none">
+              <path fill="#E2D2B3" d="M.68,55.09c18,0,33.61-11.42,37.64-27.55h.01C42.39,11.43,58,0,75.98,0h145.6c18,0,33.61,11.42,37.64,27.55,4.05,16.12,19.66,27.55,37.64,27.55L0,55.23" />
+            </svg>
+            <span class="tab-label">02 · WRITER DRAFT</span>
+          </div>
+
           <div class="writer-container">
             <div class="writer-stats">
               <div class="writer-stat-group">
@@ -685,6 +764,14 @@
           aria-label="Flashcards Environment"
           hidden
         >
+          <!-- Plamo Architectural Folder Tab -->
+          <div class="workspace-sheet-tab">
+            <svg viewBox="0 0 296.86 55.23" class="tab-svg" preserveAspectRatio="none">
+              <path fill="#E2D2B3" d="M.68,55.09c18,0,33.61-11.42,37.64-27.55h.01C42.39,11.43,58,0,75.98,0h145.6c18,0,33.61,11.42,37.64,27.55,4.05,16.12,19.66,27.55,37.64,27.55L0,55.23" />
+            </svg>
+            <span class="tab-label">03 · FLASHCARD VAULT</span>
+          </div>
+
           <div class="flashcards-container">
             <div
               style="
@@ -989,6 +1076,21 @@
               </div>
               <label class="switch">
                 <input type="checkbox" id="setting-syllables" />
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">
+                  Word Tracking Box (Focus Frame)
+                </div>
+                <div class="setting-desc">
+                  Highlights an architectural bounding box around the word currently spoken in Reader
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="setting-word-box" checked />
                 <span class="slider-switch"></span>
               </label>
             </div>
