@@ -95,17 +95,18 @@ button {
 }
 
 /* =========================================================================
-   16px REPEATING BLUEPRINT / GRAPH PAPER GRID
+   WORKSPACE DARK THEME — PREMIUM DARK SHELL WITH WARM READING SURFACE
    ========================================================================= */
 .app-body {
   min-height: 100vh;
-  background-color: var(--bg-color);
+  background-color: #0d0e10;
   background-image:
-    repeating-linear-gradient(90deg, rgba(64, 74, 80, 0.07) 0 1px, transparent 1px 16px),
-    repeating-linear-gradient(180deg, rgba(64, 74, 80, 0.07) 0 1px, transparent 1px 16px);
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 16px);
   background-size: 16px 16px;
   display: flex;
   position: relative;
+  color: #e8e0d5;
 }
 
 .noise-overlay {
@@ -145,19 +146,19 @@ button {
   z-index: 99;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: #9e9688;
   pointer-events: none;
   font-variant-numeric: tabular-nums;
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 251, 243, 0.92);
+  background: rgba(16, 17, 20, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   padding: 4px 10px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .coords-marginalia span {
@@ -185,13 +186,13 @@ button {
 /* Sidebar */
 .app-sidebar {
   width: 76px;
-  background-color: var(--surface-warm);
-  border-right: 1px solid var(--border-color);
+  background-color: #111317;
+  border-right: 1px solid rgba(255,255,255,0.07);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 16px 8px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 2px 0 16px rgba(0,0,0,0.35);
   z-index: 20;
 }
 
@@ -205,7 +206,7 @@ button {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: var(--text-primary);
+  color: #e8e0d5;
 }
 
 .plamo-logo-tile {
@@ -225,7 +226,7 @@ button {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--text-primary);
+  color: #9e9688;
 }
 
 .sidebar-nav {
@@ -238,7 +239,7 @@ button {
 .nav-btn {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--text-muted);
+  color: #6b6760;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -260,17 +261,17 @@ button {
 }
 
 .nav-btn:hover {
-  color: var(--accent-secondary);
-  background-color: #EADFCA;
-  border-color: var(--border-color);
+  color: #e8e0d5;
+  background-color: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
   transform: translateY(-1px);
 }
 
 .nav-btn.active {
-  background-color: var(--surface-tan);
-  color: var(--accent-secondary);
-  border-color: var(--border-color);
-  box-shadow: var(--shadow-sm);
+  background-color: rgba(236,99,61,0.15);
+  color: var(--accent-primary);
+  border-color: rgba(236,99,61,0.35);
+  box-shadow: 0 0 12px rgba(236,99,61,0.15);
 }
 
 .sidebar-footer {
@@ -293,10 +294,10 @@ button {
 /* Toolbar */
 .app-toolbar {
   min-height: 64px;
-  background: rgba(255, 251, 243, 0.95);
+  background: rgba(13, 14, 16, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -304,7 +305,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 25;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 
 .toolbar-group {
@@ -315,34 +316,34 @@ button {
 }
 
 .reader-tools {
-  background: #FAF6EE;
+  background: #1a1c20;
   padding: 5px 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .tts-tools {
-  background: #FAF6EE;
+  background: #1a1c20;
   padding: 5px 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   margin-left: auto;
 }
 
 .divider {
   width: 1px;
   height: 22px;
-  background-color: var(--border-color);
+  background-color: rgba(255,255,255,0.1);
   margin: 0 4px;
 }
 
-/* Tool Buttons (Plamo Neobrutalist) */
+/* Tool Buttons (Dark Workspace) */
 .btn-tool {
-  background: #FFFDF9;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  background: #1e2024;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #c8c0b5;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -352,78 +353,80 @@ button {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .btn-tool:hover {
-  background-color: #FFFBF3;
-  border-color: var(--text-primary);
+  background-color: #2a2d33;
+  border-color: rgba(255,255,255,0.22);
+  color: #e8e0d5;
   transform: translateY(-1px);
-  box-shadow: 3px 3px #0000001a;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.4);
 }
 
 .btn-tool:active {
   transform: translateY(1px);
-  box-shadow: 1px 1px #0000001a;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .btn-tool.active {
-  background-color: var(--accent-secondary);
-  color: #FFFBF3;
-  border-color: #1D2378;
+  background-color: rgba(236,99,61,0.2);
+  color: var(--accent-primary);
+  border-color: rgba(236,99,61,0.45);
+  box-shadow: 0 0 10px rgba(236,99,61,0.2);
 }
 
 /* Upload Button */
 .upload-btn {
   background-color: var(--accent-primary);
-  color: #FFFBF3;
-  border-color: #C2410C;
+  color: #fff;
+  border-color: rgba(236,99,61,0.7);
 }
 .upload-btn:hover {
   background-color: #D9461A;
-  color: #FFFBF3;
+  color: #fff;
 }
 
 /* Specific button: tool-word-box */
 #tool-word-box.active {
-  background-color: var(--accent-primary);
-  color: #FFFBF3;
-  border-color: #C2410C;
+  background-color: rgba(236,99,61,0.2);
+  color: var(--accent-primary);
+  border-color: rgba(236,99,61,0.5);
 }
 
 /* Voice & Speed Selectors */
 .tool-select {
   height: 34px;
-  background-color: #FFFDF9;
-  border: 1px solid var(--border-color);
+  background-color: #1e2024;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 4px;
   padding: 4px 10px;
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
+  color: #c8c0b5;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   outline: none;
   cursor: pointer;
 }
 
 .tool-select:hover {
-  border-color: var(--text-primary);
+  border-color: rgba(255,255,255,0.25);
 }
 
 .tool-select option,
 .tool-select optgroup {
   font-family: var(--font-mono);
-  background-color: #FFFDF9;
-  color: #212121;
+  background-color: #1e2024;
+  color: #c8c0b5;
 }
 
 .tool-select optgroup {
   font-weight: 700;
-  color: var(--accent-secondary);
-  background-color: #EADFCA;
+  color: var(--accent-primary);
+  background-color: #16181b;
 }
 
 /* Color Swatches Bar */
@@ -431,11 +434,11 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #FFFDF9;
+  background: #1a1c20;
   padding: 4px 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .swatch-label {
@@ -443,7 +446,7 @@ button {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: #6b6760;
   margin-right: 2px;
 }
 
@@ -789,12 +792,13 @@ button {
 .word-lookup-card {
   position: absolute;
   z-index: 50;
-  background: #FFFDF9;
-  border: 1px solid var(--border-color);
+  background: #1a1c20;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 4px;
   padding: 18px;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   max-width: 320px;
+  color: #c8c0b5;
 }
 
 .word-lookup-card.hidden {
@@ -807,10 +811,10 @@ button {
 .writer-container {
   max-width: 960px;
   margin: 0 auto;
-  border: 1px solid var(--border-color);
-  background-color: var(--surface-color);
+  border: 1px solid rgba(255,255,255,0.07);
+  background-color: #13151a;
   border-radius: 4px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -824,7 +828,7 @@ button {
   gap: 12px;
   margin-bottom: 16px;
   padding-bottom: 14px;
-  border-bottom: 1px dashed var(--border-color);
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
   font-family: var(--font-mono);
   font-size: 12px;
 }
@@ -844,38 +848,38 @@ button {
 }
 
 .badge {
-  background: #FAF6EE;
-  border: 1px solid var(--border-color);
+  background: #1e2024;
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 3px 8px;
   border-radius: 2px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #c8c0b5;
 }
 
 .badge-accent {
-  background: rgba(236, 99, 61, 0.12);
+  background: rgba(236, 99, 61, 0.15);
   border-color: var(--accent-primary);
   color: var(--accent-primary);
 }
 
 .writer-textarea {
   min-height: 480px;
-  background: #FFFDF9;
-  border: 1px solid var(--border-subtle);
+  background: #0d0e10;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
   padding: 24px;
   font-family: var(--font-body);
   font-size: 1.15rem;
   line-height: 1.9;
-  color: var(--text-primary);
+  color: #c8c0b5;
   resize: vertical;
   outline: none;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .writer-textarea:focus {
-  border-color: var(--accent-secondary);
+  border-color: rgba(236,99,61,0.5);
 }
 
 /* =========================================================================
@@ -884,10 +888,10 @@ button {
 .flashcards-container {
   max-width: 960px;
   margin: 0 auto;
-  border: 1px solid var(--border-color);
-  background-color: var(--surface-color);
+  border: 1px solid rgba(255,255,255,0.07);
+  background-color: #13151a;
   border-radius: 4px;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   padding: 28px;
 }
 
@@ -903,18 +907,18 @@ button {
   min-width: 220px;
   height: 42px;
   padding: 8px 14px;
-  background: #FAF6EE;
-  border: 1px solid var(--border-color);
+  background: #1a1c20;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
   font-family: var(--font-body);
   font-size: 14px;
-  color: var(--text-primary);
+  color: #c8c0b5;
   outline: none;
 }
 
 .card-input:focus {
-  border-color: var(--accent-secondary);
-  background: #FFF;
+  border-color: rgba(236,99,61,0.5);
+  background: #1e2024;
 }
 
 .cards-toolbar {
@@ -925,15 +929,15 @@ button {
   gap: 12px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px dashed var(--border-color);
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
 }
 
 .pill-group {
   display: flex;
   gap: 4px;
-  background: #FAF6EE;
+  background: #1a1c20;
   padding: 4px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
 }
 
@@ -945,15 +949,15 @@ button {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: #6b6760;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .pill-btn.active {
-  background: var(--accent-secondary);
-  color: #FFF;
-  border-color: var(--accent-secondary);
+  background: rgba(236,99,61,0.2);
+  color: var(--accent-primary);
+  border-color: rgba(236,99,61,0.4);
 }
 
 .cards-grid {
@@ -991,10 +995,11 @@ button {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
-  box-shadow: var(--shadow-sm);
-  background: #FAF6EE;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  background: #1a1c20;
+  color: #c8c0b5;
 }
 
 .flashcard-front {
@@ -1200,6 +1205,15 @@ input:checked + .slider-switch:before {
 @keyframes toastIn {
   from { transform: translateY(10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-6px); opacity: 0; }
+}
+
+.toast-fade-out {
+  animation: toastOut 0.3s ease forwards !important;
 }
 
 .sr-only {

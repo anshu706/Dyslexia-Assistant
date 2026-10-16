@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dyslexia-assistant-v2';
+const CACHE_NAME = 'dyslexia-assistant-v3';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -11,8 +11,7 @@ const ASSETS_TO_CACHE = [
     '/js/speech.js',
     '/js/editor.js',
     '/js/storage.js',
-    '/js/flashcards.js',
-    '/js/ui.js'
+    '/js/flashcards.js'
 ];
  
 self.addEventListener('install', (event) => {

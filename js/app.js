@@ -58,8 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Toast notifications are intentionally silent to keep the workspace calm.
-    window.showToast = function() {};
+    // Toast notifications — brief, calm feedback with fade-out
+    window.showToast = function(message, icon = '✓') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.setAttribute('role', 'status');
+        toast.innerHTML = `<span style="font-size:1.1rem;">${icon}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('toast-fade-out');
+            toast.addEventListener('animationend', () => toast.remove(), { once: true });
+        }, 2800);
+    };
 
 
     // =========================================================================
@@ -256,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fontSize: document.getElementById('setting-font-size')?.value || '20px',
             lineHeight: document.getElementById('setting-line-height')?.value || '2.0',
             letterSpacing: document.getElementById('setting-letter-spacing')?.checked ?? true,
-            tintOverlay: document.getElementById('setting-tint-overlay')?.value || 'dark',
+            tintOverlay: document.getElementById('setting-tint-overlay')?.value || 'cream',
             highContrast: document.getElementById('setting-high-contrast')?.checked ?? false,
             bionicReading: document.getElementById('setting-bionic-reading')?.checked ?? false,
             rulerType: document.getElementById('setting-ruler-type')?.value || 'mask',
