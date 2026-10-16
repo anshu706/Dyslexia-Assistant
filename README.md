@@ -27,7 +27,7 @@
 
 <br />
 
-<img src="./brag-output/dyslexia.gif" alt="Dyslexia Assistant Demo" width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);" />
+<video src="https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d" autoplay muted loop playsinline width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);"></video>
 
 </div>
 
