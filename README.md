@@ -13,6 +13,11 @@
 
 <br />
 
+<video src="./brag-output/dyslexia.mp4" autoplay muted loop playsinline width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);">
+  Your browser does not support the video tag.
+</video>
+
+
 <p align="center">
   <a href="#-overview">Overview</a> •
   <a href="#-key-features">Key Features</a> •
