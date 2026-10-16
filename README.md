@@ -25,7 +25,7 @@
 
 ---
 
-<img src="./workspace_story_shot.png" alt="Dyslexia Assistant Experience" width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);" />
+<img src="./landing_shot.png" alt="Dyslexia Assistant Experience" width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);" />
 
 </div>
 
