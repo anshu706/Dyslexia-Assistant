@@ -10,6 +10,7 @@
 [![PWA Ready](https://img.shields.io/badge/PWA-Offline%20Ready-5A0FC8.svg?style=for-the-badge&logo=pwa&logoColor=white)](sw.js)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA%20Compliant-blueviolet.svg?style=for-the-badge&logo=w3c&logoColor=white)](#-accessibility--keyboard-shortcuts)
 [![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-success.svg?style=for-the-badge)](#-privacy--offline-architecture)
+[![Secure Vibe Coding](https://img.shields.io/badge/Secure%20Vibe%20Coding-5%20Layers%20Compliant-00C853.svg?style=for-the-badge&logo=shield)](SECURITY.md)
 
 <br />
 
@@ -20,6 +21,7 @@
   <a href="#-clinical-tint-science">Tint Science</a> •
   <a href="#-keyboard-shortcuts">Shortcuts</a> •
   <a href="#-architecture">Architecture</a> •
+  <a href="#-security--secure-vibe-coding-compliance">Security</a> •
   <a href="#-getting-started">Getting Started</a>
 </p>
 
@@ -220,6 +222,23 @@ graph TD
 
 ---
 
+## 🛡️ Security & Secure Vibe Coding Compliance
+
+Dyslexia Assistant incorporates the 5 security layers from the **Secure Vibe Coding** framework, ensuring both client sandbox safety and a production-grade server reference:
+
+* **Layer 01 — Always Validate on the Server**: Client-side document checks (10 MB limit, strict `.txt`, `.pdf`, `.docx` MIME types, and 300,000 char bounds) backed by schema validation (`server/securityMiddleware.js`).
+* **Layer 02 — Protect Login With Rate Limiting**: Anti-brute force sliding-window limiter on sensitive endpoints keyed by IP and account identifiers (`HTTP 429 Too Many Requests`).
+* **Layer 03 — Never Store Passwords in Plain Text**: Purpose-built salted password hashing via `scrypt` / `Argon2id` with constant-time verification (`crypto.timingSafeEqual`) to eliminate timing attacks.
+* **Layer 04 — Don't Leak Information Through Errors**: Unified `"Invalid email or password"` auth errors prevent account enumeration. Production error handling strips internal paths and stack traces.
+* **Layer 05 — Don't Build Authentication From Scratch**: Cryptographic 32-byte session tokens with 24-hour expiration, delivered via `HttpOnly`, `Secure`, `SameSite=Strict` cookies.
+* **Step 04 — Ownership Verification (IDOR)**: Multi-tenant authorization guards guaranteeing User A cannot read or modify User B's documents.
+* **Step 05 — Production Security Headers**: Vite and server configs inject `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy`.
+* **Automated Security Verification**: Run `npm run test:security` to execute the full unit test suite.
+
+> 📖 *For complete architecture documentation, threat models, and policy details, see [SECURITY.md](SECURITY.md).*
+
+---
+
 ## 📁 Repository Structure
 
 ```plaintext
@@ -227,12 +246,20 @@ Dyslexia-Assistant/
 ├── 📄 index.html             # React + Vite architectural landing entry
 ├── 📄 app.html               # High-performance workspace shell
 ├── 📄 sw.js                  # PWA service worker (offline asset caching)
-├── 📄 vite.config.js         # Multi-page build & static directory bundler
-├── 📄 package.json           # Project manifest and scripts
+├── 📄 vite.config.js         # Multi-page build, static bundler & security headers
+├── 📄 package.json           # Project manifest, dependencies & security test scripts
+├── 📄 SECURITY.md            # Comprehensive Secure Vibe Coding audit & architecture
+├── 📂 server/                # Secure Vibe Coding reference server & middleware
+│   ├── 📄 securityMiddleware.js # Layer 01 validation, Layer 02 rate limiting, Layer 04 errors
+│   ├── 📄 authService.js     # Layer 03 salted hashing, Layer 05 sessions & Step 04 IDOR
+│   └── 📄 server.js          # Production-grade API server implementing the 5 layers
+├── 📂 test/
+│   └── 📄 security.test.js   # Automated unit test suite verifying all 5 security layers
 ├── 📂 src/
 │   ├── 📄 main.jsx           # React root mount point
 │   └── 📄 LandingPage.jsx    # Interactive simulator, story chapters & swatch HUD
 ├── 📂 js/
+│   ├── 📄 security.js        # Input validation, safeStorage, prototype pollution defense
 │   ├── 📄 app.js             # Global state coordinator & keyboard router
 │   ├── 📄 reader.js          # Document parser, tints, bionic, syllables & ruler
 │   ├── 📄 speech.js          # TTS with word-boundary highlight & focus box

@@ -48,7 +48,22 @@ export default defineConfig({
   plugins: [react(), copyStaticDirs()],
   server: {
     port: 5173,
-    strictPort: false
+    strictPort: false,
+    headers: {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(self), geolocation=()'
+    }
+  },
+  preview: {
+    port: 4173,
+    headers: {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(self), geolocation=()'
+    }
   },
   build: {
     rollupOptions: {

@@ -44,15 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // AUTO-RESTORE DRAFT
     // =========================================================================
-    const savedText = localStorage.getItem('dyslexia_assistant_draft');
+    const maxDraftChars = window.DA_Security?.limits?.MAX_DOC_CHAR_COUNT || 300000;
+    const rawSaved = window.DA_Security?.safeStorage
+        ? window.DA_Security.safeStorage.getItem('dyslexia_assistant_draft', '')
+        : (localStorage.getItem('dyslexia_assistant_draft') || '');
+    const savedText = rawSaved ? rawSaved.substring(0, maxDraftChars) : '';
     if (savedText) {
         editor.value = savedText;
         updateStats(savedText);
     }
 
     editor.addEventListener('input', e => {
-        const text = e.target.value;
-        localStorage.setItem('dyslexia_assistant_draft', text);
+        let text = e.target.value;
+        if (text.length > maxDraftChars) {
+            text = text.substring(0, maxDraftChars);
+            e.target.value = text;
+            window.showToast && window.showToast(`Draft reached maximum character limit (${maxDraftChars.toLocaleString()} chars)`, '⚠');
+        }
+        if (window.DA_Security?.safeStorage) {
+            window.DA_Security.safeStorage.setItem('dyslexia_assistant_draft', text);
+        } else {
+            try { localStorage.setItem('dyslexia_assistant_draft', text); } catch (_) {}
+        }
         updateStats(text);
         checkSpelling(text);
     });
@@ -192,9 +205,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!text.trim()) { window.showToast && window.showToast('Nothing to download!', '⚠'); return; }
             const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
+            const rawDate = new Date().toISOString().slice(0, 10);
+            const defaultFilename = `my-writing-${rawDate}.txt`;
+            const cleanFilename = window.DA_Security?.sanitizeFilename
+                ? window.DA_Security.sanitizeFilename(defaultFilename, defaultFilename)
+                : defaultFilename;
             const a = document.createElement('a');
             a.href = url;
-            a.download = `my-writing-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.download = cleanFilename;
             a.click();
             URL.revokeObjectURL(url);
             window.showToast && window.showToast('Downloaded!', '⬇');
@@ -209,7 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnClear.addEventListener('click', () => {
             if (editor.value.trim() && !confirm('Clear your writing? This cannot be undone.')) return;
             editor.value = '';
-            localStorage.removeItem('dyslexia_assistant_draft');
+            if (window.DA_Security?.safeStorage) {
+                window.DA_Security.safeStorage.removeItem('dyslexia_assistant_draft');
+            } else {
+                localStorage.removeItem('dyslexia_assistant_draft');
+            }
             updateStats('');
             editor.focus();
             window.showToast && window.showToast('Editor cleared.', '🗑');

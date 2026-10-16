@@ -22,12 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // STATE
     // =========================================================================
     let flashcards = [];
-    try {
-        const savedCards = JSON.parse(localStorage.getItem('dyslexia_flashcards') || '[]');
-        flashcards = Array.isArray(savedCards) ? savedCards : [];
-    } catch (error) {
-        console.warn('Saved flashcards were invalid; starting with an empty deck.', error);
-        window.showToast?.('Saved flashcards could not be read and were reset.', '⚠');
+    if (window.DA_Security?.safeStorage) {
+        const loaded = window.DA_Security.safeStorage.getParsed('dyslexia_flashcards', []);
+        flashcards = Array.isArray(loaded) ? loaded : [];
+    } else {
+        try {
+            const savedCards = JSON.parse(localStorage.getItem('dyslexia_flashcards') || '[]');
+            flashcards = Array.isArray(savedCards) ? savedCards : [];
+        } catch (error) {
+            console.warn('Saved flashcards were invalid; starting with an empty deck.', error);
+            window.showToast?.('Saved flashcards could not be read and were reset.', '⚠');
+        }
     }
     let currentFilter = 'all';
     let currentMode = 'grid'; // 'grid' or 'study'
@@ -129,10 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // SAVE & LOAD
     // =========================================================================
     function saveCards() {
-        try {
-            localStorage.setItem('dyslexia_flashcards', JSON.stringify(flashcards));
-        } catch (error) {
-            window.showToast?.('Flashcards could not be saved in this browser.', '⚠');
+        if (window.DA_Security?.safeStorage) {
+            window.DA_Security.safeStorage.setItem('dyslexia_flashcards', flashcards);
+        } else {
+            try {
+                localStorage.setItem('dyslexia_flashcards', JSON.stringify(flashcards));
+            } catch (error) {
+                window.showToast?.('Flashcards could not be saved in this browser.', '⚠');
+            }
         }
         updateCounts();
     }
