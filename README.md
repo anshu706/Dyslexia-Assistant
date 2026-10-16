@@ -38,13 +38,8 @@
   <p>Your browser does not support HTML5 video. <a href="https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d"><b>Click here to view or download the demo video</b></a>.</p>
 </video>
 
-<br>
-
-[![Watch Dyslexia Assistant Demo](./brag-output/dyslexia.gif)](https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d)
-
-<sub>👆 <i>Click the animated preview above to stream the full high-definition demo video</i></sub>
-
 </div>
+
 
 
 <br />
