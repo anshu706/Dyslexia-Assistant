@@ -73,24 +73,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // ADD CARD
+    // ADD CARD (Validated and Rate-Limited)
     // =========================================================================
-    function addCard(front, back) {
-        front = (front || inputFront?.value || '').trim();
-        back = (back || inputBack?.value || '').trim();
+    const cardRateLimiter = window.DA_Security?.createRateLimiter ? window.DA_Security.createRateLimiter(25, 10000) : null;
 
-        if (!front || !back) {
-            window.showToast && window.showToast('Please fill in both front and back!', '⚠');
+    function addCard(front, back) {
+        if (cardRateLimiter && !cardRateLimiter()) {
+            window.showToast?.('Please slow down. Too many cards added too quickly!', '⚠');
             return;
         }
 
-        flashcards.push({ front, back, nextReview: Date.now(), srsLevel: 0, timesReviewed: 0 });
+        const rawFront = front || inputFront?.value || '';
+        const rawBack = back || inputBack?.value || '';
+
+        const validation = window.DA_Security?.validateFlashcard 
+            ? window.DA_Security.validateFlashcard(rawFront, rawBack)
+            : { valid: Boolean(rawFront.trim() && rawBack.trim()), front: rawFront.trim(), back: rawBack.trim() };
+
+        if (!validation.valid) {
+            window.showToast && window.showToast(validation.error || 'Please fill in both front and back!', '⚠');
+            return;
+        }
+
+        flashcards.push({ 
+            front: validation.front, 
+            back: validation.back, 
+            nextReview: Date.now(), 
+            srsLevel: 0, 
+            timesReviewed: 0 
+        });
         saveCards();
         if (inputFront) inputFront.value = '';
         if (inputBack) inputBack.value = '';
         if (inputFront) inputFront.focus();
         renderCards();
-        window.showToast && window.showToast(`Card "${front}" added!`, '✓');
+        const displayFront = validation.front.length > 25 ? validation.front.substring(0, 25) + '…' : validation.front;
+        window.showToast && window.showToast(`Card "${displayFront}" added!`, '✓');
     }
 
     if (btnAdd) btnAdd.addEventListener('click', () => addCard());
@@ -403,13 +421,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // HELPERS
     // =========================================================================
     function escapeHtml(unsafe) {
+        if (window.DA_Security?.escapeHtml) {
+            return window.DA_Security.escapeHtml(unsafe);
+        }
         if (!unsafe) return '';
-        return unsafe
+        return String(unsafe)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+            .replace(/'/g, '&#039;')
+            .replace(/`/g, '&#x60;')
+            .replace(/\//g, '&#x2F;');
     }
 
     // =========================================================================

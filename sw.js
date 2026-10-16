@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dyslexia-assistant-v3';
+const CACHE_NAME = 'dyslexia-assistant-v4';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -6,6 +6,7 @@ const ASSETS_TO_CACHE = [
     '/css/styles.css',
     '/css/animations.css',
     '/css/accessibility.css',
+    '/js/security.js',
     '/js/app.js',
     '/js/reader.js',
     '/js/speech.js',
@@ -18,13 +19,17 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache');
                 return cache.addAll(ASSETS_TO_CACHE);
             })
     );
 });
 
 self.addEventListener('fetch', (event) => {
+    // Security: Only handle GET requests with http/https protocols
+    if (event.request.method !== 'GET') return;
+    const url = new URL(event.request.url);
+    if (!url.protocol.startsWith('http')) return;
+
     event.respondWith(
         caches.match(event.request)
             .then(response => {

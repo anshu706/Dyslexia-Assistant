@@ -19,9 +19,15 @@
     <link rel="stylesheet" href="./css/accessibility.css" />
     <link rel="stylesheet" href="./css/animations.css" />
 
-    <!-- External Parsers -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+    <!-- Content Security Policy (Secure Vibe Coding Step 5: Prod Config) -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:; img-src 'self' data: blob:; connect-src 'self' blob: https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; base-uri 'self'; form-action 'self';"
+    />
+
+    <!-- External Parsers (Trusted CDNs with crossorigin isolation) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js" crossorigin="anonymous"></script>
   </head>
 
   <body class="app-body">
@@ -1193,6 +1199,7 @@
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
     <!-- Scripts -->
+    <script src="js/security.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/app.js"></script>
     <script src="js/reader.js"></script>

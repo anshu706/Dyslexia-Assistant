@@ -58,14 +58,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Toast notifications — brief, calm feedback with fade-out
+    // Toast notifications — brief, calm feedback with fade-out (XSS-safe DOM construction)
     window.showToast = function(message, icon = '✓') {
         const container = document.getElementById('toast-container');
         if (!container) return;
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.setAttribute('role', 'status');
-        toast.innerHTML = `<span style="font-size:1.1rem;">${icon}</span><span>${message}</span>`;
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.style.fontSize = '1.1rem';
+        iconSpan.textContent = String(icon || '✓');
+
+        const msgSpan = document.createElement('span');
+        msgSpan.textContent = String(message || '');
+
+        toast.appendChild(iconSpan);
+        toast.appendChild(msgSpan);
         container.appendChild(toast);
         setTimeout(() => {
             toast.classList.add('toast-fade-out');
