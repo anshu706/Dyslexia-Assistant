@@ -23,13 +23,29 @@
   <a href="#-getting-started">Getting Started</a>
 </p>
 
+
 ---
 
-<br />
+## 📹 Video Showcase
 
-<video src="https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d" autoplay muted loop playsinline width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);"></video>
+> Experience the tint overlays, bionic reading, synchronized speech, and spaced-repetition flashcards of **Dyslexia Assistant** in action.
+
+<div align="center">
+
+### 🎬 Full Demo Walkthrough
+
+<video src="https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d" controls="controls" muted="muted" width="100%" style="max-height: 600px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.25);">
+  <p>Your browser does not support HTML5 video. <a href="https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d"><b>Click here to view or download the demo video</b></a>.</p>
+</video>
+
+<br>
+
+[![Watch Dyslexia Assistant Demo](./brag-output/dyslexia.gif)](https://github.com/user-attachments/assets/3a002dfb-2c0a-4ce2-83eb-b724d370e15d)
+
+<sub>👆 <i>Click the animated preview above to stream the full high-definition demo video</i></sub>
 
 </div>
+
 
 <br />
 
