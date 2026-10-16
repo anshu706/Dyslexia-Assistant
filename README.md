@@ -27,7 +27,7 @@
 
 <br />
 
-<img src="./brag-output/dyslexia.gif" alt="Dyslexia Assistant Demo" width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);" />
+<img src="./brag-output/dyslexia.mp4" alt="Dyslexia Assistant Demo" width="100%" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);" />
 
 </div>
 
