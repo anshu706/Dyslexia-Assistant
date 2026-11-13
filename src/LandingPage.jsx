@@ -17,7 +17,7 @@ const calmingTints = [
     rgb: [0.22, 0.62, 0.44],
     weight: 0.95,
     tag: 'Glare Relief',
-    desc: 'Clinically shown to reduce high-contrast glare, visual distortion, and ocular fatigue.'
+    desc: 'Gentle green tone designed to reduce high-contrast glare and ease ocular fatigue.'
   },
   {
     id: 'cream',
@@ -284,7 +284,7 @@ function LandingPage() {
               </div>
               <div className="plamo-brand-text">
                 <span className="brand-title">Dyslexia Assistant</span>
-                <span className="brand-sub">Irlen & Reading Workspace</span>
+                <span className="brand-sub">Reading & Learning Workspace</span>
               </div>
             </a>
 
@@ -328,7 +328,7 @@ function LandingPage() {
           <div className="plamo-hero-inner">
             <div className="hero-eyebrow">
               <span className="eyebrow-badge">BETA v2.4</span>
-              <span className="eyebrow-handwritten">Calibrated for Irlen & Dyslexic Readers</span>
+              <span className="eyebrow-handwritten">Reading Preferences You Can Customise</span>
             </div>
 
             <h1 className="hero-title">
@@ -358,7 +358,7 @@ function LandingPage() {
                 </div>
                 <div className="preview-card-tab">
                   <span className="tab-file-icon">📄</span>
-                  <span>workspace.da — Reader Sheet [Mode: Irlen Relaxed]</span>
+                  <span>workspace.da — Reader Sheet [Mode: Relaxed Contrast]</span>
                 </div>
                 <div className="preview-card-status">
                   <span className="status-live-dot" />
@@ -410,7 +410,7 @@ function LandingPage() {
 
               <div className="sheet-content">
                 <div className="sheet-header-center">
-                  <div className="handwritten-tag">- Irlen Spectral Calibration -</div>
+                  <div className="handwritten-tag">- Spectral Color Preferences -</div>
                   <h2 className="sheet-title">Optic Tints That Quiet the Whole Page</h2>
                   <p className="sheet-subtitle">
                     Dyslexia research shows specific pastel wavelengths reduce ocular distortion, soothe letter jitter, and prevent sensory overload.
@@ -596,7 +596,7 @@ function LandingPage() {
 
                     <div className="sim-reading-footer">
                       <div className="footer-status">
-                        <span className="indicator-badge">Irlen Comfort Shield</span>
+                        <span className="indicator-badge">Comfort Contrast Shield</span>
                         <span>Selected tint: <strong>{activeTint.name}</strong></span>
                       </div>
                       <a href={getWorkspaceUrl('reader', true)} className="sim-open-btn">
@@ -702,7 +702,7 @@ function LandingPage() {
 
         <div className="footer-bottom">
           <div className="footer-coords">
-            <span>GRID: 16px</span> · <span>IRLEN-COMPLIANT</span> · <span>WEB SPEECH API</span>
+            <span>GRID: 16px</span> · <span>OFFLINE-FIRST</span> · <span>WEB SPEECH API</span>
           </div>
           <div className="footer-rights">
             <span>Dyslexia Assistant. A calmer way to read, write, listen, and learn.</span>

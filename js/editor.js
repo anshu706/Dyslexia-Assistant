@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuggestion(wrong, correct) {
         if (!suggestionsPopover) return;
         suggestionsPopover.innerHTML = `
-            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px;">Did you mean?</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px;">Heuristic Suggestion:</div>
             <button class="suggestion-item" data-correct="${correct}">
                 <span>✏ <strong style="color: var(--success);">${correct}</strong></span>
                 <span style="font-size: 0.75rem; color: var(--text-muted);">Replace</span>
@@ -345,9 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
             window.showToast && window.showToast('Dictation stopped.', '⏹');
         }
     } else if (btnDictate) {
-        btnDictate.title = 'Voice dictation not supported in this browser';
-        btnDictate.style.opacity = '0.4';
-        btnDictate.disabled = true;
+        btnDictate.title = 'Speech dictation is not supported in this browser';
+        btnDictate.style.opacity = '0.7';
+        btnDictate.addEventListener('click', () => {
+            window.showToast?.('Speech dictation is not supported by your current browser. Try Chrome or Edge.', 'ℹ');
+        });
     }
 
 });

@@ -60,6 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { front: 'Letter pair: ou', back: 'ou can sound many ways: "ow" (out, found), "oo" (you, group), "uh" (colour, cousin), "off" (cough). Context is key!', nextReview: Date.now(), srsLevel: 0 },
     ];
 
+    // Seed starter deck if deck is initially empty
+    if (flashcards.length === 0) {
+        flashcards = STARTER_DECKS.map(c => ({ ...c }));
+    }
+
     const btnLoadStarter = document.getElementById('btn-load-starter-cards');
     if (btnLoadStarter) {
         btnLoadStarter.addEventListener('click', () => {
