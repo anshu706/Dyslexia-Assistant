@@ -127,6 +127,38 @@ test('Layer 04: Login prevents account enumeration and leaks no diagnostic trace
     );
 });
 
+test('Layer 03: Passwords hashed twice have different unique salts', async () => {
+    const plain = 'SamePassword123!';
+    const hash1 = await hashPassword(plain);
+    const hash2 = await hashPassword(plain);
+
+    assert.notEqual(hash1, hash2, 'Identical passwords must produce distinct salted hashes');
+    assert.equal(await verifyPassword(plain, hash1), true);
+    assert.equal(await verifyPassword(plain, hash2), true);
+});
+
+test('Layer 04: Development error handler provides debugging stack traces', () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    const testError = new Error('Developer debug message');
+    let responseData = null;
+    let statusCode = 500;
+
+    const resMock = {
+        status(code) { statusCode = code; return this; },
+        json(data) { responseData = data; }
+    };
+
+    safeErrorHandler(testError, { method: 'GET', url: '/api/test' }, resMock, () => {});
+
+    assert.equal(statusCode, 500);
+    assert.equal(responseData.error, 'Developer debug message');
+    assert.ok(responseData.stack, 'Stack trace must be present in development mode');
+
+    process.env.NODE_ENV = originalEnv;
+});
+
 test('Layer 04: Production error handler suppresses internal server paths and stack traces', () => {
     const originalEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
