@@ -8,13 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "node server/server.js",
-    "test:security": "node --test test/security.test.js"
+    "test": "node --test test/*.test.js",
+    "test:security": "node --test test/security.test.js",
+    "test:integration": "node --test test/integration.test.js"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.8"
+  }
 }

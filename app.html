@@ -8,13 +8,7 @@
       name="description"
       content="Dyslexia Assistant Application Workspace. Premium reading, writing, and learning assistant."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Geist+Mono:wght@400;500;600&family=Lexend:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/opendyslexic" />
+    <link rel="stylesheet" href="./css/fonts.css" />
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/accessibility.css" />
     <link rel="stylesheet" href="./css/animations.css" />
@@ -22,12 +16,12 @@
     <!-- Content Security Policy (Secure Vibe Coding Step 5: Prod Config) -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' https://fonts.gstatic.com https://fonts.cdnfonts.com data:; img-src 'self' data: blob:; connect-src 'self' blob: https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; base-uri 'self'; form-action 'self';"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self';"
     />
 
-    <!-- External Parsers (Trusted CDNs with crossorigin isolation) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js" crossorigin="anonymous"></script>
+    <!-- Vendored Parsers (100% offline-ready, zero external runtime requests) -->
+    <script src="./vendor/pdf.min.js"></script>
+    <script src="./vendor/mammoth.browser.min.js"></script>
   </head>
 
   <body class="app-body">

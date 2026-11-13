@@ -257,11 +257,11 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
 
     async function parsePdf(file) {
         if (typeof pdfjsLib === 'undefined') {
-            window.showToast?.('PDF parser is unavailable. Check your internet connection.', '⚠');
+            window.showToast?.('PDF parser library is unavailable.', '⚠');
             showEmptyState();
             return;
         }
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './vendor/pdf.worker.min.js';
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;

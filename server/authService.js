@@ -13,6 +13,17 @@ import crypto from 'node:crypto';
 const userDb = new Map();
 const sessionDb = new Map();
 const documentDb = new Map();
+const flashcardDb = new Map();
+
+/**
+ * Reset all in-memory collections (used primarily in test suites).
+ */
+export function resetDatabasesForTesting() {
+    userDb.clear();
+    sessionDb.clear();
+    documentDb.clear();
+    flashcardDb.clear();
+}
 
 /**
  * Layer 03: Password Hashing using Scrypt with cryptographically random salts.
@@ -32,6 +43,7 @@ export function hashPassword(plainPassword) {
  */
 export function verifyPassword(plainPassword, storedHash) {
     return new Promise((resolve, reject) => {
+        if (!storedHash || typeof storedHash !== 'string') return resolve(false);
         const [salt, key] = storedHash.split(':');
         if (!salt || !key) return resolve(false);
 
@@ -58,9 +70,48 @@ export function createSession(userId) {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'Strict',
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000,
+            path: '/'
         }
     };
+}
+
+/**
+ * Builds standard Set-Cookie header value with security attributes (Layer 05).
+ */
+export function serializeSessionCookie(sessionId, options = {}) {
+    const isProd = process.env.NODE_ENV === 'production';
+    const parts = [
+        `session=${encodeURIComponent(sessionId)}`,
+        'Path=/',
+        'HttpOnly',
+        'SameSite=Strict',
+        `Max-Age=${options.maxAge ?? 86400}`
+    ];
+    if (options.secure ?? isProd) {
+        parts.push('Secure');
+    }
+    return parts.join('; ');
+}
+
+export function serializeClearSessionCookie() {
+    const isProd = process.env.NODE_ENV === 'production';
+    const parts = [
+        'session=',
+        'Path=/',
+        'HttpOnly',
+        'SameSite=Strict',
+        'Max-Age=0'
+    ];
+    if (isProd) {
+        parts.push('Secure');
+    }
+    return parts.join('; ');
+}
+
+export function revokeSession(sessionId) {
+    if (!sessionId) return false;
+    return sessionDb.delete(sessionId);
 }
 
 /**
@@ -75,6 +126,21 @@ export function getSessionUser(sessionId) {
         return null;
     }
     return session.userId;
+}
+
+export function getUserById(userId) {
+    for (const user of userDb.values()) {
+        if (user.id === userId) {
+            return { id: user.id, email: user.email };
+        }
+    }
+    return null;
+}
+
+export function getSessionUserRecord(sessionId) {
+    const userId = getSessionUser(sessionId);
+    if (!userId) return null;
+    return getUserById(userId);
 }
 
 /**
@@ -122,6 +188,48 @@ export async function loginUser(email, password) {
 }
 
 /**
+ * Password change endpoint with current password verification.
+ */
+export async function changePassword(userId, currentPassword, newPassword) {
+    let targetUser = null;
+    let targetEmail = null;
+    for (const [email, user] of userDb.entries()) {
+        if (user.id === userId) {
+            targetUser = user;
+            targetEmail = email;
+            break;
+        }
+    }
+
+    if (!targetUser) {
+        const err = new Error('User not found.');
+        err.statusCode = 404;
+        throw err;
+    }
+
+    const isValid = await verifyPassword(currentPassword, targetUser.passwordHash);
+    if (!isValid) {
+        const err = new Error('Current password does not match.');
+        err.statusCode = 400;
+        throw err;
+    }
+
+    targetUser.passwordHash = await hashPassword(newPassword);
+    userDb.set(targetEmail, targetUser);
+
+    // Revoke all existing sessions for this user for security
+    for (const [sId, sess] of sessionDb.entries()) {
+        if (sess.userId === userId) {
+            sessionDb.delete(sId);
+        }
+    }
+
+    // Issue fresh session
+    const newSession = createSession(userId);
+    return { user: { id: targetUser.id, email: targetUser.email }, session: newSession };
+}
+
+/**
  * Step 4: Resource Ownership Verification (Multi-Tenant IDOR Protection)
  */
 export function verifyDocumentOwnership(docId, userId) {
@@ -148,8 +256,55 @@ export function saveUserDocument(userId, title, content) {
         ownerId: userId,
         title: title.substring(0, 120),
         content: content.substring(0, 300000),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
     documentDb.set(docId, record);
     return record;
+}
+
+export function updateUserDocument(docId, userId, title, content) {
+    const doc = verifyDocumentOwnership(docId, userId);
+    doc.title = title.substring(0, 120);
+    doc.content = content.substring(0, 300000);
+    doc.updatedAt = new Date().toISOString();
+    documentDb.set(docId, doc);
+    return doc;
+}
+
+export function deleteUserDocument(docId, userId) {
+    verifyDocumentOwnership(docId, userId);
+    documentDb.delete(docId);
+    return true;
+}
+
+export function getUserDocuments(userId) {
+    const results = [];
+    for (const doc of documentDb.values()) {
+        if (doc.ownerId === userId) {
+            results.push({
+                id: doc.id,
+                title: doc.title,
+                content: doc.content,
+                createdAt: doc.createdAt,
+                updatedAt: doc.updatedAt
+            });
+        }
+    }
+    return results;
+}
+
+export function saveUserFlashcards(userId, cards) {
+    const record = {
+        userId,
+        cards: Array.isArray(cards) ? cards : [],
+        updatedAt: new Date().toISOString()
+    };
+    flashcardDb.set(userId, record);
+    return record;
+}
+
+export function getUserFlashcards(userId) {
+    const record = flashcardDb.get(userId);
+    return record ? record.cards : [];
 }

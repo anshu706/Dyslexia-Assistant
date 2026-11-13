@@ -9,6 +9,21 @@
  */
 
 /**
+ * Extracts client IP safely: uses socket address by default.
+ * Only trusts X-Forwarded-For if TRUST_PROXY is explicitly enabled.
+ */
+export function getClientIp(req) {
+    const trustProxy = process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1';
+    if (trustProxy && req.headers && req.headers['x-forwarded-for']) {
+        const forwarded = req.headers['x-forwarded-for'];
+        const ips = (Array.isArray(forwarded) ? forwarded.join(',') : forwarded).split(',');
+        const clientIp = ips[0].trim();
+        if (clientIp) return clientIp;
+    }
+    return req.socket?.remoteAddress || req.connection?.remoteAddress || '127.0.0.1';
+}
+
+/**
  * In-memory sliding-window rate limiter for sensitive routes (e.g. login, document sync).
  */
 export function createRateLimiter({ windowMs = 15 * 60 * 1000, max = 5, message = 'Too many requests. Please try again later.' } = {}) {
@@ -24,7 +39,7 @@ export function createRateLimiter({ windowMs = 15 * 60 * 1000, max = 5, message 
     }, windowMs).unref();
 
     return function rateLimitMiddleware(req, res, next) {
-        const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+        const ip = getClientIp(req);
         const accountId = req.body?.email || req.body?.username || '';
         const key = accountId ? `${ip}:${accountId}` : ip;
 
@@ -58,10 +73,19 @@ export function createRateLimiter({ windowMs = 15 * 60 * 1000, max = 5, message 
 /**
  * Layer 01: Server-Side Input Validation Middleware
  */
-export function validateSchema(schema) {
+export function validateSchema(schema, { allowUnknown = false } = {}) {
     return function (req, res, next) {
         const errors = [];
         const target = req.body || {};
+
+        if (!allowUnknown) {
+            const allowed = new Set(Object.keys(schema));
+            for (const key of Object.keys(target)) {
+                if (!allowed.has(key)) {
+                    errors.push(`Field "${key}" is not recognized.`);
+                }
+            }
+        }
 
         for (const [field, rules] of Object.entries(schema)) {
             const val = target[field];

@@ -5,13 +5,64 @@
  */
 
 // =========================================================================
-// SERVICE WORKER REGISTRATION
+// SERVICE WORKER REGISTRATION & UPDATE FLOW
 // =========================================================================
+function showUpdatePrompt(registration) {
+    if (document.getElementById('pwa-update-banner')) return;
+    const banner = document.createElement('aside');
+    banner.id = 'pwa-update-banner';
+    banner.setAttribute('role', 'alert');
+    banner.setAttribute('aria-live', 'polite');
+    banner.className = 'pwa-update-banner';
+    banner.innerHTML = `
+        <div class="pwa-update-content">
+            <span class="pwa-update-icon" aria-hidden="true">🚀</span>
+            <span>A new version of Dyslexia Assistant is ready.</span>
+            <button id="pwa-reload-btn" class="btn btn-sm btn-accent" type="button">Update Now</button>
+            <button id="pwa-dismiss-btn" class="icon-btn-sm" aria-label="Dismiss update notification" type="button">✕</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+
+    document.getElementById('pwa-reload-btn')?.addEventListener('click', () => {
+        if (registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        window.location.reload();
+    });
+
+    document.getElementById('pwa-dismiss-btn')?.addEventListener('click', () => {
+        banner.remove();
+    });
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('SW registered:', reg.scope))
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                console.log('SW registered:', reg.scope);
+                if (reg.waiting) {
+                    showUpdatePrompt(reg);
+                }
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    if (!newWorker) return;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdatePrompt(reg);
+                        }
+                    });
+                });
+            })
             .catch(err => console.warn('SW registration failed:', err));
+
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                refreshing = true;
+                window.location.reload();
+            }
+        });
     });
 }
 

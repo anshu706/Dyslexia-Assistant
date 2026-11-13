@@ -1,3 +1,15 @@
+.gitignore
 node_modules/
 dist/
 .vite/
+brag-output/
+.env
+.env.*
+!.env.example
+coverage/
+.terraform/
+*.tfstate
+*.tfstate.*
+.checkov/
+playwright-report/
+test-results/

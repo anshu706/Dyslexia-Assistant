@@ -145,10 +145,120 @@
         element.textContent = text || '';
     }
 
+    /**
+     * Prototype pollution-safe JSON parser.
+     * Prevents __proto__, constructor, and prototype pollution attacks.
+     */
+    function safeJsonParse(jsonString, fallback = null) {
+        if (!jsonString || typeof jsonString !== 'string') return fallback;
+        try {
+            return JSON.parse(jsonString, (key, value) => {
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    return undefined; // Drop polluted keys
+                }
+                return value;
+            });
+        } catch (err) {
+            safeLog('warn', 'JSON parse error suppressed for security.', err);
+            return fallback;
+        }
+    }
+
+    /**
+     * Sanitizes file names to prevent path traversal or filesystem command injection.
+     */
+    function sanitizeFilename(filename, defaultName = 'document.txt') {
+        if (!filename || typeof filename !== 'string') return defaultName;
+        // Strip path traversal attempts and dangerous characters
+        const clean = filename
+            .replace(/[/\\?%*:|"<>]/g, '_')
+            .replace(/\.\.+/g, '.')
+            .trim();
+        return clean.length > 0 ? clean.substring(0, 100) : defaultName;
+    }
+
+    /**
+     * Formats an error into a safe, client-facing message without leaking internal
+     * system paths, stack traces, or framework internals (Secure Vibe Coding Layer 04).
+     */
+    function formatSafeError(error, defaultMessage = 'An unexpected error occurred. Please try again.') {
+        if (!error) return defaultMessage;
+        
+        // Log details in development
+        safeLog('error', defaultMessage, error);
+
+        if (typeof error === 'string') {
+            // Check for path leaks in string errors
+            if (error.includes('/') || error.includes('\\') || error.includes('Error:')) {
+                return defaultMessage;
+            }
+            return sanitizeText(error, 150);
+        }
+
+        if (error instanceof Error && error.message) {
+            // Strip any file path traces
+            const msg = error.message.replace(/([a-zA-Z]:)?[\\/][\w.\-_/\\\\]+/g, '[internal path]');
+            if (msg.includes('network') || msg.includes('fetch') || msg.includes('Failed to fetch')) {
+                return 'Network request failed. Please check your connection.';
+            }
+            if (msg.includes('QuotaExceededError')) {
+                return 'Storage quota reached. Please free up space or clear old documents.';
+            }
+            return sanitizeText(msg, 150);
+        }
+
+        return defaultMessage;
+    }
+
+    /**
+     * Safe LocalStorage wrapper with QuotaExceededError protection and type validation.
+     */
+    const safeStorage = {
+        setItem(key, value) {
+            try {
+                const serialized = typeof value === 'string' ? value : JSON.stringify(value);
+                localStorage.setItem(key, serialized);
+                return true;
+            } catch (err) {
+                safeLog('error', `Failed to persist key "${key}" to localStorage`, err);
+                if (window.showToast) {
+                    window.showToast('Storage quota exceeded. Older drafts could not be saved.', '⚠');
+                }
+                return false;
+            }
+        },
+        getItem(key, fallback = null) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (raw === null) return fallback;
+                return raw;
+            } catch (err) {
+                safeLog('error', `Failed to read key "${key}" from localStorage`, err);
+                return fallback;
+            }
+        },
+        getParsed(key, fallback = null) {
+            const raw = this.getItem(key, null);
+            if (!raw) return fallback;
+            return safeJsonParse(raw, fallback);
+        },
+        removeItem(key) {
+            try {
+                localStorage.removeItem(key);
+            } catch (err) {
+                safeLog('error', `Failed to remove key "${key}"`, err);
+            }
+        }
+    };
+
     // Expose security utilities on window.DA_Security
     window.DA_Security = {
         escapeHtml,
         sanitizeText,
+        sanitizeFilename,
+        safeJsonParse,
+        formatSafeError,
+        safeStorage,
         validateFile,
         validateFlashcard,
         createRateLimiter,

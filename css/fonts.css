@@ -1,0 +1,55 @@
+/* Locally vendored typography for 100% offline Dyslexia Assistant */
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/OpenDyslexic-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/OpenDyslexic-Italic.woff') format('woff');
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/OpenDyslexic-Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('../fonts/lexend-0.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/lexend-1.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../fonts/lexend-2.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Lexend';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/lexend-3.woff2') format('woff2');
+}
