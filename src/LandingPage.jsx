@@ -117,7 +117,7 @@ const chapters = [
     view: 'reader',
     tts: true,
     colorName: 'Terracotta',
-    colorHex: '#ec633d',
+    colorHex: '#A33A1A',
     colorBg: '#f6edda',
     badgeColor: '#c2410c'
   }
