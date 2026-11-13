@@ -49,3 +49,4 @@ We chose **server-side sessions stored in PostgreSQL with HttpOnly, Secure, Same
 - **Security:** Complete protection against client-side script token theft and IDOR boundaries cleanly checked per session.
 - **Independence:** Zero external cloud IdP dependency, keeping deployment overhead low and self-hostable.
 - **Future Roadmap:** Multi-factor authentication (TOTP via RFC 6238) and Turnstile/reCAPTCHA bot protection documented as next steps for high-traffic environments.
+
