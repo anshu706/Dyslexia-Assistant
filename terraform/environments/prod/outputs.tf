@@ -17,3 +17,4 @@ output "prod_s3_bucket" {
   value       = module.frontend.s3_bucket_id
   description = "Frontend Assets S3 Bucket"
 }
+

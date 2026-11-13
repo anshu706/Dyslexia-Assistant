@@ -140,3 +140,4 @@ jobs:
             echo "Rolling back to previous stable task definition: $PREV_TASK_DEF"
             aws ecs update-service --cluster ${{ env.PROJECT_NAME }}-prod-cluster --service ${{ env.PROJECT_NAME }}-prod-api-service --task-definition "$PREV_TASK_DEF" --force-new-deployment
           fi
+

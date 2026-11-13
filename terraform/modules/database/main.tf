@@ -54,3 +54,4 @@ resource "aws_secretsmanager_secret_version" "db_secret_val" {
     DB_PASSWORD  = random_password.db_password.result
   })
 }
+

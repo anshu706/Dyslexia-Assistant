@@ -12,3 +12,4 @@ output "s3_bucket_id" {
   value       = aws_s3_bucket.frontend.id
   description = "S3 Frontend Assets Bucket ID"
 }
+

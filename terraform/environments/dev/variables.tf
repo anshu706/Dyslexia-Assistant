@@ -15,3 +15,4 @@ variable "alert_email" {
   default     = "devops-dev@example.com"
   description = "Operational notification email"
 }
+

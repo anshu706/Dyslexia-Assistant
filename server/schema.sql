@@ -36,3 +36,4 @@ CREATE TABLE IF NOT EXISTS flashcards (
     cards JSONB NOT NULL DEFAULT '[]'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+

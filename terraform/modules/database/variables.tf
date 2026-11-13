@@ -40,3 +40,4 @@ variable "tags" {
   default     = {}
   description = "Resource tags"
 }
+

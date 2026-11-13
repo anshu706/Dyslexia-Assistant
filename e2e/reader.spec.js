@@ -6,15 +6,18 @@ test.describe('Reader Workflows', () => {
   });
 
   test('Font switcher updates body font class', async ({ page }) => {
-    const fontSelect = page.locator('#font-select');
-    await expect(fontSelect).toBeVisible();
+    const btnFont = page.locator('#tool-font');
+    await expect(btnFont).toBeVisible();
 
-    await fontSelect.selectOption('opendyslexic');
-    const readerText = page.locator('#reader-display');
-    await expect(readerText).toHaveClass(/font-opendyslexic/);
+    const readerContent = page.locator('#reader-content');
+    
+    // Initial click cycles to Lexend
+    await btnFont.click();
+    await expect(readerContent).toHaveCSS('font-family', /Lexend/);
 
-    await fontSelect.selectOption('lexend');
-    await expect(readerText).toHaveClass(/font-lexend/);
+    // Next click cycles to System Sans
+    await btnFont.click();
+    await expect(readerContent).toHaveCSS('font-family', /system-ui/);
   });
 
   test('Pasting text loads into reader and persists on reload', async ({ page }) => {
@@ -29,31 +32,40 @@ test.describe('Reader Workflows', () => {
 
     // Modal should close and reader display sample text
     await expect(page.locator('#paste-modal')).toHaveClass(/hidden/);
-    const readerDisplay = page.locator('#reader-display');
-    await expect(readerDisplay).toContainText('Dyslexia Assistant');
+    const readerContent = page.locator('#reader-content');
+    await expect(readerContent).toContainText('Dyslexia Assistant');
 
     // Reload page and verify last document is restored
     await page.reload();
-    await expect(page.locator('#reader-display')).toContainText('Dyslexia Assistant');
+    await expect(page.locator('#reader-content')).toContainText('Dyslexia Assistant');
   });
 
-  test('Clicking a word triggers word lookup card with syllables and count', async ({ page }) => {
-    // Load sample text
+  test('Word lookup shows syllables and pronunciation', async ({ page }) => {
+    // Load sample text via paste modal
     await page.locator('#btn-paste-modal').click();
-    await page.locator('#paste-textarea').fill('Remarkable accomplishment');
+    await page.locator('#paste-textarea').fill('Reading accomplishment');
     await page.locator('#submit-paste-btn').click();
 
-    // Click on the word
-    const wordSpan = page.locator('.reader-word', { hasText: 'Remarkable' }).first();
-    await expect(wordSpan).toBeVisible();
-    await wordSpan.click();
+    const p = page.locator('#document-body p').first();
+    await expect(p).toBeVisible();
+
+    // Simulate word lookup by selecting 'Reading'
+    await page.evaluate(() => {
+      const pElem = document.querySelector('#document-body p');
+      const range = document.createRange();
+      range.setStart(pElem.firstChild, 0);
+      range.setEnd(pElem.firstChild, 7); // 'Reading'
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      pElem.click();
+    });
 
     // Lookup card should show syllables and count
     const lookupCard = page.locator('#word-lookup-card');
     await expect(lookupCard).toBeVisible();
-    await expect(lookupCard).toContainText('remarkable');
+    await expect(lookupCard).toContainText('reading');
     await expect(lookupCard).toContainText('Syllables:');
-    await expect(lookupCard).toContainText('Letters: 10');
+    await expect(lookupCard).toContainText('Letters: 7');
   });
 });
-

@@ -9,7 +9,7 @@ test.describe('Writer Workflows', () => {
   });
 
   test('Draft autosaves and restores on reload', async ({ page }) => {
-    const editor = page.locator('#editor-textarea');
+    const editor = page.locator('#writer-editor');
     await expect(editor).toBeVisible();
 
     const draftText = 'Autosaved writing draft from writer test.';
@@ -18,25 +18,25 @@ test.describe('Writer Workflows', () => {
     // Reload page
     await page.reload();
     await page.locator('button[data-view="writer"]').click();
-    await expect(page.locator('#editor-textarea')).toHaveValue(draftText);
+    await expect(page.locator('#writer-editor')).toHaveValue(draftText);
   });
 
   test('Calculates live readability statistics', async ({ page }) => {
-    const editor = page.locator('#editor-textarea');
+    const editor = page.locator('#writer-editor');
     await editor.fill('The quick brown fox jumps over the lazy dog. It was a pleasant afternoon.');
 
-    const wordCount = page.locator('#stat-words');
-    const charCount = page.locator('#stat-chars');
+    const wordCount = page.locator('#word-count-num');
+    const charCount = page.locator('#char-count-num');
     await expect(wordCount).toHaveText('14');
-    await expect(charCount).toHaveText('74');
+    await expect(charCount).toHaveText('73');
   });
 
   test('Shows heuristic spell suggestion and applies correction', async ({ page }) => {
-    const editor = page.locator('#editor-textarea');
+    const editor = page.locator('#writer-editor');
     // Type a common dyslexic confusable spelling followed by space
     await editor.fill('I saw a frend ');
 
-    const popover = page.locator('#suggestions-popover');
+    const popover = page.locator('#phonetic-suggestions');
     await expect(popover).toBeVisible();
     await expect(popover).toContainText('Heuristic Suggestion');
     await expect(popover).toContainText('friend');
@@ -47,4 +47,3 @@ test.describe('Writer Workflows', () => {
     await expect(popover).toHaveClass(/hidden/);
   });
 });
-

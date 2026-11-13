@@ -91,3 +91,4 @@ module "monitoring" {
   budget_limit_usd = 25
   alert_email      = var.alert_email
 }
+

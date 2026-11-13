@@ -62,3 +62,4 @@ export async function closePool() {
         await pool.end();
     }
 }
+

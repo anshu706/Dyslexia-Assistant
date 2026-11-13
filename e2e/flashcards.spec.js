@@ -18,12 +18,12 @@ test.describe('Flashcards & SRS Workflows', () => {
   test('Creates new flashcard and validates required fields', async ({ page }) => {
     const inputFront = page.locator('#fc-front');
     const inputBack = page.locator('#fc-back');
-    const btnAdd = page.locator('#btn-add-card');
+    const btnAdd = page.locator('#fc-add');
 
     // Empty input validation
     await btnAdd.click();
-    const toastContainer = page.locator('#toast-container');
-    await expect(toastContainer).toContainText('Please fill in both sides');
+    const toast = page.locator('.toast');
+    await expect(toast).toContainText('Both card front and back must be filled in');
 
     // Valid card addition
     await inputFront.fill('quiet vs quite');
@@ -44,4 +44,3 @@ test.describe('Flashcards & SRS Workflows', () => {
     await expect(firstCard).not.toHaveClass(/flipped/);
   });
 });
-
