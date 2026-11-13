@@ -379,9 +379,9 @@ button {
 
 /* Upload Button */
 .upload-btn {
-  background-color: var(--accent-primary);
+  background-color: #A33A1A;
   color: #fff;
-  border-color: rgba(236,99,61,0.7);
+  border-color: #8C2E11;
 }
 .upload-btn:hover {
   background-color: #D9461A;
