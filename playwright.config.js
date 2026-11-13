@@ -1,4 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const localChromePath = process.env.LOCALAPPDATA 
+  ? path.join(process.env.LOCALAPPDATA, 'ms-playwright', 'chromium-1254', 'chrome-win64', 'chrome.exe')
+  : null;
+const useExecutable = localChromePath && fs.existsSync(localChromePath) ? localChromePath : undefined;
 
 export default defineConfig({
   testDir: './e2e',
@@ -11,6 +18,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'on-first-retry',
+    launchOptions: useExecutable ? { executablePath: useExecutable } : {}
   },
   projects: [
     {

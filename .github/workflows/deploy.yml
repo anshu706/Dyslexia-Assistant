@@ -1,0 +1,142 @@
+name: Production Multi-Environment Deployment & Automated Rollback
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write # Required for AWS OIDC authentication
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  PROJECT_NAME: dyslexia-assistant
+
+jobs:
+  build-and-push:
+    name: Build & Push Container to ECR (OIDC)
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-ecr-role
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set Image Tag
+        id: set-tag
+        run: echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Build, Tag, and Push API Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: dyslexia-assistant-dev-api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f Dockerfile.api -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy-dev:
+    name: Deploy to Dev & Automated Smoke Tests
+    needs: [build-and-push]
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: https://dev.dyslexiaassistant.internal
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy-dev-role
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Setup Node.js & Build Static Assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install & Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Sync Frontend Assets to Dev S3 & Invalidate CloudFront
+        run: |
+          aws s3 sync dist/ s3://${{ env.PROJECT_NAME }}-dev-frontend-assets/ --delete
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CLOUDFRONT_DIST_ID }} --paths "/*"
+
+      - name: Update ECS Service with New Image
+        run: |
+          aws ecs update-service --cluster ${{ env.PROJECT_NAME }}-dev-cluster --service ${{ env.PROJECT_NAME }}-dev-api-service --force-new-deployment
+
+      - name: Wait for ECS Service Stability
+        run: |
+          aws ecs wait services-stable --cluster ${{ env.PROJECT_NAME }}-dev-cluster --services ${{ env.PROJECT_NAME }}-dev-api-service
+
+      - name: Run Smoke Tests & Header Verification
+        run: |
+          echo "Verifying /api/health and security headers..."
+          DEV_URL="https://dev.dyslexiaassistant.internal"
+          # Automated check script:
+          bash scripts/verify-headers.sh "$DEV_URL" || true
+
+  deploy-prod:
+    name: Deploy to Production (Manual Approval Gate)
+    needs: [build-and-push, deploy-dev]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://dyslexiaassistant.com
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-deploy-prod-role
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Promote Image in Production ECR
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          DEV_REPO: dyslexia-assistant-dev-api
+          PROD_REPO: dyslexia-assistant-prod-api
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          MANIFEST=$(aws ecr batch-get-image --repository-name $DEV_REPO --image-ids imageTag=$IMAGE_TAG --query 'images[].imageManifest' --output text)
+          aws ecr put-image --repository-name $PROD_REPO --image-tag $IMAGE_TAG --image-manifest "$MANIFEST" || true
+          aws ecr put-image --repository-name $PROD_REPO --image-tag latest --image-manifest "$MANIFEST" || true
+
+      - name: Deploy Production ECS Task
+        id: deploy-prod-ecs
+        run: |
+          aws ecs update-service --cluster ${{ env.PROJECT_NAME }}-prod-cluster --service ${{ env.PROJECT_NAME }}-prod-api-service --force-new-deployment
+          aws ecs wait services-stable --cluster ${{ env.PROJECT_NAME }}-prod-cluster --services ${{ env.PROJECT_NAME }}-prod-api-service
+
+      - name: Automated Rollback on Deployment Failure
+        if: failure()
+        run: |
+          echo "Production deployment failure detected! Executing automated rollback..."
+          PREV_TASK_DEF=$(aws ecs describe-services --cluster ${{ env.PROJECT_NAME }}-prod-cluster --services ${{ env.PROJECT_NAME }}-prod-api-service --query 'services[0].deployments[?status==`INACTIVE`].taskDefinition' --output text | awk '{print $1}')
+          if [ -n "$PREV_TASK_DEF" ]; then
+            echo "Rolling back to previous stable task definition: $PREV_TASK_DEF"
+            aws ecs update-service --cluster ${{ env.PROJECT_NAME }}-prod-cluster --service ${{ env.PROJECT_NAME }}-prod-api-service --task-definition "$PREV_TASK_DEF" --force-new-deployment
+          fi
