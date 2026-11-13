@@ -187,16 +187,16 @@ test('Layer 05 & Step 04: Ownership check prevents IDOR attacks between users', 
     const userA = await registerUser('usera@example.com', 'PassUserA123!');
     const userB = await registerUser('userb@example.com', 'PassUserB123!');
 
-    const docA = saveUserDocument(userA.id, 'User A Secret Journal', 'Confidential thoughts');
+    const docA = await saveUserDocument(userA.id, 'User A Secret Journal', 'Confidential thoughts');
 
     // User A can access their own document
-    const retrieved = verifyDocumentOwnership(docA.id, userA.id);
+    const retrieved = await verifyDocumentOwnership(docA.id, userA.id);
     assert.equal(retrieved.id, docA.id);
 
     // User B attempting to access User A's document must trigger 403 Forbidden
-    assert.throws(
-        () => {
-            verifyDocumentOwnership(docA.id, userB.id);
+    await assert.rejects(
+        async () => {
+            await verifyDocumentOwnership(docA.id, userB.id);
         },
         (err) => {
             assert.equal(err.statusCode, 403);

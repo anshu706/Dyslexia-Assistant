@@ -15,6 +15,7 @@ import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { createRateLimiter, validateSchema, securityHeaders, safeErrorHandler } from './securityMiddleware.js';
 import * as authService from './authService.js';
+import * as db from './db.js';
 
 const PORT = process.env.PORT || 3001;
 
@@ -145,7 +146,8 @@ export const server = http.createServer(async (req, res) => {
 
         // Readiness probe (Database & service readiness)
         if (req.method === 'GET' && pathname === '/api/ready') {
-            return res.json({ status: 'ready', ready: true, timestamp: new Date().toISOString() });
+            const readiness = await db.checkReadiness();
+            return res.json(readiness, readiness.status === 'ready' ? 200 : 503);
         }
 
         if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
@@ -190,7 +192,7 @@ export const server = http.createServer(async (req, res) => {
         if (req.method === 'POST' && pathname === '/api/auth/logout') {
             const sessionId = extractSessionId(req);
             if (sessionId) {
-                authService.revokeSession(sessionId);
+                await authService.revokeSession(sessionId);
             }
             res.setHeader('Set-Cookie', authService.serializeClearSessionCookie());
             return res.json({ message: 'Logged out successfully.' });
@@ -199,7 +201,7 @@ export const server = http.createServer(async (req, res) => {
         // 4. CURRENT USER: GET /api/auth/me
         if (req.method === 'GET' && pathname === '/api/auth/me') {
             const sessionId = extractSessionId(req);
-            const user = authService.getSessionUserRecord(sessionId);
+            const user = await authService.getSessionUserRecord(sessionId);
             if (!user) {
                 return res.status(401).json({ error: 'Authentication required.' });
             }
@@ -209,7 +211,7 @@ export const server = http.createServer(async (req, res) => {
         // 5. CHANGE PASSWORD: POST /api/auth/change-password
         if (req.method === 'POST' && pathname === '/api/auth/change-password') {
             const sessionId = extractSessionId(req);
-            const userId = authService.getSessionUser(sessionId);
+            const userId = await authService.getSessionUser(sessionId);
             if (!userId) {
                 return res.status(401).json({ error: 'Authentication required.' });
             }
@@ -230,7 +232,7 @@ export const server = http.createServer(async (req, res) => {
         // Authenticated endpoints boundary check
         if (pathname.startsWith('/api/sync/')) {
             const sessionId = extractSessionId(req);
-            const userId = authService.getSessionUser(sessionId);
+            const userId = await authService.getSessionUser(sessionId);
 
             if (!userId) {
                 return res.status(401).json({ error: 'Authentication required.' });
@@ -243,7 +245,7 @@ export const server = http.createServer(async (req, res) => {
 
             // GET /api/sync/documents (List user documents)
             if (req.method === 'GET' && pathname === '/api/sync/documents') {
-                const docs = authService.getUserDocuments(userId);
+                const docs = await authService.getUserDocuments(userId);
                 return res.json({ documents: docs });
             }
 
@@ -254,14 +256,14 @@ export const server = http.createServer(async (req, res) => {
                 });
                 if (res.writableEnded) return;
 
-                const saved = authService.saveUserDocument(userId, req.body.title, req.body.content);
+                const saved = await authService.saveUserDocument(userId, req.body.title, req.body.content);
                 return res.json({ message: 'Document saved securely.', document: saved }, 201);
             }
 
             // GET /api/sync/documents/:id (Fetch document with ownership check)
             if (req.method === 'GET' && pathname.startsWith('/api/sync/documents/')) {
                 const docId = pathname.replace('/api/sync/documents/', '').trim();
-                const doc = authService.verifyDocumentOwnership(docId, userId);
+                const doc = await authService.verifyDocumentOwnership(docId, userId);
                 return res.json({ document: doc });
             }
 
@@ -273,20 +275,20 @@ export const server = http.createServer(async (req, res) => {
                 });
                 if (res.writableEnded) return;
 
-                const updated = authService.updateUserDocument(docId, userId, req.body.title, req.body.content);
+                const updated = await authService.updateUserDocument(docId, userId, req.body.title, req.body.content);
                 return res.json({ message: 'Document updated successfully.', document: updated });
             }
 
             // DELETE /api/sync/documents/:id (Delete document with ownership check)
             if (req.method === 'DELETE' && pathname.startsWith('/api/sync/documents/')) {
                 const docId = pathname.replace('/api/sync/documents/', '').trim();
-                authService.deleteUserDocument(docId, userId);
+                await authService.deleteUserDocument(docId, userId);
                 return res.json({ message: 'Document deleted successfully.' });
             }
 
             // GET /api/sync/flashcards
             if (req.method === 'GET' && pathname === '/api/sync/flashcards') {
-                const cards = authService.getUserFlashcards(userId);
+                const cards = await authService.getUserFlashcards(userId);
                 return res.json({ cards });
             }
 
@@ -297,7 +299,7 @@ export const server = http.createServer(async (req, res) => {
                 });
                 if (res.writableEnded) return;
 
-                const result = authService.saveUserFlashcards(userId, req.body.cards);
+                const result = await authService.saveUserFlashcards(userId, req.body.cards);
                 return res.json({ message: 'Flashcards synchronized successfully.', count: result.cards.length });
             }
         }
