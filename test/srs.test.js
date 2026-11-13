@@ -75,3 +75,4 @@ test('SRS: "Easy" rating jumps 2 levels up to level 6', () => {
     assert.equal(maxJump.level, 6);
     assert.equal(maxJump.intervalMinutes, 10080);
 });
+

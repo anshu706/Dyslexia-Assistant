@@ -292,3 +292,4 @@ test('Layer 05: CSRF verification rejects state-changing requests without custom
     const errData = await postRes.json();
     assert.equal(errData.error, 'CSRF verification failed.');
 });
+

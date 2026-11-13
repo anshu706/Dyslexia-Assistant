@@ -159,3 +159,4 @@ The implementation follows the **Secure Vibe Coding** framework and strict Produ
 - Playwright E2E and axe-core accessibility tests pass with zero critical/serious violations.
 - Security review script (`scripts/security-review.sh`) exits 0 with all checks passing.
 - No unverified medical/scientific claims in code or docs.
+
