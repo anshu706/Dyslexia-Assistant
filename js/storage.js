@@ -58,7 +58,8 @@ if ('serviceWorker' in navigator) {
 
         let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (!refreshing) {
+            if (navigator.webdriver) return; // Prevent disrupting automated test runs
+            if (!refreshing && window.__DA_MANUAL_UPDATE) {
                 refreshing = true;
                 window.location.reload();
             }

@@ -120,6 +120,17 @@ const chapters = [
     colorHex: '#A33A1A',
     colorBg: '#f6edda',
     badgeColor: '#c2410c'
+  },
+  {
+    number: '05',
+    title: 'Focus with ambient sound.',
+    text: 'Mask auditory distractions with synthesized brown noise, pink noise, and gentle rain generated purely in-browser.',
+    detail: 'Sound & Multi-Doc',
+    view: 'writer',
+    colorName: 'Warm Amber',
+    colorHex: '#8C2E11',
+    colorBg: '#f9ecc8',
+    badgeColor: '#A33A1A'
   }
 ];
 

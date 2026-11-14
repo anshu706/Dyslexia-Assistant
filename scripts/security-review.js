@@ -34,10 +34,10 @@ const checks = [
     name: 'End-to-End Functional and Accessibility Test Suite',
     run: () => {
       const output = execSync('npx playwright test', { encoding: 'utf8' });
-      if (!output.includes('12 passed')) {
-        throw new Error('Playwright E2E suite did not report 12 passes');
+      if (!output.includes('14 passed')) {
+        throw new Error('Playwright E2E suite did not report 14 passes');
       }
-      return 'All 12 browser E2E and Axe-Core tests passed';
+      return 'All 14 browser E2E and Axe-Core tests passed';
     }
   },
   {

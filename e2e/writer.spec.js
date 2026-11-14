@@ -46,4 +46,49 @@ test.describe('Writer Workflows', () => {
     await expect(editor).toHaveValue('I saw a friend ');
     await expect(popover).toHaveClass(/hidden/);
   });
+
+  test('Multi-document manager creates new document and switches between them', async ({ page }) => {
+    // 1. Verify initial document badge
+    const badge = page.locator('#doc-count-badge');
+    await expect(badge).toBeVisible();
+
+    // 2. Click "+ New" document
+    await page.locator('#btn-new-doc').click();
+    const titleInput = page.locator('#doc-title-input');
+    await expect(titleInput).toHaveValue('New Document');
+
+    // Type content into the new document
+    const editor = page.locator('#writer-editor');
+    await editor.fill('Content of the second document.');
+
+    // 3. Open Document Library Modal
+    await page.locator('#btn-doc-library').click();
+    const modal = page.locator('#doc-library-modal');
+    await expect(modal).toBeVisible();
+
+    // Verify at least 2 documents exist in library
+    const items = modal.locator('.doc-item');
+    expect(await items.count()).toBeGreaterThanOrEqual(2);
+
+    // Close modal
+    await page.locator('#close-doc-modal').click();
+    await expect(modal).toHaveClass(/hidden/);
+  });
+
+  test('Ambient focus sound generator toggles on and off', async ({ page }) => {
+    const soundBtn = page.locator('#tool-focus-sound');
+    const label = page.locator('#focus-sound-label');
+    await expect(soundBtn).toBeVisible();
+    await expect(label).toHaveText('Sound: Off');
+
+    // Toggle on
+    await soundBtn.click();
+    await expect(soundBtn).toHaveClass(/active/);
+    await expect(label).toHaveText('Brown Noise');
+
+    // Toggle off
+    await soundBtn.click();
+    await expect(soundBtn).not.toHaveClass(/active/);
+    await expect(label).toHaveText('Sound: Off');
+  });
 });
