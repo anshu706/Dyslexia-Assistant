@@ -1,15 +1,70 @@
-.gitignore
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
 dist/
+build/
 .vite/
 brag-output/
+
+# Environment, secrets & credentials
 .env
 .env.*
 !.env.example
-coverage/
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+id_rsa*
+secrets.*
+*.secret
+*.tfvars.json
+*.auto.tfvars
+
+# Infrastructure & Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
 .checkov/
+.terraform.lock.hcl
+
+# Testing & Coverage
+coverage/
 playwright-report/
 test-results/
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs & Temporary files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+temp/
+tmp/
+*.tmp
+temp-*.py
+temp-*.mjs
+temp-*.js
+temp-*.png
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db

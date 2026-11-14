@@ -163,7 +163,7 @@ test('Layer 04: Production error handler suppresses internal server paths and st
     const originalEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
 
-    const leakedError = new Error('Database query failure in C:\\Users\\DELL\\DyslexiaAssistant\\secrets.json');
+    const leakedError = new Error('Database query failure in /app/internal/config/secrets.json');
     let responseData = null;
     let statusCode = 500;
 
@@ -177,7 +177,8 @@ test('Layer 04: Production error handler suppresses internal server paths and st
     assert.equal(statusCode, 500);
     // Asserts no internal paths or stack traces were leaked in production
     assert.equal(responseData.stack, undefined);
-    assert.equal(responseData.error.includes('C:\\Users'), false);
+    assert.equal(responseData.error.includes('secrets.json'), false);
+    assert.equal(responseData.error.includes('/app/internal'), false);
     assert.equal(responseData.error, 'An internal error occurred. Please try again later.');
 
     process.env.NODE_ENV = originalEnv;
