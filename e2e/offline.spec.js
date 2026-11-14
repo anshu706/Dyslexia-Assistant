@@ -6,14 +6,18 @@ test.describe('Offline and PWA Operations', () => {
     await page.goto('/app.html');
     await expect(page.locator('#workspace')).toBeVisible();
 
-    // Give service worker a brief moment to activate and cache
-    await page.waitForTimeout(1000);
+    // Ensure service worker is activated before going offline
+    await page.evaluate(async () => {
+      if ('serviceWorker' in navigator) {
+        await navigator.serviceWorker.ready;
+      }
+    });
 
     // 2. Disconnect network
     await context.setOffline(true);
 
     // 3. Reload in offline mode
-    await page.reload();
+    await page.reload({ waitUntil: 'domcontentloaded' });
 
     // 4. Verify core UI elements and tools remain fully interactive offline
     await expect(page.locator('#workspace')).toBeVisible();

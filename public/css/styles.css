@@ -379,9 +379,9 @@ button {
 
 /* Upload Button */
 .upload-btn {
-  background-color: var(--accent-primary);
+  background-color: #A33A1A;
   color: #fff;
-  border-color: rgba(236,99,61,0.7);
+  border-color: #8C2E11;
 }
 .upload-btn:hover {
   background-color: #D9461A;
@@ -390,9 +390,9 @@ button {
 
 /* Specific button: tool-word-box */
 #tool-word-box.active {
-  background-color: rgba(236,99,61,0.2);
-  color: var(--accent-primary);
-  border-color: rgba(236,99,61,0.5);
+  background-color: #A33A1A;
+  color: #FFFFFF;
+  border-color: #8C2E11;
 }
 
 /* Voice & Speed Selectors */
@@ -445,7 +445,7 @@ button {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #6b6760;
+  color: #B5AFA5;
   margin-right: 2px;
 }
 

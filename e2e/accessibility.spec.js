@@ -31,7 +31,7 @@ test.describe('Accessibility Audits (Axe-Core)', () => {
     });
 
     await page.goto('/app.html');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(500);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
