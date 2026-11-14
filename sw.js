@@ -4,12 +4,20 @@
  * vendored libraries (PDF.js, Mammoth.js), and dyslexic typography.
  */
 
-const CACHE_NAME = 'dyslexia-assistant-v5';
+const CACHE_NAME = 'dyslexia-assistant-v6';
 
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './app.html',
+    './manifest.json',
+    './favicon.ico',
+    './favicon.svg',
+    './favicon-32x32.png',
+    './favicon-16x16.png',
+    './apple-touch-icon.png',
+    './icon-192.png',
+    './icon-512.png',
     './css/styles.css',
     './css/animations.css',
     './css/accessibility.css',

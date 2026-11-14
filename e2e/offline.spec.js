@@ -2,6 +2,17 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Offline and PWA Operations', () => {
   test('App shell and tools operate offline with network disabled', async ({ context, page }) => {
+    // Stub controllerchange so automatic reload doesn't race with Playwright reload
+    await page.addInitScript(() => {
+      if ('serviceWorker' in navigator) {
+        const origAddEventListener = navigator.serviceWorker.addEventListener.bind(navigator.serviceWorker);
+        navigator.serviceWorker.addEventListener = function(type, listener, options) {
+          if (type === 'controllerchange') return;
+          return origAddEventListener(type, listener, options);
+        };
+      }
+    });
+
     // 1. Visit online to register service worker and cache assets
     await page.goto('/app.html');
     await expect(page.locator('#workspace')).toBeVisible();
