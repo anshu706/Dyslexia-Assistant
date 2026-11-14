@@ -314,7 +314,7 @@ function LandingPage() {
               </li>
               <li>
                 <a href="#practice" className="nav-link">
-                  <span>4 Modes</span>
+                  <span>5 Core Modes</span>
                   <span className="nav-underline" />
                 </a>
               </li>
@@ -706,7 +706,7 @@ function LandingPage() {
           <div className="footer-links">
             <a href="#tints">Calming Tints</a>
             <a href="#simulator">Live Simulator</a>
-            <a href="#practice">4 Modes</a>
+            <a href="#practice">5 Core Modes</a>
             <a href={getWorkspaceUrl()}>Workspace</a>
           </div>
         </div>

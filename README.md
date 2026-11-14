@@ -79,14 +79,16 @@ Reading on modern screens can lead to ocular strain, stark glare, character vibr
 * **Intelligent Auto-Scroll**: Locks reading focus dynamically across lengthy documents.
 * **Speed & Voice Control**: Fluid speed adjustments ($0.5\times$ to $2.0\times$) with pitch controls.
 
-### 3. ✍️ Distraction-Free Writer & Dictation Studio
+### 3. ✍️ Distraction-Free Writer & Multi-Document Studio
+* **Multi-Document Manager**: Create, rename, search, and manage multiple writing projects and notes with automatic local persistence.
+* **Document Library Drawer**: Filter documents by title or content with live word counts and modification timestamps.
 * **Speech Dictation**: Dictate ideas hands-free using device speech recognition with graceful fallback messaging.
 * **Heuristic Spelling Assistance**: Sound-alike spelling suggestions designed for common dyslexic confusions (`frend` → `friend`, `teh` → `the`).
 * **Live Readability Statistics**:
   * **Flesch-Kincaid Grade Level** computation.
   * **Flesch Reading Ease** score.
   * Live word count, character count, and estimated reading time.
-* **Export & Auto-Drafting**: Automatically autosaves drafts locally; export anytime to `.txt`.
+* **Export Options**: Export any document directly to `.txt`, formatted Markdown (`.md`), or browser print / PDF with dyslexic-optimized typography.
 
 ### 4. 🧠 Spaced Repetition System (SRS) Flashcards
 * **7-Interval Spaced Repetition Algorithm**:
@@ -109,6 +111,19 @@ Reading on modern screens can lead to ocular strain, stark glare, character vibr
   * **Easy**: Jumps 2 levels forward (cap at Level 6).
 * **Dyslexia Starter Deck**: Pre-loaded with tricky letter pairs (`b` vs `d`, `p` vs `q`, `was` vs `saw`) and confusing homophones.
 * **Keyboard-Driven Study Mode**: `Space` (flip card), `1` (Again), `2` (Hard), `3` (Good), `4` (Easy).
+
+### 5. 🎧 Pure Web Audio Focus Sound Generator
+* **100% In-Browser Synthesis**: Synthesizes auditory soundscapes without external audio files or network bandwidth.
+* **Scientifically Grounded Sound Profiles**:
+  * **Brown Noise**: Deep, warm low-frequency noise that masks acoustic room distractions and reduces reading fatigue.
+  * **Pink Noise**: Balanced $1/f$ spectral density for gentle cognitive focus.
+  * **Gentle Rain**: Bandpass-filtered brownian body with soft atmospheric droplets.
+* **Volume Slider & Memory**: Preserves user volume preference across sessions.
+
+### 6. 💾 Full Data Portability & PWA
+* **One-Click Workspace Backup (.json)**: Export all documents, flashcard decks, study intervals, and accessibility settings in a single portable JSON file.
+* **Safety-Validated Restore**: Import and merge backups with automatic schema validation and sanitization.
+* **Installable Progressive Web App (PWA)**: Complies with web app manifest standards with high-density icons (192px, 512px, maskable) and in-app install triggers for desktop and mobile home screens.
 
 ---
 
