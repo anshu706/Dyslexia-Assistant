@@ -1,0 +1,1 @@
+Standard reading software wasn't designed for dyslexic minds. Watch how Dyslexia Assistant transforms the experience with weighted fonts, tactile paper-cutout tiles, calming Irlen tints, bionic anchors, and spaced repetition—all running 100% offline in a private PWA. Try it live: https://github.com/anshu706/Dyslexia-Assistant
