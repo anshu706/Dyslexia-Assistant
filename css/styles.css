@@ -1250,3 +1250,274 @@ input:checked + .slider-switch:before {
 .pwa-update-icon {
   font-size: 1.2rem;
 }
+
+/* =========================================================================
+   ALL-IN-ONE PRO WORKSPACE: DOCUMENT MANAGER & AUDIO CONTROLS
+   ========================================================================= */
+
+/* Document Title Bar in Writer */
+.doc-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--surface-secondary, #f7f3e8);
+  border-bottom: 1.5px solid var(--border-color, #1c1d21);
+  flex-wrap: wrap;
+}
+
+.doc-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.doc-title-input {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color, #1c1d21);
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  padding: 4px 8px;
+  width: 100%;
+  max-width: 320px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.doc-title-input:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.doc-title-input:focus {
+  outline: none;
+  border-color: #A33A1A;
+  background: #ffffff;
+}
+
+.doc-status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555047;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.doc-status-badge.saved {
+  color: #1a633a;
+  background: rgba(26, 99, 58, 0.12);
+}
+
+.doc-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Document Library Modal */
+.doc-search-bar {
+  margin-bottom: 16px;
+}
+
+.doc-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-color, #1c1d21);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: #ffffff;
+  color: #1c1d21;
+}
+
+.doc-search-input:focus {
+  outline: none;
+  border-color: #A33A1A;
+}
+
+.doc-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #fbf6e8;
+  border: 1.5px solid #ded6c3;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.doc-item:hover {
+  border-color: #A33A1A;
+  background: #f7edd7;
+}
+
+.doc-item.active {
+  border-color: #A33A1A;
+  border-width: 2px;
+  background: #fffdf8;
+}
+
+.doc-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-item-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.doc-item-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1c1d21;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #6b6760;
+}
+
+.doc-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.doc-empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: #6b6760;
+  font-size: 0.95rem;
+}
+
+/* Ambient Focus Sound Controls */
+.sound-controls-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sound-select {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: #1e2025;
+  color: #F6EDDA;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.sound-volume {
+  width: 55px;
+  height: 4px;
+  accent-color: #EC633D;
+  cursor: pointer;
+}
+
+/* PWA Install Promotion Button */
+.pwa-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #A33A1A;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pwa-install-btn:hover {
+  background: #8C2E11;
+}
+
+/* PWA In-App Banner */
+.pwa-promo-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #111317;
+  color: #F6EDDA;
+  border: 1.5px solid #A33A1A;
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin: 12px 16px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.pwa-promo-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+/* Print Optimization (Clean Dyslexic Format) */
+@media print {
+  .app-sidebar,
+  .app-toolbar,
+  .coords-marginalia,
+  .noise-overlay,
+  .workspace-sheet-tab,
+  .writer-stats,
+  .writer-actions,
+  .doc-bar,
+  .toast-container,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  body, .app-body, .app-container, .app-main, .view-panel {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #writer-editor {
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 16pt !important;
+    line-height: 2.2 !important;
+    color: #000000 !important;
+    white-space: pre-wrap !important;
+  }
+}
+

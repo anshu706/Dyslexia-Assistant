@@ -513,7 +513,62 @@
               <option value="1.75">1.75x</option>
             </select>
           </div>
+
+          <!-- Global Focus Sound & PWA Tools -->
+          <div class="toolbar-group global-tools" style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+            <div class="sound-controls-group" title="Ambient Focus Sound (Brown / Pink Noise / Gentle Rain)">
+              <button
+                type="button"
+                class="btn-tool"
+                id="tool-focus-sound"
+                title="Toggle Ambient Focus Noise (Brown / Pink / Rain)"
+                aria-label="Toggle Ambient Focus Noise"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v20M17 5v14M7 8v8M22 9v6M2 11v2"></path>
+                </svg>
+                <span id="focus-sound-label">Sound: Off</span>
+              </button>
+              <label for="focus-sound-select" class="sr-only">Focus Sound Type</label>
+              <select id="focus-sound-select" class="sound-select" aria-label="Select Focus Sound">
+                <option value="off">Off</option>
+                <option value="brown">Brown Noise</option>
+                <option value="pink">Pink Noise</option>
+                <option value="rain">Gentle Rain</option>
+              </select>
+              <label for="focus-sound-volume" class="sr-only">Focus Sound Volume</label>
+              <input type="range" id="focus-sound-volume" class="sound-volume" min="0" max="1" step="0.05" value="0.5" title="Focus Sound Volume" aria-label="Focus Sound Volume" />
+            </div>
+
+            <!-- Standalone PWA Install Button -->
+            <button
+              type="button"
+              id="btn-pwa-install"
+              class="pwa-install-btn"
+              title="Install Dyslexia Assistant as a desktop or mobile application"
+              style="display: none;"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Install App</span>
+            </button>
+          </div>
         </header>
+
+        <!-- PWA In-App Promotion Banner -->
+        <div id="pwa-install-banner" class="pwa-promo-banner" style="display: none;" role="region" aria-label="Install App Promotion">
+          <div class="pwa-promo-content">
+            <span style="font-size: 1.3rem;">⚡</span>
+            <span><strong>Install Dyslexia Assistant</strong> for instant offline desktop/mobile access with zero latency.</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btn-banner-install" class="btn btn-sm btn-accent">Install Now</button>
+            <button type="button" id="btn-dismiss-install" class="icon-btn-sm" aria-label="Dismiss install banner">✕</button>
+          </div>
+        </div>
 
         <!-- VIEW: READER -->
         <section
@@ -604,6 +659,48 @@
           </div>
 
           <div class="writer-container">
+            <!-- Document Title & Multi-Doc Management Bar -->
+            <div class="doc-bar">
+              <div class="doc-title-group">
+                <label for="doc-title-input" class="sr-only">Document Title</label>
+                <input
+                  type="text"
+                  id="doc-title-input"
+                  class="doc-title-input"
+                  placeholder="Document Title..."
+                  value="Untitled Note"
+                  aria-label="Document Title"
+                />
+                <span id="doc-status-badge" class="doc-status-badge">Auto-saved</span>
+              </div>
+              <div class="doc-actions-group">
+                <button
+                  type="button"
+                  id="btn-doc-library"
+                  class="btn btn-sm btn-outline"
+                  title="My Documents Library"
+                >
+                  📁 Docs (<span id="doc-count-badge">1</span>)
+                </button>
+                <button
+                  type="button"
+                  id="btn-new-doc"
+                  class="btn btn-sm btn-accent"
+                  title="Create New Document"
+                >
+                  + New
+                </button>
+                <button
+                  type="button"
+                  id="btn-export-doc"
+                  class="btn btn-sm btn-outline"
+                  title="Export Document (Markdown, TXT, or Print PDF)"
+                >
+                  ⬇ Export
+                </button>
+              </div>
+            </div>
+
             <div class="writer-stats">
               <div class="writer-stat-group">
                 <span><span id="word-count-num">0</span> words</span>
@@ -923,6 +1020,50 @@
       </main>
     </div>
 
+    <!-- DOCUMENT LIBRARY MODAL -->
+    <div
+      id="doc-library-modal"
+      class="modal-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="doc-library-title"
+    >
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="doc-library-title" class="text-lg">My Documents</h3>
+          <button
+            class="icon-btn-sm"
+            id="close-doc-modal"
+            aria-label="Close Document Library"
+            type="button"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="doc-search-bar">
+            <label for="doc-search-input" class="sr-only">Search saved documents</label>
+            <input
+              type="search"
+              id="doc-search-input"
+              class="doc-search-input"
+              placeholder="Search documents by title or text..."
+            />
+          </div>
+
+          <div id="doc-list-items" class="doc-list-items">
+            <!-- Dynamically populated by js/docs.js -->
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+          <button type="button" id="btn-modal-new-doc" class="btn btn-accent">+ New Document</button>
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('doc-library-modal').classList.add('hidden')">Close</button>
+        </div>
+      </div>
+    </div>
+
     <!-- SETTINGS MODAL -->
     <div
       id="settings-modal"
@@ -1121,6 +1262,33 @@
               </label>
             </div>
           </div>
+          <!-- Data Portability & Backup -->
+          <div class="setting-section">
+            <span class="setting-section-title">Data Portability & Backup</span>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Export Full Backup (.json)</div>
+                <div class="setting-desc">
+                  Downloads all your saved documents, flashcards, and settings in a single portable JSON file.
+                </div>
+              </div>
+              <button type="button" id="btn-export-backup" class="btn btn-sm btn-outline">Export JSON</button>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Restore from Backup</div>
+                <div class="setting-desc">
+                  Import a previously exported Dyslexia Assistant backup JSON file.
+                </div>
+              </div>
+              <label class="btn btn-sm btn-accent" style="cursor: pointer;">
+                Import JSON
+                <input type="file" id="backup-file-input" accept=".json" class="sr-only" />
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="modal-footer">
@@ -1203,6 +1371,9 @@
     <!-- Scripts -->
     <script src="js/security.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/docs.js"></script>
+    <script src="js/pwa.js"></script>
     <script src="js/app.js"></script>
     <script src="js/reader.js"></script>
     <script src="js/speech.js"></script>
