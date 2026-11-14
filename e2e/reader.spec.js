@@ -15,6 +15,10 @@ test.describe('Reader Workflows', () => {
     await btnFont.click();
     await expect(readerContent).toHaveCSS('font-family', /Lexend/);
 
+    // Next click cycles to Ransom Note
+    await btnFont.click();
+    await expect(readerContent).toHaveCSS('font-family', /Ransom Note/);
+
     // Next click cycles to System Sans
     await btnFont.click();
     await expect(readerContent).toHaveCSS('font-family', /system-ui/);

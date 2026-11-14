@@ -23,10 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLoadSample = document.getElementById('btn-load-sample');
 
     // State
-    let fontMode = 0; // 0=OpenDyslexic, 1=Lexend, 2=System
+    let fontMode = 0; // 0=OpenDyslexic, 1=Lexend, 2=Ransom Note, 3=System
     const fontCycles = [
         { label: 'OpenDyslexic', css: "'OpenDyslexic', Arial, sans-serif" },
         { label: 'Lexend', css: "'Lexend', sans-serif" },
+        { label: 'Ransom Note', css: "'Ransom Note', 'OpenDyslexic', sans-serif" },
         { label: 'System Sans', css: "system-ui, -apple-system, sans-serif" }
     ];
     let fontSizeBase = 1.25; // rem
@@ -699,6 +700,7 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
                 'OpenDyslexic': "'OpenDyslexic', Arial, sans-serif",
                 'Lexend': "'Lexend', sans-serif",
                 'Comic': "'Comic Sans MS', cursive",
+                'Ransom': "'Ransom Note', 'OpenDyslexic', sans-serif",
                 'System': "system-ui, sans-serif"
             };
             if (fontMode === 0 && settings.fontFamily) {

@@ -51,7 +51,7 @@ Reading on modern screens can lead to ocular strain, stark glare, character vibr
 
 | **Interactive Architectural Showcase** | **Assistive Cognitive Workspace** |
 |:---:|:---:|
-| <img src="./landing_shot.png" alt="Landing Page with Live Simulator" width="100%" style="border-radius: 8px;" /> | <img src="./workspace_shot.png" alt="Workspace Reader with Tint Controls" width="100%" style="border-radius: 8px;" /> |
+| <img src="./docs/images/landing_shot.png" alt="Landing Page with Live Simulator" width="100%" style="border-radius: 8px;" /> | <img src="./docs/images/workspace_shot.png" alt="Workspace Reader with Tint Controls" width="100%" style="border-radius: 8px;" /> |
 | *Real-time typography simulator & spectral swatch picker* | *Document parser, speech tracking, and reading ruler* |
 
 </div>
@@ -63,7 +63,7 @@ Reading on modern screens can lead to ocular strain, stark glare, character vibr
 ### 1. 📖 Cognitive Reader Studio
 * **Multi-Format Document Parsing**: Drag-and-drop or load **PDF** (`pdf.js`), Word **DOCX** (`mammoth.js`), and plain **TXT** files directly in-browser up to 10 MB. All parsers are vendored locally for offline use.
 * **Ergonomic Typography Suite**:
-  * Font cycling: **OpenDyslexic** (weighted bottoms prevent flipping), **Lexend** (empirically designed for reading flow), and **System Sans**.
+  * Font cycling: **OpenDyslexic** (weighted bottoms prevent flipping), **Lexend** (empirically designed for reading flow), **Ransom Note** (tactile collage letter segmentation to defeat crowding), and **System Sans**.
   * Granular controls for font size, letter spacing, line height, and word spacing.
 * **Bionic Reading Fixation**: Guides eye saccades and reduces fixation fatigue.
 * **Syllable Breakdown**: Instant phonetic syllable division with hyphenated bullet markers.

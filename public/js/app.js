@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return {
                 ...DEFAULT_SETTINGS,
-                fontFamily: ['OpenDyslexic', 'Lexend', 'Comic', 'System'].includes(saved.fontFamily) ? saved.fontFamily : DEFAULT_SETTINGS.fontFamily,
+                fontFamily: ['OpenDyslexic', 'Lexend', 'Comic', 'Ransom', 'System'].includes(saved.fontFamily) ? saved.fontFamily : DEFAULT_SETTINGS.fontFamily,
                 fontSize: ['16px', '18px', '20px', '24px', '28px'].includes(saved.fontSize) ? saved.fontSize : DEFAULT_SETTINGS.fontSize,
                 lineHeight: ['1.6', '2.0', '2.4'].includes(saved.lineHeight) ? saved.lineHeight : DEFAULT_SETTINGS.lineHeight,
                 letterSpacing: Boolean(saved.letterSpacing),
@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'OpenDyslexic': "'OpenDyslexic', Arial, sans-serif",
             'Lexend': "'Lexend', sans-serif",
             'Comic': "'Comic Sans MS', 'Comic Sans', cursive",
+            'Ransom': "'Ransom Note', 'OpenDyslexic', sans-serif",
             'System': "system-ui, -apple-system, sans-serif"
         };
         const chosenFont = fontMap[settings.fontFamily] || fontMap['OpenDyslexic'];

@@ -1521,3 +1521,80 @@ input:checked + .slider-switch:before {
   }
 }
 
+/* ==========================================================================
+   Ransom Note Typography & Tactile Paper-Cutout Styling
+   ========================================================================== */
+.font-ransom,
+[data-font="ransom"],
+.reader-ransom {
+  font-family: 'Ransom Note', 'OpenDyslexic', sans-serif !important;
+  letter-spacing: 0.08em;
+}
+
+/* Tactile Paper-Tile Collage (Ransom Note visual mode) */
+.ransom-note-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0 4px;
+  vertical-align: baseline;
+}
+
+.ransom-letter {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: 1px;
+  font-family: 'Ransom Note', 'Lexend', sans-serif;
+  font-weight: 700;
+  font-size: 1.05em;
+  line-height: 1.15;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.25);
+  transform-origin: center center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: text;
+}
+
+.ransom-letter:hover {
+  transform: scale(1.15) rotate(0deg) !important;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+
+/* Authentic Paper Tints matching reference image (Blue, Navy, Cream, Red, Pink, Ruled) */
+.ransom-letter:nth-child(6n + 1) {
+  background-color: #2b5c92;
+  color: #ffffff;
+  transform: rotate(-2deg);
+}
+.ransom-letter:nth-child(6n + 2) {
+  background-color: #1a2a40;
+  color: #ffffff;
+  transform: rotate(2deg);
+}
+.ransom-letter:nth-child(6n + 3) {
+  background-color: #f7eed7;
+  color: #1a1a1a;
+  transform: rotate(-1.5deg);
+}
+.ransom-letter:nth-child(6n + 4) {
+  background-color: #b92b27;
+  color: #ffffff;
+  transform: rotate(2.5deg);
+}
+.ransom-letter:nth-child(6n + 5) {
+  background-color: #f2a4b8;
+  color: #1a1a1a;
+  transform: rotate(-2.5deg);
+}
+.ransom-letter:nth-child(6n + 6) {
+  background-color: #e8ede4;
+  color: #1a1a1a;
+  background-image: linear-gradient(#b0c4de 1px, transparent 1px), linear-gradient(90deg, #b0c4de 1px, transparent 1px);
+  background-size: 6px 6px;
+  transform: rotate(1.5deg);
+}
+
+

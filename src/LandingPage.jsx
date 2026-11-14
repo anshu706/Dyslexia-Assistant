@@ -508,11 +508,16 @@ function LandingPage() {
                     <div className="sim-control-buttons">
                       <button
                         type="button"
-                        className={`sim-btn ${demoFont === 'OpenDyslexic' ? 'active' : ''}`}
-                        onClick={() => setDemoFont(demoFont === 'OpenDyslexic' ? 'Lexend' : 'OpenDyslexic')}
+                        className={`sim-btn ${demoFont !== 'Lexend' ? 'active' : ''}`}
+                        onClick={() => {
+                          if (demoFont === 'Lexend') setDemoFont('OpenDyslexic');
+                          else if (demoFont === 'OpenDyslexic') setDemoFont('Ransom Note');
+                          else setDemoFont('Lexend');
+                        }}
+                        title="Cycle Font (Lexend / OpenDyslexic / Ransom Note)"
                       >
                         <span className="sim-btn-icon">Aa</span>
-                        <span>{demoFont === 'OpenDyslexic' ? 'OpenDyslexic ✓' : 'Lexend Font'}</span>
+                        <span>{demoFont === 'Ransom Note' ? 'Ransom Note ✓' : (demoFont === 'OpenDyslexic' ? 'OpenDyslexic ✓' : 'Lexend Font')}</span>
                       </button>
 
                       <button
@@ -562,7 +567,7 @@ function LandingPage() {
                     className="sim-reading-surface"
                     style={{
                       backgroundColor: activeTint.swatch,
-                      fontFamily: demoFont === 'OpenDyslexic' ? "'OpenDyslexic', sans-serif" : "'Lexend', sans-serif",
+                      fontFamily: demoFont === 'OpenDyslexic' ? "'OpenDyslexic', sans-serif" : (demoFont === 'Ransom Note' ? "'Ransom Note', 'OpenDyslexic', sans-serif" : "'Lexend', sans-serif"),
                       letterSpacing: demoSpaced ? '0.08em' : 'normal',
                       wordSpacing: demoSpaced ? '0.2em' : 'normal',
                       lineHeight: demoSpaced ? '2.3' : '1.7'

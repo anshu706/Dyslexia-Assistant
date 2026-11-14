@@ -53,3 +53,12 @@
     font-display: swap;
     src: url('../fonts/lexend-3.woff2') format('woff2');
 }
+
+@font-face {
+    font-family: 'Ransom Note';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/rans____.ttf') format('truetype');
+}
+
