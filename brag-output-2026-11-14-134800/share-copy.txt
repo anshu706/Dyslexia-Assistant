@@ -1,0 +1,1 @@
+1 in 5 people experiences reading fatigue and letter crowding from standard typography. We built Dyslexia Assistant: an offline-first cognitive workspace with weighted dyslexic typefaces, tactile paper-cutout tiles, bionic fixation anchors, and 100% private local storage. Free & open source: https://github.com/anshu706/Dyslexia-Assistant
