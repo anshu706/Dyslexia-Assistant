@@ -29,3 +29,4 @@ To execute the automated security verification suite locally or in CI:
 node scripts/security-review.js
 ```
 Expected output: 100% check pass rate with exit code 0.
+

@@ -94,3 +94,4 @@ If database corruption occurs or data must be recovered:
      TRUNCATE TABLE sessions;
      ```
    - All users are logged out immediately and forced to re-authenticate with their credentials.
+

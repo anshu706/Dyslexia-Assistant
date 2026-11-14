@@ -50,3 +50,4 @@ We chose **PostgreSQL** using the standard `pg` connection pool (`server/db.js`)
 - **Persistence:** User accounts, documents, and flashcard decks are safely preserved across container deployments and restarts.
 - **Developer Experience:** Developers and automated CI runners can run `npm test` without needing a live database connection string.
 - **Portability:** Follows standard SQL, avoiding proprietary vendor lock-in.
+

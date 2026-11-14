@@ -34,3 +34,4 @@ else
   echo "=== Security Header Verification FAILED ==="
   exit 1
 fi
+

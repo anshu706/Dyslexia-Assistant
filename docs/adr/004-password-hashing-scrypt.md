@@ -46,3 +46,4 @@ We chose **`crypto.scrypt`** built into the standard Node.js runtime, augmented 
 - **Security:** Fully compliant with OWASP and NIST recommendations for password storage.
 - **Portability:** Zero external binary compilation dependencies (`node-gyp`), ensuring reliable builds across Windows local workstations, Alpine Docker images, and GitHub Actions runners.
 - **Verification:** Proven with unit tests asserting non-plaintext storage, verification matching, and unique per-user salts across identical passwords.
+

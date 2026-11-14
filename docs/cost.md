@@ -52,3 +52,4 @@ Terraform codifies automated AWS Budget tracking:
 - **Dev Soft Threshold:** Alerts at **$25.00** actual spend via Amazon SNS.
 - **Prod Threshold:** Alerts at **$100.00** forecasted spend via Amazon SNS.
 - **Anomaly Detection:** CloudWatch anomaly alert configured on ALB request counts to guard against DDoS-driven egress spikes.
+

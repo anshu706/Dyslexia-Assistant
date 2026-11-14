@@ -50,3 +50,4 @@ Dyslexia Assistant follows a **local-first** paradigm. Because client-side readi
 4. **AWS Budget Alarm:**
    - Soft Alert: $\ge \$25/\text{month}$ (Dev warning).
    - Hard Alert: $\ge \$100/\text{month}$ (Prod escalation).
+

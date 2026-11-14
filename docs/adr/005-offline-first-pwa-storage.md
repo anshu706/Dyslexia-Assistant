@@ -43,3 +43,4 @@ The core product principle of Dyslexia Assistant is **100% functional offline ca
 - **Reliability:** The application works flawlessly in airplane mode, rural classrooms, and offline environments.
 - **Privacy & Compliance:** Complete eradication of third-party telemetry, font tracking scripts, and external CDNs, maintaining full user data sovereignty.
 - **Verification:** Proven by automated Playwright E2E tests executing with simulated zero-network connectivity (`context.setOffline(true)`).
+
