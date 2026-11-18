@@ -110,12 +110,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Hadolint Dockerfile Linter
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.5.0
         with:
           dockerfile: Dockerfile.api
 
       - name: Hadolint Web Dockerfile Linter
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.5.0
         with:
           dockerfile: Dockerfile.web
 
