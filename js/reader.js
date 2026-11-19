@@ -626,7 +626,8 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
             </div>
             ${syllableHtml}
             <div style="font-size: 0.85rem; color: var(--text-muted);">Letters: ${cleanWord.length}</div>
-            <div style="display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap;">
+            <div id="lookup-dict-details" style="min-height: 4px;"></div>
+            <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
                 <button class="srs-btn" id="lookup-tts-btn" style="font-size: 0.8rem; padding: 5px 10px;">🔊 Pronounce</button>
                 <button class="srs-btn" id="lookup-fc-btn" style="font-size: 0.8rem; padding: 5px 10px;">+ Add to Flashcards</button>
             </div>
@@ -634,7 +635,7 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
 
         // Position safely within viewport
         const cardW = 320;
-        const cardH = 160;
+        const cardH = 175;
         const px = Math.min(x + 10, window.innerWidth - cardW - 10);
         const py = Math.min(y + 10, window.innerHeight - cardH - 10);
         wordLookupCard.style.left = `${px}px`;
@@ -643,7 +644,34 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
 
         document.getElementById('lookup-close')?.addEventListener('click', () => wordLookupCard.classList.add('hidden'));
 
+        let dictDefinition = '';
+        let dictAudio = '';
+
+        if (window.DA_Dictionary) {
+            window.DA_Dictionary.lookup(cleanWord).then(dict => {
+                if (!dict || !dict.found) return;
+                const defEl = document.getElementById('lookup-dict-details');
+                if (!defEl) return;
+                let html = '';
+                if (dict.phonetic) {
+                    html += `<div style="font-size: 0.82rem; color: var(--accent); margin-top: 2px;">${dict.phonetic}</div>`;
+                }
+                if (dict.meanings && dict.meanings.length > 0) {
+                    const m = dict.meanings[0];
+                    dictDefinition = `${m.partOfSpeech ? `(${m.partOfSpeech}) ` : ''}${m.definition}`;
+                    html += `<div style="font-size: 0.8rem; margin-top: 4px; line-height: 1.35; color: var(--text-main);"><em>${m.partOfSpeech}</em>: ${m.definition}</div>`;
+                }
+                defEl.innerHTML = html;
+                if (dict.audio) {
+                    dictAudio = dict.audio;
+                }
+            }).catch(() => {});
+        }
+
         document.getElementById('lookup-tts-btn')?.addEventListener('click', () => {
+            if (dictAudio && window.DA_Dictionary?.playAudio(dictAudio)) {
+                return;
+            }
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utt = new SpeechSynthesisUtterance(cleanWord);
@@ -654,9 +682,43 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
 
         document.getElementById('lookup-fc-btn')?.addEventListener('click', () => {
             // Add to flashcards via custom event
-            document.dispatchEvent(new CustomEvent('da:addFlashcard', { detail: { front: cleanWord, back: syllables ? syllables.join('·') : cleanWord } }));
+            const backText = dictDefinition || (syllables ? syllables.join('·') : cleanWord);
+            document.dispatchEvent(new CustomEvent('da:addFlashcard', { detail: { front: cleanWord, back: backText } }));
             window.showToast && window.showToast(`"${cleanWord}" added to Flashcards!`, '✓');
             wordLookupCard.classList.add('hidden');
+        });
+    }
+
+    // =========================================================================
+    // TEXT SIMPLIFICATION CONTROLLER
+    // =========================================================================
+    const btnSimplify = document.getElementById('tool-simplify');
+    let isSimplifiedActive = false;
+    let preSimplifyText = '';
+
+    if (btnSimplify) {
+        btnSimplify.addEventListener('click', () => {
+            const saved = JSON.parse(localStorage.getItem('da_last_document') || 'null');
+            if (!saved || !saved.text) {
+                window.showToast && window.showToast('Please load a document into the reader first', 'ℹ️');
+                return;
+            }
+
+            if (!isSimplifiedActive) {
+                preSimplifyText = saved.text;
+                if (window.DA_Simplifier) {
+                    const result = window.DA_Simplifier.simplify(saved.text);
+                    isSimplifiedActive = true;
+                    btnSimplify.classList.add('active');
+                    renderText(result.text, (saved.title || 'Document') + ' (Simplified)');
+                    window.showToast && window.showToast(`Simplified: ${result.replacementCount} words, ${result.splitCount} sentences chunked`, '✨');
+                }
+            } else {
+                isSimplifiedActive = false;
+                btnSimplify.classList.remove('active');
+                renderText(preSimplifyText, saved.title || 'Document');
+                window.showToast && window.showToast('Restored original document', '↩️');
+            }
         });
     }
 

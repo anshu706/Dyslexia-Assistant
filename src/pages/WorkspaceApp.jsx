@@ -31,6 +31,8 @@ const WORKSPACE_SCRIPTS = [
   '/js/security.js',
   '/js/storage.js',
   '/js/api.js',
+  '/js/dictionary.js',
+  '/js/simplifier.js',
   '/js/audio.js',
   '/js/docs.js',
   '/js/pwa.js',

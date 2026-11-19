@@ -32,7 +32,7 @@
     <!-- Content Security Policy (Secure Vibe Coding Step 5: Prod Config) -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' blob: https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; base-uri 'self'; form-action 'self';"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' blob: https://*.supabase.co wss://*.supabase.co https://api.dictionaryapi.dev; media-src 'self' blob: https://api.dictionaryapi.dev https://ssl.gstatic.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';"
     />
 
     <!-- Vendored Parsers (100% offline-ready, zero external runtime requests) -->
@@ -387,6 +387,16 @@
               title="Toggle Syllable Dots"
             >
               Syl·la·ble
+            </button>
+
+            <!-- Simplify Text Toggle -->
+            <button
+              class="btn-tool"
+              id="tool-simplify"
+              title="Simplify Text (Plain-language & chunking for focus)"
+              aria-label="Toggle Simplified Reading"
+            >
+              <span>✨ Simplify</span>
             </button>
 
             <!-- Word Tracking Box Toggle (Bounding Box on Read Word) -->
@@ -1485,6 +1495,8 @@
     <script src="js/security.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/simplifier.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/docs.js"></script>
     <script src="js/pwa.js"></script>
