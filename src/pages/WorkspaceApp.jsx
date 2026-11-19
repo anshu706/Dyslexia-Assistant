@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useRef } from 'react';
+import '../lib/supabase.js';
 
 // ─── CSS files the workspace needs ───────────────────────────────────────────
 const WORKSPACE_CSS = [
@@ -613,6 +614,14 @@ const WORKSPACE_HTML = `
           <button type="button" id="btn-login-submit" class="btn btn-primary" style="flex:1;padding:10px 16px;">Sign In</button>
           <button type="button" id="btn-register-submit" class="btn" style="flex:1;padding:10px 16px;">Create Account</button>
         </div>
+        <details style="margin-top:16px;font-size:0.8rem;color:var(--text-muted);cursor:pointer;border-top:1px solid rgba(0,0,0,0.06);padding-top:10px;">
+          <summary style="outline:none;user-select:none;">⚡ Supabase Cloud Settings (Free Tier)</summary>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+            <input type="text" id="supabase-url-input" class="doc-search-input" placeholder="https://xyz.supabase.co" style="font-size:0.8rem;" aria-label="Supabase URL" />
+            <input type="password" id="supabase-key-input" class="doc-search-input" placeholder="Anon public key" style="font-size:0.8rem;" aria-label="Supabase Anon Key" />
+            <button type="button" id="btn-save-supabase" class="btn btn-sm" style="align-self:flex-start;padding:6px 14px;font-size:0.8rem;">Save &amp; Connect</button>
+          </div>
+        </details>
       </div>
       <div class="modal-body" id="auth-logged-in-view" style="display:none;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">

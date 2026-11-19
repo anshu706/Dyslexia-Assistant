@@ -493,6 +493,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Supabase Cloud Key configuration from UI
+    const sbUrlInput = document.getElementById('supabase-url-input');
+    const sbKeyInput = document.getElementById('supabase-key-input');
+    const sbSaveBtn = document.getElementById('btn-save-supabase');
+
+    if (sbUrlInput && sbKeyInput) {
+        sbUrlInput.value = localStorage.getItem('da_supabase_url') || '';
+        sbKeyInput.value = localStorage.getItem('da_supabase_anon_key') || '';
+    }
+
+    if (sbSaveBtn && sbUrlInput && sbKeyInput) {
+        sbSaveBtn.addEventListener('click', () => {
+            const url = sbUrlInput.value.trim();
+            const key = sbKeyInput.value.trim();
+            if (url && key) {
+                localStorage.setItem('da_supabase_url', url);
+                localStorage.setItem('da_supabase_anon_key', key);
+                window.showToast('Cloud keys saved! Connecting...', '⚡');
+                setTimeout(() => window.location.reload(), 600);
+            } else {
+                localStorage.removeItem('da_supabase_url');
+                localStorage.removeItem('da_supabase_anon_key');
+                window.showToast('Reset to local offline engine.', 'ℹ️');
+            }
+        });
+    }
+
     if (loginBtn) {
         loginBtn.addEventListener('click', async () => {
             if (authError) authError.style.display = 'none';
@@ -513,6 +540,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await window.DA_API.login(email, password);
                 updateAuthUI(res.user);
                 closeAuthModal();
+                if (window.DA_API?.migrateGuestData) {
+                    const { migratedDocs, migratedCards } = await window.DA_API.migrateGuestData(res.user);
+                    if (migratedDocs > 0 || migratedCards > 0) {
+                        window.showToast(`Migrated ${migratedDocs + migratedCards} guest items to cloud!`, '✨');
+                    }
+                }
                 window.showToast('Signed in successfully!', '☁️');
                 triggerCloudSync();
             } catch (err) {
@@ -556,6 +589,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loginRes = await window.DA_API.login(email, password);
                 updateAuthUI(loginRes.user);
                 closeAuthModal();
+                if (window.DA_API?.migrateGuestData) {
+                    const { migratedDocs, migratedCards } = await window.DA_API.migrateGuestData(loginRes.user);
+                    if (migratedDocs > 0 || migratedCards > 0) {
+                        window.showToast(`Migrated ${migratedDocs + migratedCards} guest items to cloud!`, '✨');
+                    }
+                }
                 window.showToast('Account created & signed in!', '🎉');
                 triggerCloudSync();
             } catch (err) {
