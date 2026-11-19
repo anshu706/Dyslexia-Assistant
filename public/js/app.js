@@ -438,6 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loggedInEmailText = document.getElementById('logged-in-email');
     const syncDot = document.getElementById('sync-status-dot');
     const accountLabel = document.getElementById('account-btn-label');
+    const sidebarAuthBtn = document.getElementById('btn-sidebar-account');
+    const sidebarAccountLabel = document.getElementById('sidebar-account-label');
+    const sidebarSyncDot = document.getElementById('sidebar-sync-dot');
 
     let currentUser = null;
 
@@ -455,20 +458,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateAuthUI(user) {
         currentUser = user;
         if (user) {
+            const name = user.email.split('@')[0];
             if (syncDot) syncDot.style.background = '#10b981';
-            if (accountLabel) accountLabel.textContent = user.email.split('@')[0];
+            if (sidebarSyncDot) sidebarSyncDot.style.background = '#10b981';
+            if (accountLabel) accountLabel.textContent = name;
+            if (sidebarAccountLabel) sidebarAccountLabel.textContent = name;
             if (loggedOutView) loggedOutView.style.display = 'none';
             if (loggedInView) loggedInView.style.display = 'block';
             if (loggedInEmailText) loggedInEmailText.textContent = user.email;
         } else {
             if (syncDot) syncDot.style.background = '#f59e0b';
+            if (sidebarSyncDot) sidebarSyncDot.style.background = '#f59e0b';
             if (accountLabel) accountLabel.textContent = 'Offline';
+            if (sidebarAccountLabel) sidebarAccountLabel.textContent = 'Account';
             if (loggedOutView) loggedOutView.style.display = 'block';
             if (loggedInView) loggedInView.style.display = 'none';
         }
     }
 
     if (authBtn) authBtn.addEventListener('click', openAuthModal);
+    if (sidebarAuthBtn) sidebarAuthBtn.addEventListener('click', openAuthModal);
     if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
     if (authModal) {
         authModal.addEventListener('click', e => {

@@ -305,6 +305,12 @@ button {
   top: 0;
   z-index: 25;
   box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.global-tools {
+  flex-shrink: 0;
 }
 
 .toolbar-group {

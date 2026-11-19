@@ -133,6 +133,27 @@
         <div class="sidebar-footer">
           <button
             class="nav-btn"
+            id="btn-sidebar-account"
+            aria-label="Account and Cloud Sync"
+            title="Account & Cloud Sync"
+            style="position: relative;"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span id="sidebar-account-label">Account</span>
+            <span id="sidebar-sync-dot" style="position: absolute; right: 14px; top: 16px; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;" aria-hidden="true"></span>
+          </button>
+          <button
+            class="nav-btn"
             id="toggle-settings"
             aria-label="Open Settings"
             title="Assistant Settings"
