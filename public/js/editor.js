@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!editor) return;
 
     // =========================================================================
-    // EXTENDED PHONETIC DICTIONARY
+    // EXTENDED PHONETIC & DYSLEXIC CONFUSABLE DICTIONARY (120+ entries)
     // =========================================================================
     const dictionary = {
         'teh': 'the', 'adn': 'and', 'nad': 'and', 'waht': 'what', 'taht': 'that',
@@ -38,7 +38,27 @@ document.addEventListener('DOMContentLoaded', () => {
         'diferent': 'different', 'differnt': 'different', 'difrent': 'different',
         'intresting': 'interesting', 'intersting': 'interesting',
         'becasue': 'because', 'problm': 'problem', 'problim': 'problem',
-        'wich': 'which', 'whcih': 'which', 'thng': 'thing', 'tihng': 'thing'
+        'wich': 'which', 'whcih': 'which', 'thng': 'thing', 'tihng': 'thing',
+        // Common dyslexic reversals & phonetics
+        'enuff': 'enough', 'thot': 'thought', 'langauge': 'language', 'langwidge': 'language',
+        'dout': 'doubt', 'dissapear': 'disappear', 'accomodate': 'accommodate',
+        'suprise': 'surprise', 'enviroment': 'environment', 'govrnment': 'government',
+        'calender': 'calendar', 'embarass': 'embarrass', 'foriegn': 'foreign',
+        'guarentee': 'guarantee', 'immediatly': 'immediately', 'libary': 'library',
+        'noticable': 'noticeable', 'perseverence': 'perseverance', 'rythm': 'rhythm',
+        'sentance': 'sentence', 'truely': 'truly', 'unfortunatly': 'unfortunately',
+        'wensday': 'wednesday', 'beutiful': 'beautiful', 'coud': 'could',
+        'woud': 'would', 'shoud': 'should', 'answer': 'answer', 'anwser': 'answer',
+        'agresive': 'aggressive', 'arguement': 'argument', 'collegue': 'colleague',
+        'concious': 'conscious', 'dispair': 'despair', 'existance': 'existence',
+        'fourty': 'forty', 'grammer': 'grammar', 'hight': 'height', 'heigt': 'height',
+        'independant': 'independent', 'knowlege': 'knowledge', 'mischevious': 'mischievous',
+        'millenium': 'millennium', 'neighbor': 'neighbour', 'nieghbor': 'neighbor',
+        'persue': 'pursue', 'posession': 'possession', 'possesion': 'possession',
+        'prefered': 'preferred', 'pronounciation': 'pronunciation', 'religous': 'religious',
+        'succesful': 'successful', 'sucessful': 'successful', 'tendancy': 'tendency',
+        'untill': 'until', 'vaccum': 'vacuum', 'vacume': 'vacuum', 'weild': 'wield',
+        'yatch': 'yacht', 'twelth': 'twelfth', 'twelvth': 'twelfth'
     };
 
     // =========================================================================
