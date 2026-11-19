@@ -450,8 +450,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // INITIAL RENDER
+    // INITIAL RENDER & GLOBAL HOOKS
     // =========================================================================
     renderCards();
     updateCounts();
+
+    window.DA_reloadFlashcards = function(newCards) {
+        if (Array.isArray(newCards)) {
+            flashcards = newCards;
+            saveCards();
+        }
+        renderCards();
+        updateCounts();
+    };
+
+    window.DA_getFlashcards = function() {
+        return flashcards;
+    };
 });

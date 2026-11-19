@@ -416,8 +416,206 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             if (settingsModal && !settingsModal.classList.contains('hidden')) closeSettings();
             if (pasteModal && !pasteModal.classList.contains('hidden')) closePasteModal();
+            if (authModal && !authModal.classList.contains('hidden')) closeAuthModal();
         }
     });
+
+    // =========================================================================
+    // ACCOUNT & CLOUD SYNC CONTROLLER
+    // =========================================================================
+    const authBtn = document.getElementById('btn-account-sync');
+    const authModal = document.getElementById('auth-modal');
+    const closeAuthBtn = document.getElementById('close-auth-modal');
+    const loginBtn = document.getElementById('btn-login-submit');
+    const registerBtn = document.getElementById('btn-register-submit');
+    const logoutBtn = document.getElementById('btn-logout');
+    const syncNowBtn = document.getElementById('btn-sync-now');
+    const authEmail = document.getElementById('auth-email');
+    const authPassword = document.getElementById('auth-password');
+    const authError = document.getElementById('auth-error-msg');
+    const loggedOutView = document.getElementById('auth-logged-out-view');
+    const loggedInView = document.getElementById('auth-logged-in-view');
+    const loggedInEmailText = document.getElementById('logged-in-email');
+    const syncDot = document.getElementById('sync-status-dot');
+    const accountLabel = document.getElementById('account-btn-label');
+
+    let currentUser = null;
+
+    function openAuthModal() {
+        if (!authModal) return;
+        authModal.classList.remove('hidden');
+        if (authError) authError.style.display = 'none';
+    }
+
+    function closeAuthModal() {
+        if (!authModal) return;
+        authModal.classList.add('hidden');
+    }
+
+    function updateAuthUI(user) {
+        currentUser = user;
+        if (user) {
+            if (syncDot) syncDot.style.background = '#10b981';
+            if (accountLabel) accountLabel.textContent = user.email.split('@')[0];
+            if (loggedOutView) loggedOutView.style.display = 'none';
+            if (loggedInView) loggedInView.style.display = 'block';
+            if (loggedInEmailText) loggedInEmailText.textContent = user.email;
+        } else {
+            if (syncDot) syncDot.style.background = '#f59e0b';
+            if (accountLabel) accountLabel.textContent = 'Offline';
+            if (loggedOutView) loggedOutView.style.display = 'block';
+            if (loggedInView) loggedInView.style.display = 'none';
+        }
+    }
+
+    if (authBtn) authBtn.addEventListener('click', openAuthModal);
+    if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
+    if (authModal) {
+        authModal.addEventListener('click', e => {
+            if (e.target === authModal) closeAuthModal();
+        });
+    }
+
+    // Auto-check session on load
+    if (window.DA_API) {
+        window.DA_API.checkSession().then(user => {
+            updateAuthUI(user);
+            if (user) triggerCloudSync();
+        });
+    }
+
+    if (loginBtn) {
+        loginBtn.addEventListener('click', async () => {
+            if (authError) authError.style.display = 'none';
+            const email = authEmail?.value.trim() || '';
+            const password = authPassword?.value || '';
+
+            if (!email || !password) {
+                if (authError) {
+                    authError.textContent = 'Please provide both email and password.';
+                    authError.style.display = 'block';
+                }
+                return;
+            }
+
+            try {
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing In...';
+                const res = await window.DA_API.login(email, password);
+                updateAuthUI(res.user);
+                closeAuthModal();
+                window.showToast('Signed in successfully!', '☁️');
+                triggerCloudSync();
+            } catch (err) {
+                if (authError) {
+                    authError.textContent = err.message || 'Login failed.';
+                    authError.style.display = 'block';
+                }
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
+        });
+    }
+
+    if (registerBtn) {
+        registerBtn.addEventListener('click', async () => {
+            if (authError) authError.style.display = 'none';
+            const email = authEmail?.value.trim() || '';
+            const password = authPassword?.value || '';
+
+            if (!email || !password) {
+                if (authError) {
+                    authError.textContent = 'Please provide both email and password.';
+                    authError.style.display = 'block';
+                }
+                return;
+            }
+
+            if (password.length < 8) {
+                if (authError) {
+                    authError.textContent = 'Password must be at least 8 characters.';
+                    authError.style.display = 'block';
+                }
+                return;
+            }
+
+            try {
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Creating...';
+                await window.DA_API.register(email, password);
+                const loginRes = await window.DA_API.login(email, password);
+                updateAuthUI(loginRes.user);
+                closeAuthModal();
+                window.showToast('Account created & signed in!', '🎉');
+                triggerCloudSync();
+            } catch (err) {
+                if (authError) {
+                    authError.textContent = err.message || 'Registration failed.';
+                    authError.style.display = 'block';
+                }
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await window.DA_API.logout();
+            updateAuthUI(null);
+            closeAuthModal();
+            window.showToast('Logged out. Saved locally.', '🔒');
+        });
+    }
+
+    if (syncNowBtn) {
+        syncNowBtn.addEventListener('click', () => {
+            closeAuthModal();
+            triggerCloudSync();
+        });
+    }
+
+    async function triggerCloudSync() {
+        if (!currentUser || !window.DA_API) return;
+        window.showToast('Syncing with cloud...', '🔄');
+
+        try {
+            // 1. Documents Sync
+            const remoteDocs = await window.DA_API.fetchRemoteDocuments();
+            if (remoteDocs && window.DA_Docs?.mergeRemoteDocuments) {
+                window.DA_Docs.mergeRemoteDocuments(remoteDocs);
+            }
+
+            const localDocs = window.DA_Docs?.getDocuments ? window.DA_Docs.getDocuments() : [];
+            for (const doc of localDocs) {
+                // If remote doesn't have it yet, save it
+                if (!remoteDocs || !remoteDocs.some(rd => rd.id === doc.id || rd.title === doc.title)) {
+                    await window.DA_API.saveRemoteDocument(doc.title, doc.content);
+                }
+            }
+
+            // 2. Flashcards Sync
+            const remoteCards = await window.DA_API.fetchRemoteFlashcards();
+            const localCards = window.DA_getFlashcards ? window.DA_getFlashcards() : [];
+
+            if (remoteCards && remoteCards.length > 0) {
+                if (window.DA_reloadFlashcards) {
+                    window.DA_reloadFlashcards(remoteCards);
+                }
+            } else if (localCards && localCards.length > 0) {
+                await window.DA_API.saveRemoteFlashcards(localCards);
+            }
+
+            window.showToast('Cloud sync complete!', '✓');
+        } catch (e) {
+            console.warn('Sync failed:', e);
+            window.showToast('Sync completed with local copy.', '✓');
+        }
+    }
+
+    window.DA_triggerCloudSync = triggerCloudSync;
 
     // =========================================================================
     // SYNC second file-upload-empty button

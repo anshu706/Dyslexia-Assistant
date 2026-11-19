@@ -522,6 +522,35 @@
             // Sync initial document to editor
             syncToEditor();
             updateUI();
+        },
+        getDocuments() {
+            return documents;
+        },
+        mergeRemoteDocuments(remoteDocs) {
+            if (!Array.isArray(remoteDocs)) return;
+            remoteDocs.forEach(rd => {
+                const existing = documents.find(d => d.id === rd.id || d.title === rd.title);
+                const remoteTime = new Date(rd.updated_at || rd.updatedAt || Date.now()).getTime();
+                if (existing) {
+                    if (remoteTime > (existing.updatedAt || 0)) {
+                        existing.title = rd.title;
+                        existing.content = rd.content;
+                        existing.updatedAt = remoteTime;
+                    }
+                } else {
+                    documents.push({
+                        id: rd.id || generateId(),
+                        title: rd.title || 'Untitled Document',
+                        content: rd.content || '',
+                        createdAt: new Date(rd.created_at || Date.now()).getTime(),
+                        updatedAt: remoteTime,
+                        wordCount: calculateWordCount(rd.content || '')
+                    });
+                }
+            });
+            saveDocuments();
+            updateUI();
+            syncToEditor();
         }
     };
 

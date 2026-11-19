@@ -539,6 +539,18 @@
               <input type="range" id="focus-sound-volume" class="sound-volume" min="0" max="1" step="0.05" value="0.5" title="Focus Sound Volume" aria-label="Focus Sound Volume" />
             </div>
 
+            <!-- Account & Cloud Sync Trigger Button -->
+            <button
+              type="button"
+              id="btn-account-sync"
+              class="btn-tool"
+              title="Account & Cloud Sync"
+              style="display: flex; align-items: center; gap: 7px; padding: 5px 12px; font-weight: 600;"
+            >
+              <span id="sync-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+              <span id="account-btn-label" style="font-size: 0.85rem;">Offline</span>
+            </button>
+
             <!-- Standalone PWA Install Button -->
             <button
               type="button"
@@ -1365,12 +1377,85 @@
       </div>
     </div>
 
+    <!-- AUTH & SYNC MODAL -->
+    <div
+      id="auth-modal"
+      class="modal-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
+      <div class="modal-card" style="max-width: 440px;">
+        <div class="modal-header">
+          <h3 id="auth-modal-title" class="text-lg">Account & Cloud Sync</h3>
+          <button
+            class="icon-btn-sm"
+            id="close-auth-modal"
+            aria-label="Close modal"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body" id="auth-logged-out-view">
+          <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 16px;">
+            Sign in to securely synchronize your reading documents, notes, and flashcards across all your devices.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <label for="auth-email" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Email Address</label>
+              <input
+                type="email"
+                id="auth-email"
+                class="doc-search-input"
+                placeholder="name@example.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div>
+              <label for="auth-password" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Password (min. 8 characters)</label>
+              <input
+                type="password"
+                id="auth-password"
+                class="doc-search-input"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div id="auth-error-msg" style="color: #c2410c; font-size: 0.85rem; display: none; background: rgba(194, 65, 12, 0.08); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(194, 65, 12, 0.2);"></div>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 22px;">
+            <button type="button" id="btn-login-submit" class="btn btn-primary" style="flex: 1; padding: 10px 16px;">Sign In</button>
+            <button type="button" id="btn-register-submit" class="btn" style="flex: 1; padding: 10px 16px;">Create Account</button>
+          </div>
+        </div>
+        <div class="modal-body" id="auth-logged-in-view" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #cde4d6; color: #166534; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">✓</div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;" id="logged-in-email">user@example.com</div>
+              <div class="text-muted" style="font-size: 0.8rem;">Cloud synchronization is active</div>
+            </div>
+          </div>
+          <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 20px;">
+            Your documents and flashcards are protected with salted scrypt hashing and session authentication.
+          </p>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" id="btn-sync-now" class="btn btn-primary" style="flex: 1; padding: 10px 16px;">Sync Now</button>
+            <button type="button" id="btn-logout" class="btn" style="flex: 1; padding: 10px 16px; color: #c2410c;">Log Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
     <!-- Scripts -->
     <script src="js/security.js"></script>
     <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/docs.js"></script>
     <script src="js/pwa.js"></script>
