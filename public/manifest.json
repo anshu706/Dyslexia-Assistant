@@ -2,7 +2,7 @@
   "name": "Dyslexia Assistant",
   "short_name": "DyslexiaAssistant",
   "description": "An offline-first, neurodivergent-tailored reading, writing, and cognitive learning workspace.",
-  "start_url": "/app.html",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FFFBF3",

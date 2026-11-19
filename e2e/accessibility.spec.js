@@ -18,14 +18,17 @@ test.describe('Accessibility Audits (Axe-Core)', () => {
   });
 
   test('Workspace app has zero serious or critical accessibility violations', async ({ context, page }) => {
-    // Grant service-workers permission or bypass controller change reload during scan
+    // Allow extra time — React mounts workspace HTML then dynamically loads
+    // vendor PDF.js + mammoth.js, which are large bundles.
+    test.setTimeout(60000);
+
+    // Stub controllerchange so automatic SW reload doesn't destroy execution context
     await page.addInitScript(() => {
-      // Stub controllerchange so automatic reload doesn't destroy execution context
       if ('serviceWorker' in navigator) {
-        const origAddEventListener = navigator.serviceWorker.addEventListener.bind(navigator.serviceWorker);
+        const orig = navigator.serviceWorker.addEventListener.bind(navigator.serviceWorker);
         navigator.serviceWorker.addEventListener = function(type, listener, options) {
           if (type === 'controllerchange') return;
-          return origAddEventListener(type, listener, options);
+          return orig(type, listener, options);
         };
       }
     });
@@ -33,8 +36,13 @@ test.describe('Accessibility Audits (Axe-Core)', () => {
     // Phase 1: workspace now lives at /app (React SPA route)
     await page.goto('/app');
     await page.waitForLoadState('domcontentloaded');
-    // Wait for React to mount the workspace HTML + scripts to load
-    await page.waitForTimeout(1500);
+
+    // Wait for React to inject the workspace HTML and for scripts to finish loading.
+    // We detect completion by waiting for the sidebar nav to appear in the DOM.
+    await page.waitForSelector('.app-sidebar', { timeout: 20000 });
+
+    // Extra settle time for all dynamic <script> tags to execute
+    await page.waitForTimeout(2000);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

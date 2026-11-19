@@ -4,7 +4,7 @@
  * vendored libraries (PDF.js, Mammoth.js), and dyslexic typography.
  */
 
-const CACHE_NAME = 'dyslexia-assistant-v9';
+const CACHE_NAME = 'dyslexia-assistant-v10';
 
 const ASSETS_TO_CACHE = [
     './',
@@ -97,7 +97,8 @@ self.addEventListener('fetch', (event) => {
             }).catch(() => {
                 // Fallback to app shell for navigation requests
                 if (event.request.mode === 'navigate') {
-                    return caches.match('./app.html') || caches.match('./index.html');
+                    // Phase 1: /app is a React SPA route — serve index.html for all navigations
+                    return caches.match('./index.html') || caches.match('./app.html');
                 }
             });
         })
