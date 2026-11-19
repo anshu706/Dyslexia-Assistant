@@ -188,6 +188,25 @@ function LandingPage() {
   const [demoFont, setDemoFont] = useState('Lexend');
   const [demoSpaced, setDemoSpaced] = useState(true);
   const [demoBionic, setDemoBionic] = useState(true);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
   const [demoWordBox, setDemoWordBox] = useState(true);
   const [demoSpeaking, setDemoSpeaking] = useState(false);
   const [spokenWordIndex, setSpokenWordIndex] = useState(-1);
@@ -327,6 +346,26 @@ function LandingPage() {
             </ul>
 
             <div className="plamo-nav-actions">
+              {deferredPrompt && (
+                <button
+                  type="button"
+                  onClick={handleInstallClick}
+                  className="btn btn-sm"
+                  style={{
+                    marginRight: '8px',
+                    padding: '8px 14px',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    borderRadius: '4px',
+                    background: '#E2D2B3',
+                    color: '#2b2a27',
+                    border: '1px solid #d5c097',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ⬇ Install App
+                </button>
+              )}
               <PlamoButton href={getWorkspaceUrl()} label="Open Workspace" variant="primary" />
             </div>
           </nav>

@@ -333,6 +333,26 @@ const WORKSPACE_HTML = `
             </svg>
             <span id="toolbar-sync-label">Offline</span>
           </button>
+          <button class="tool-btn" id="btn-pwa-install" title="Install Dyslexia Assistant as a desktop or mobile application" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Install App</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PWA In-App Promotion Banner -->
+      <div id="pwa-install-banner" class="pwa-promo-banner" style="display: none;" role="region" aria-label="Install App Promotion">
+        <div class="pwa-promo-content">
+          <span style="font-size: 1.3rem;">⚡</span>
+          <span><strong>Install Dyslexia Assistant</strong> for instant offline desktop/mobile access with zero latency.</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btn-banner-install" class="btn btn-sm btn-accent">Install Now</button>
+          <button type="button" id="btn-dismiss-install" class="icon-btn-sm" aria-label="Dismiss install banner">✕</button>
         </div>
       </div>
 
