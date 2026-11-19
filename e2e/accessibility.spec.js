@@ -30,9 +30,11 @@ test.describe('Accessibility Audits (Axe-Core)', () => {
       }
     });
 
-    await page.goto('/app.html');
+    // Phase 1: workspace now lives at /app (React SPA route)
+    await page.goto('/app');
     await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(500);
+    // Wait for React to mount the workspace HTML + scripts to load
+    await page.waitForTimeout(1500);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

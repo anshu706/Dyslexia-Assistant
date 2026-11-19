@@ -4,6 +4,12 @@ import fs from 'node:fs';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+/**
+ * copyStaticDirs — copies vanilla JS workspace assets into dist/ at build time.
+ * This keeps the workspace JS, CSS, vendor, and fonts available at their
+ * expected paths (/js/, /css/, /vendor/, /fonts/) so the React WorkspaceApp
+ * shell can load them via dynamic <script> injection.
+ */
 function copyStaticDirs() {
   return {
     name: 'copy-static-dirs',
@@ -25,30 +31,38 @@ function copyStaticDirs() {
         }
       };
 
+      // Workspace JS modules
       copyDir(resolve(rootDir, 'js'), resolve(distDir, 'js'));
+      // Workspace CSS (fonts, styles, accessibility, animations)
       copyDir(resolve(rootDir, 'css'), resolve(distDir, 'css'));
+      // Vendored parsers (pdf.js, mammoth)
+      copyDir(resolve(rootDir, 'vendor'), resolve(distDir, 'vendor'));
 
-      // Copy app.html to dist root so workspace works statically and offline
-      const appHtmlSrc = resolve(rootDir, 'app.html');
-      if (fs.existsSync(appHtmlSrc)) {
-        fs.copyFileSync(appHtmlSrc, resolve(distDir, 'app.html'));
-      }
-
-      // Copy service worker to dist root so it has the correct scope
+      // Service worker (must be at root scope)
       const swSrc = resolve(rootDir, 'sw.js');
       if (fs.existsSync(swSrc)) {
         fs.copyFileSync(swSrc, resolve(distDir, 'sw.js'));
+      }
+
+      // Keep app.html in dist for the E2E test that navigates to /app.html
+      // (The test will be updated to use /app, but we keep it for safety)
+      const appHtmlSrc = resolve(rootDir, 'app.html');
+      if (fs.existsSync(appHtmlSrc)) {
+        fs.copyFileSync(appHtmlSrc, resolve(distDir, 'app.html'));
       }
     }
   };
 }
 
 export default defineConfig({
-  base: './',
+  // Use '/' (absolute) so React Router and all asset paths resolve correctly
+  base: '/',
   plugins: [react(), copyStaticDirs()],
   server: {
     port: 5173,
     strictPort: false,
+    // SPA fallback: serve index.html for all unknown paths so React Router works
+    historyApiFallback: true,
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
@@ -80,9 +94,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        // Single entry point — the React SPA handles all routes
         landing: resolve(fileURLToPath(new URL('.', import.meta.url)), 'index.html')
       }
     }
   }
 });
-

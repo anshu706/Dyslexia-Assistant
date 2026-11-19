@@ -219,7 +219,7 @@ function LandingPage() {
     if (view) params.set('view', view);
     if (tintParam) params.set('tint', tintParam);
     if (isTts) params.set('tts', '1');
-    return `app.html?${params.toString()}`;
+    return `/app?${params.toString()}`;
   };
 
   const sampleWords = [

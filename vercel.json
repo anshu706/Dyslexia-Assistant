@@ -4,6 +4,20 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/app",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/app/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!js/|css/|vendor/|fonts/|assets/|sw\\.js|manifest\\.json|favicon|icon-|apple-touch-icon|og-image|robots\\.txt|sitemap\\.xml|app\\.html).*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
