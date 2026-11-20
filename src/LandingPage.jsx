@@ -123,14 +123,14 @@ const chapters = [
   },
   {
     number: '05',
-    title: 'Focus with ambient sound.',
-    text: 'Mask auditory distractions with synthesized brown noise, pink noise, and gentle rain generated purely in-browser.',
-    detail: 'Sound & Multi-Doc',
-    view: 'writer',
-    colorName: 'Warm Amber',
-    colorHex: '#8C2E11',
-    colorBg: '#f9ecc8',
-    badgeColor: '#A33A1A'
+    title: 'Talk with Lexi AI.',
+    text: 'A real-time voice and cognitive AI companion that listens, speaks aloud, explains complex pages, and gently reviews your writing.',
+    detail: 'Lexi Voice AI',
+    view: 'reader',
+    colorName: 'Terracotta',
+    colorHex: '#A33A1A',
+    colorBg: '#f6edda',
+    badgeColor: '#c2410c'
   }
 ];
 
@@ -377,8 +377,8 @@ function LandingPage() {
         <section className="plamo-hero bg-drafting-grid">
           <div className="plamo-hero-inner">
             <div className="hero-eyebrow">
-              <span className="eyebrow-badge">BETA v2.4</span>
-              <span className="eyebrow-handwritten">Reading Preferences You Can Customise</span>
+              <span className="eyebrow-badge">AI COMPANION</span>
+              <span className="eyebrow-handwritten">Meet Lexi: Real-Time Voice &amp; Reading AI</span>
             </div>
 
             <h1 className="hero-title">

@@ -22,6 +22,7 @@ const WORKSPACE_CSS = [
   '/css/styles.css',
   '/css/accessibility.css',
   '/css/animations.css',
+  '/css/ai-assistant.css',
 ];
 
 // ─── Vendor + app scripts (order matters — mirrors app.html <script> order) ──
@@ -41,6 +42,7 @@ const WORKSPACE_SCRIPTS = [
   '/js/speech.js',
   '/js/editor.js',
   '/js/flashcards.js',
+  '/js/ai-assistant.js',
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
