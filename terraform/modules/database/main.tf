@@ -5,27 +5,27 @@ resource "random_password" "db_password" {
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier                  = "${var.project_name}-${var.environment}-postgres"
-  engine                      = "postgres"
-  engine_version              = "16.3"
-  instance_class              = var.instance_class
-  allocated_storage           = var.allocated_storage
-  max_allocated_storage       = 50
-  storage_type                = "gp3"
-  storage_encrypted           = true
-  kms_key_id                  = var.kms_key_arn
-  multi_az                    = var.environment == "prod"
-  db_name                     = "dyslexia_db"
-  username                    = "dyslexia_admin"
-  password                    = random_password.db_password.result
-  db_subnet_group_name        = var.db_subnet_group_name
-  vpc_security_group_ids      = [var.rds_security_group_id]
-  publicly_accessible         = false
-  auto_minor_version_upgrade  = true
-  backup_retention_period     = var.environment == "prod" ? 30 : 7
-  deletion_protection         = var.environment == "prod"
-  skip_final_snapshot         = var.environment != "prod"
-  final_snapshot_identifier   = "${var.project_name}-${var.environment}-final-snapshot"
+  identifier                 = "${var.project_name}-${var.environment}-postgres"
+  engine                     = "postgres"
+  engine_version             = "16.3"
+  instance_class             = var.instance_class
+  allocated_storage          = var.allocated_storage
+  max_allocated_storage      = 50
+  storage_type               = "gp3"
+  storage_encrypted          = true
+  kms_key_id                 = var.kms_key_arn
+  multi_az                   = var.environment == "prod"
+  db_name                    = "dyslexia_db"
+  username                   = "dyslexia_admin"
+  password                   = random_password.db_password.result
+  db_subnet_group_name       = var.db_subnet_group_name
+  vpc_security_group_ids     = [var.rds_security_group_id]
+  publicly_accessible        = false
+  auto_minor_version_upgrade = true
+  backup_retention_period    = var.environment == "prod" ? 30 : 7
+  deletion_protection        = var.environment == "prod"
+  skip_final_snapshot        = var.environment != "prod"
+  final_snapshot_identifier  = "${var.project_name}-${var.environment}-final-snapshot"
 
   tags = merge(var.tags, {
     Name = "${var.project_name}-${var.environment}-postgres"

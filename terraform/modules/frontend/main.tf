@@ -116,7 +116,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  web_acl_id         = aws_wafv2_web_acl.cf_waf.arn
+  web_acl_id          = aws_wafv2_web_acl.cf_waf.arn
 
   # Origin 1: S3 Static Website Assets
   origin {
@@ -205,8 +205,8 @@ resource "aws_s3_bucket_policy" "frontend_oac" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowCloudFrontOACReadOnly"
-        Effect    = "Allow"
+        Sid    = "AllowCloudFrontOACReadOnly"
+        Effect = "Allow"
         Principal = {
           Service = "cloudfront.amazonaws.com"
         }
