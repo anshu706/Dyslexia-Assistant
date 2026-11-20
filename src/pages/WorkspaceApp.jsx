@@ -23,6 +23,7 @@ const WORKSPACE_CSS = [
   '/css/accessibility.css',
   '/css/animations.css',
   '/css/ai-assistant.css',
+  '/css/owl-avatar.css',
 ];
 
 // ─── Vendor + app scripts (order matters — mirrors app.html <script> order) ──
@@ -43,6 +44,7 @@ const WORKSPACE_SCRIPTS = [
   '/js/editor.js',
   '/js/flashcards.js',
   '/js/ai-assistant.js',
+  '/js/owl-avatar.js',
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -342,6 +344,15 @@ const WORKSPACE_HTML = `
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
             <span>Install App</span>
+          </button>
+          <button
+            type="button"
+            class="btn-owl-tour-trigger"
+            id="btn-owl-tour"
+            title="Tour with Lexi the Wise Owl"
+          >
+            <span class="owl-trigger-icon" aria-hidden="true">🦉</span>
+            <span>Tour with Lexi</span>
           </button>
         </div>
       </div>

@@ -123,9 +123,9 @@ const chapters = [
   },
   {
     number: '05',
-    title: 'Talk with Lexi AI.',
-    text: 'A real-time voice and cognitive AI companion that listens, speaks aloud, explains complex pages, and gently reviews your writing.',
-    detail: 'Lexi Voice AI',
+    title: 'Meet Lexi the Wise Owl.',
+    text: 'An interactive voice and cognitive mascot that jumps in to explain tools, speaks aloud with synchronized lip-sync, and gently reviews writing.',
+    detail: 'Meet Lexi AI',
     view: 'reader',
     colorName: 'Terracotta',
     colorHex: '#A33A1A',

@@ -1,0 +1,486 @@
+/**
+ * owl-avatar.css
+ * 
+ * Plamo Architectural Styling for Lexi the Wise Owl AI Avatar & Guided Tour.
+ * Features:
+ *  - Vector SVG mascot with spring physics (squish, stretch, jump)
+ *  - Beak lip-sync, eye blink, and head bob synchronized with speech synthesis
+ *  - Non-distracting, warm color palette (amber, tawny caramel, soft cream)
+ *  - Interactive spotlight cutout with dark scrim for focus
+ *  - High-contrast dyslexia-friendly speech bubble dialog
+ *  - Full prefers-reduced-motion and high-contrast support
+ */
+
+/* ─── Persistent Tour Trigger in Header ─── */
+.btn-owl-tour-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fef3c7;
+  color: #78350f;
+  border: 1.5px solid #d97706;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 5px rgba(217, 119, 6, 0.18);
+  white-space: nowrap;
+}
+
+.btn-owl-tour-trigger:hover {
+  background: #fde68a;
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.28);
+}
+
+.btn-owl-tour-trigger:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-owl-tour-trigger .owl-trigger-icon {
+  font-size: 1.05rem;
+  display: inline-block;
+  transform-origin: center bottom;
+  animation: owlTriggerWiggle 3.5s ease-in-out infinite;
+}
+
+@keyframes owlTriggerWiggle {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(-10deg) scale(1.1); }
+  90% { transform: rotate(10deg) scale(1.1); }
+  95% { transform: rotate(-4deg); }
+}
+
+/* ─── Tour Overlay & Spotlight Scrim ─── */
+.owl-tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.owl-tour-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Semi-transparent dark background focusing on the spotlight */
+.owl-tour-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* Target Spotlight Ring */
+.owl-spotlight-box {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.58), 0 0 0 4px #f59e0b, 0 8px 30px rgba(245, 158, 11, 0.45);
+  pointer-events: none;
+  transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 10001;
+}
+
+/* ─── Floating Avatar Stage Container ─── */
+.owl-avatar-stage {
+  position: fixed;
+  z-index: 10005;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  transition: left 0.45s cubic-bezier(0.25, 1, 0.5, 1), top 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, left, top;
+}
+
+/* Centered welcome stage when no target element */
+.owl-avatar-stage.stage-centered {
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+/* ─── The Wise Owl Mascot SVG Container ─── */
+.owl-mascot-wrapper {
+  position: relative;
+  width: 170px;
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.28));
+  transform-origin: center bottom;
+}
+
+/* Jump In Animation */
+.owl-avatar-stage.jump-in .owl-mascot-wrapper {
+  animation: owlJumpIn 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes owlJumpIn {
+  0% {
+    transform: translateY(240px) scale(0.4, 1.4);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-30px) scale(1.15, 0.85);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(10px) scale(0.95, 1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+    opacity: 1;
+  }
+}
+
+/* Idle Breathing & Floating */
+.owl-mascot-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: center bottom;
+  animation: owlIdleFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes owlIdleFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(-1deg); }
+}
+
+/* ─── Owl Anatomy & Keyframe Animations ─── */
+
+/* Head Bobbing when talking */
+.owl-avatar-stage.is-talking .owl-head-group {
+  animation: owlHeadBob 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes owlHeadBob {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(2deg); }
+}
+
+/* Beak Lip-Sync Opening/Closing */
+.owl-beak-lower {
+  transform-origin: 85px 105px;
+  transition: transform 0.08s ease;
+}
+
+.owl-avatar-stage.is-talking .owl-beak-lower {
+  animation: owlBeakFlap 0.24s ease-in-out infinite alternate;
+}
+
+@keyframes owlBeakFlap {
+  0% { transform: translateY(0) scaleY(1); }
+  100% { transform: translateY(5px) scaleY(1.4); }
+}
+
+/* Eye Blinking */
+.owl-eyelid {
+  transform-origin: center center;
+  transform: scaleY(0);
+  transition: transform 0.08s ease;
+}
+
+.owl-avatar-stage.do-blink .owl-eyelid {
+  transform: scaleY(1);
+}
+
+/* Wing Flap / Waving */
+.owl-wing-left {
+  transform-origin: 35px 95px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.owl-wing-right {
+  transform-origin: 135px 95px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.owl-avatar-stage.wave-wing .owl-wing-right {
+  animation: owlWingWave 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes owlWingWave {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-35deg) translateY(-8px); }
+}
+
+/* Pointing Wing */
+.owl-avatar-stage.point-wing .owl-wing-right {
+  transform: rotate(-45deg) translateY(-10px) scaleX(1.1);
+}
+
+/* Spectacles Glint */
+.owl-glasses-glint {
+  opacity: 0.4;
+  animation: glassesGlint 5s ease-in-out infinite;
+}
+
+@keyframes glassesGlint {
+  0%, 88%, 100% { opacity: 0.3; transform: translateX(0); }
+  92% { opacity: 0.9; transform: translateX(3px); }
+}
+
+/* ─── Speech Bubble Dialog ─── */
+.owl-speech-bubble {
+  position: relative;
+  background: #fffbeb;
+  color: #1e293b;
+  border: 2px solid #f59e0b;
+  border-radius: 20px;
+  padding: 22px 24px;
+  width: min(440px, 90vw);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(245, 158, 11, 0.15);
+  margin-top: 18px;
+  font-family: 'Lexend', 'OpenDyslexic', system-ui, sans-serif;
+  animation: bubblePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes bubblePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Bubble Arrow Tip pointing to Owl */
+.owl-speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 12px 12px 12px;
+  border-style: solid;
+  border-color: transparent transparent #f59e0b transparent;
+}
+
+.owl-speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #fffbeb transparent;
+}
+
+/* Bubble Header */
+.owl-bubble-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1.5px solid #fde68a;
+  padding-bottom: 8px;
+}
+
+.owl-bubble-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.owl-step-counter {
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #fde68a;
+  color: #78350f;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+/* Bubble Text Content */
+.owl-bubble-body {
+  font-size: 0.96rem;
+  line-height: 1.68;
+  color: #1e293b;
+  margin-bottom: 18px;
+  letter-spacing: 0.015em;
+}
+
+.owl-bubble-body p {
+  margin: 0;
+}
+
+.owl-bubble-body strong {
+  color: #9a3412;
+  font-weight: 700;
+}
+
+/* Live Speaking Indicator in Bubble */
+.owl-speech-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #b45309;
+  margin-bottom: 12px;
+}
+
+.owl-soundwave-anim {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 14px;
+}
+
+.owl-soundwave-anim span {
+  display: inline-block;
+  width: 3px;
+  background-color: #f59e0b;
+  border-radius: 2px;
+  animation: owlWaveBar 0.8s ease-in-out infinite alternate;
+}
+
+.owl-soundwave-anim span:nth-child(1) { height: 6px; animation-delay: 0.0s; }
+.owl-soundwave-anim span:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+.owl-soundwave-anim span:nth-child(3) { height: 10px; animation-delay: 0.4s; }
+.owl-soundwave-anim span:nth-child(4) { height: 8px; animation-delay: 0.1s; }
+
+@keyframes owlWaveBar {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1.3); }
+}
+
+/* Bubble Action Buttons */
+.owl-bubble-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.owl-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-owl-action {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-owl-action:active {
+  transform: scale(0.96);
+}
+
+.btn-owl-primary {
+  background: #92400e;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(146, 64, 14, 0.35);
+}
+
+.btn-owl-primary:hover {
+  background: #78350f;
+  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.45);
+}
+
+.btn-owl-secondary {
+  background: #fef3c7;
+  color: #78350f;
+  border: 1px solid #fde68a;
+}
+
+.btn-owl-secondary:hover {
+  background: #fde68a;
+}
+
+.btn-owl-skip {
+  background: transparent;
+  color: #78350f;
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-owl-skip:hover {
+  color: #9a3412;
+}
+
+/* Step Progress Dots */
+.owl-progress-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.owl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #fde68a;
+  transition: all 0.25s ease;
+}
+
+.owl-dot.active {
+  width: 22px;
+  background: #d97706;
+}
+
+/* ─── Accessibility & Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .owl-tour-overlay,
+  .owl-spotlight-box,
+  .owl-avatar-stage,
+  .owl-mascot-wrapper,
+  .owl-mascot-svg,
+  .owl-speech-bubble,
+  .btn-owl-tour-trigger {
+    animation: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .owl-avatar-stage.jump-in .owl-mascot-wrapper {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* High Contrast Mode Adjustments */
+@media (forced-colors: active) {
+  .owl-speech-bubble {
+    border: 3px solid CanvasText !important;
+  }
+  .btn-owl-primary,
+  .btn-owl-secondary {
+    border: 2px solid ButtonText !important;
+  }
+}
