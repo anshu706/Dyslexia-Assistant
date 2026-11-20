@@ -530,6 +530,11 @@
             triggerBtn.addEventListener('click', () => launchTour(0));
         }
 
+        // Do not auto-launch in automated test environments (Playwright, Puppeteer, Axe-core)
+        if (navigator.webdriver || window.__DA_TESTING__) {
+            return;
+        }
+
         // Auto-launch if user hasn't seen the tour yet
         try {
             const hasSeen = localStorage.getItem('da_owl_tour_completed');
