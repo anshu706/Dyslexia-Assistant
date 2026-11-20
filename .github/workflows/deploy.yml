@@ -1,9 +1,13 @@
 name: Production Multi-Environment Deployment & Automated Rollback
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    # Manual trigger only — requires AWS OIDC credentials to be configured
+    # This workflow is for future enterprise AWS deployment and does NOT
+    # run on push. Enable auto-deploy by uncommenting the push trigger
+    # once AWS_ACCOUNT_ID and OIDC roles are configured.
+    # push:
+    #   branches: [main]
 
 permissions:
   id-token: write # Required for AWS OIDC authentication
