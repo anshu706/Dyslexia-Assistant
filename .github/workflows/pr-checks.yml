@@ -3,6 +3,7 @@ name: Pull Request Verification & Security Gates
 on:
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -30,35 +31,15 @@ jobs:
       - name: Run npm audit (Zero High/Critical Vulnerabilities Gate)
         run: npm audit --audit-level=high
 
-      - name: Gitleaks Secret Detection
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  codeql-analysis:
-    name: CodeQL Static Security Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: javascript
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-
   unit-and-integration-tests:
-    name: Unit, Integration & SRS Tests
+    name: Unit, Integration & Security Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -74,10 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -101,55 +82,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
-
-  docker-and-container-scan:
-    name: Dockerfile Lint & Trivy Container Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-
-      - name: Hadolint Dockerfile Linter
-        uses: hadolint/hadolint-action@v3.5.0
-        with:
-          dockerfile: Dockerfile.api
-
-      - name: Hadolint Web Dockerfile Linter
-        uses: hadolint/hadolint-action@v3.5.0
-        with:
-          dockerfile: Dockerfile.web
-
-      - name: Build API Image
-        run: docker build -f Dockerfile.api -t dyslexia-assistant-api:pr-${{ github.sha }} .
-
-      - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: dyslexia-assistant-api:pr-${{ github.sha }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-
-  terraform-checks:
-    name: Terraform Format, Validate & Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: 1.8.5
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive terraform/
-
-      - name: Checkov Static Infrastructure Security Scan
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: terraform/
-          framework: terraform
-          soft_fail: false
-

@@ -3,6 +3,7 @@ name: Production Multi-Environment Deployment & Automated Rollback
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   id-token: write # Required for AWS OIDC authentication
@@ -15,12 +16,14 @@ env:
 jobs:
   build-and-push:
     name: Build & Push Container to ECR (OIDC)
+    # Only execute if enterprise AWS credentials are configured; otherwise skip gracefully
+    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.set-tag.outputs.tag }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -50,13 +53,14 @@ jobs:
   deploy-dev:
     name: Deploy to Dev & Automated Smoke Tests
     needs: [build-and-push]
+    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
     runs-on: ubuntu-latest
     environment:
       name: development
       url: https://dev.dyslexiaassistant.internal
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -66,7 +70,7 @@ jobs:
           audience: sts.amazonaws.com
 
       - name: Setup Node.js & Build Static Assets
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
@@ -93,19 +97,19 @@ jobs:
         run: |
           echo "Verifying /api/health and security headers..."
           DEV_URL="https://dev.dyslexiaassistant.internal"
-          # Automated check script:
           bash scripts/verify-headers.sh "$DEV_URL" || true
 
   deploy-prod:
     name: Deploy to Production (Manual Approval Gate)
     needs: [build-and-push, deploy-dev]
+    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
     runs-on: ubuntu-latest
     environment:
       name: production
       url: https://dyslexiaassistant.com
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -140,4 +144,3 @@ jobs:
             echo "Rolling back to previous stable task definition: $PREV_TASK_DEF"
             aws ecs update-service --cluster ${{ env.PROJECT_NAME }}-prod-cluster --service ${{ env.PROJECT_NAME }}-prod-api-service --task-definition "$PREV_TASK_DEF" --force-new-deployment
           fi
-
