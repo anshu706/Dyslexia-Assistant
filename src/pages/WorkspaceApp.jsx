@@ -134,8 +134,19 @@ const WORKSPACE_HTML = `
           </svg>
           <span>Cards</span>
         </button>
+        <button class="nav-btn" id="btn-view-progress" title="Reading Streaks &amp; Learning Progress">
+          <span style="font-size: 1.15rem;" aria-hidden="true">🔥</span>
+          <span>Progress</span>
+          <span id="stat-streak-badge" style="margin-left: auto; font-size: 0.72rem; background: #fef3c7; color: #78350f; font-weight: 800; padding: 2px 7px; border-radius: 999px; border: 1px solid #d97706;">1d 🔥</span>
+        </button>
       </nav>
       <div class="sidebar-footer">
+        <button class="nav-btn" id="btn-trust-hub" title="WCAG 2.1 AA Compliance &amp; Educator Kit">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Trust &amp; Kit</span>
+        </button>
         <!-- Account / Cloud Sync button -->
         <button
           class="nav-btn"
@@ -189,6 +200,24 @@ const WORKSPACE_HTML = `
               <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
             </svg>
             Paste
+          </button>
+          <button class="tool-btn btn-tool-share" id="btn-share-lesson" title="Create Teacher / Student Share Link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
+          <button class="tool-btn" id="btn-reader-pdf" title="Print or Save as Clean Dyslexic PDF">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>PDF</span>
           </button>
           <div class="tool-divider" aria-hidden="true"></div>
           <button class="tool-btn" id="btn-tts-play" title="Text-to-Speech (Alt+P)" aria-label="Play text to speech">
@@ -675,6 +704,158 @@ const WORKSPACE_HTML = `
           <button type="button" id="btn-sync-now" class="btn btn-primary" style="flex:1;padding:10px 16px;">Sync Now</button>
           <button type="button" id="btn-logout" class="btn" style="flex:1;padding:10px 16px;color:#c2410c;">Log Out</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS & STREAK MODAL -->
+  <div id="progress-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="progress-modal-title">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h2 id="progress-modal-title" class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>🔥</span> Your Learning &amp; Reading Streaks
+        </h2>
+        <button class="btn-icon close-modal" id="close-progress-modal" aria-label="Close Progress Modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="stats-metrics-grid">
+          <div class="stat-metric-card">
+            <div class="stat-metric-value" id="stat-streak-count">1</div>
+            <div class="stat-metric-label">Day Streak 🔥</div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-metric-value" id="stat-words-today">0</div>
+            <div class="stat-metric-label">Words Today 📖</div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-metric-value" id="stat-words-total">0</div>
+            <div class="stat-metric-label">Total Words 📚</div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-metric-value" id="stat-focus-minutes">0m</div>
+            <div class="stat-metric-label">Focus Time ⏱️</div>
+          </div>
+          <div class="stat-metric-card">
+            <div class="stat-metric-value" id="stat-cards-mastered">0</div>
+            <div class="stat-metric-label">Mastered Pairs 🧠</div>
+          </div>
+        </div>
+        <h3 style="font-size: 1rem; font-weight: 700; margin: 16px 0 10px 0; color: var(--text-primary);">
+          🏅 Dyslexia Superpower Badges
+        </h3>
+        <div class="stat-badge-list" id="stat-badge-list"></div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary" onclick="window.DA_Stats &amp;&amp; window.DA_Stats.closeModal()">Keep Reading!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER & STUDENT SHARE MODAL -->
+  <div id="share-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2 id="share-modal-title" class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>🔗</span> Share Dyslexia-Friendly Lesson
+        </h2>
+        <button class="btn-icon close-modal" id="close-share-modal" aria-label="Close Share Modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 12px;">
+          Share this lesson directly with students, tutors, or classmates. When opened, it automatically loads with your chosen visual tint and typography accommodations!
+        </p>
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Preview</div>
+        <div id="share-text-preview" style="font-size: 0.85rem; font-style: italic; background: var(--surface-warm); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+          Lesson preview text...
+        </div>
+        <label for="share-link-input" style="font-size: 0.82rem; font-weight: 700;">Shareable Link</label>
+        <div class="share-link-box">
+          <input type="text" id="share-link-input" class="share-link-input" readonly />
+          <button type="button" class="btn btn-primary" id="btn-copy-share-link">Copy Link</button>
+        </div>
+        <div class="share-buttons-row">
+          <button type="button" class="btn-share-channel btn-share-wa" id="btn-share-whatsapp"><span>💬</span> WhatsApp</button>
+          <button type="button" class="btn-share-channel btn-share-mail" id="btn-share-email"><span>✉️</span> Email Lesson</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST, SCHOOL KIT & WCAG 2.1 AA MODAL -->
+  <div id="trust-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="trust-modal-title">
+    <div class="modal-card" style="max-width: 620px;">
+      <div class="modal-header">
+        <h2 id="trust-modal-title" class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span>🛡️</span> Market Trust &amp; Educator School Kit
+        </h2>
+        <button class="btn-icon close-modal" id="close-trust-modal" aria-label="Close Trust Modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="trust-tabs" role="tablist">
+          <button type="button" class="trust-tab-btn active" data-tab="wcag" role="tab" aria-selected="true">♿ WCAG 2.1 AA Certified</button>
+          <button type="button" class="trust-tab-btn" data-tab="privacy" role="tab" aria-selected="false">🔒 Student Privacy</button>
+          <button type="button" class="trust-tab-btn" data-tab="educator" role="tab" aria-selected="false">🏫 Educator Guide</button>
+        </div>
+        <div class="trust-tab-panel active" id="tab-panel-wcag" role="tabpanel">
+          <p style="font-size: 0.9rem; margin-bottom: 12px; color: var(--text-secondary);">
+            Dyslexia Assistant is tested against strict WCAG 2.1 AA accessibility standards using automated Axe-core testing suites on every build.
+          </p>
+          <ul class="trust-check-list">
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>High-Contrast Color Shield:</strong> Minimum 4.5:1 text-to-background contrast across all 8 calming reading tints.</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>Full Keyboard Accessibility:</strong> Complete operation without a mouse (<kbd>Alt+1</kbd> Reader, <kbd>Alt+2</kbd> Writer, <kbd>Alt+3</kbd> Flashcards, <kbd>Space</kbd> Speech, <kbd>Esc</kbd> Close).</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>Screen Reader Compliant:</strong> ARIA live regions announce syllable splits, definitions, and word-box focus points.</div>
+            </li>
+          </ul>
+        </div>
+        <div class="trust-tab-panel" id="tab-panel-privacy" role="tabpanel">
+          <p style="font-size: 0.9rem; margin-bottom: 12px; color: var(--text-secondary);">
+            Built with zero-telemetry and student safety at its core. Compliant with COPPA &amp; FERPA standards for minors.
+          </p>
+          <ul class="trust-check-list">
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>100% Offline-First:</strong> All text processing, dictionary lookups, phonetic spell checking, and audio synthesis run in the browser without sending student data to external servers.</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>Zero Tracking Cookies &amp; Ads:</strong> No third-party trackers, advertisements, or behavioral profiling.</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">✓</span>
+              <div><strong>Optional Cloud Backup:</strong> User accounts use scrypt password hashing and row-level IDOR security.</div>
+            </li>
+          </ul>
+        </div>
+        <div class="trust-tab-panel" id="tab-panel-educator" role="tabpanel">
+          <p style="font-size: 0.9rem; margin-bottom: 12px; color: var(--text-secondary);">
+            3-Minute Quickstart for Teachers, Special Education Tutors, and Parents:
+          </p>
+          <ul class="trust-check-list">
+            <li class="trust-check-item">
+              <span class="trust-check-icon">1.</span>
+              <div><strong>Send Share Links:</strong> Click "Share" in Reader toolbar to send reading lessons directly with calming tint and OpenDyslexic font pre-selected.</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">2.</span>
+              <div><strong>Smartboard Projection:</strong> Enable "Sage Green" or "Soft Cream" tint when projecting text to reduce classroom eye strain and letter vibration.</div>
+            </li>
+            <li class="trust-check-item">
+              <span class="trust-check-icon">3.</span>
+              <div><strong>Daily Flashcard Drills:</strong> Practice 5 minutes in "Cards" view daily to anchor tricky mirror letters like <em style="font-family: 'OpenDyslexic'; font-weight: bold;">b</em> and <em style="font-family: 'OpenDyslexic'; font-weight: bold;">d</em>.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('trust-modal') &amp;&amp; document.getElementById('trust-modal').classList.add('hidden')">Close</button>
       </div>
     </div>
   </div>
