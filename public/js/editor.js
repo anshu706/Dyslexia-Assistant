@@ -239,6 +239,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // EXPORT PDF
+    const btnWriterPdf = document.getElementById('btn-writer-pdf');
+    if (btnWriterPdf) {
+        btnWriterPdf.addEventListener('click', () => {
+            if (!editor.value.trim()) {
+                window.showToast && window.showToast('Nothing to export! Write something first.', '⚠');
+                return;
+            }
+            window.showToast && window.showToast('Preparing clean dyslexia-formatted PDF...', '🖨️');
+            setTimeout(() => window.print(), 250);
+        });
+    }
+
+    // EXPORT MARKDOWN (.md)
+    const btnWriterMd = document.getElementById('btn-writer-md');
+    if (btnWriterMd) {
+        btnWriterMd.addEventListener('click', () => {
+            const text = editor.value;
+            if (!text.trim()) { window.showToast && window.showToast('Nothing to download!', '⚠'); return; }
+            const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const rawDate = new Date().toISOString().slice(0, 10);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `my-writing-${rawDate}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            window.showToast && window.showToast('Downloaded Markdown file!', '⬇');
+        });
+    }
+
     // =========================================================================
     // CLEAR EDITOR
     // =========================================================================

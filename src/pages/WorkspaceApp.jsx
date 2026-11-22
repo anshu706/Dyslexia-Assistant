@@ -38,6 +38,8 @@ const WORKSPACE_SCRIPTS = [
   '/js/audio.js',
   '/js/docs.js',
   '/js/pwa.js',
+  '/js/stats.js',
+  '/js/share.js',
   '/js/app.js',
   '/js/reader.js',
   '/js/speech.js',

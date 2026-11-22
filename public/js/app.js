@@ -417,6 +417,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settingsModal && !settingsModal.classList.contains('hidden')) closeSettings();
             if (pasteModal && !pasteModal.classList.contains('hidden')) closePasteModal();
             if (authModal && !authModal.classList.contains('hidden')) closeAuthModal();
+            const trustModal = document.getElementById('trust-modal');
+            if (trustModal && !trustModal.classList.contains('hidden')) trustModal.classList.add('hidden');
+            const progressModal = document.getElementById('progress-modal');
+            if (progressModal && !progressModal.classList.contains('hidden')) progressModal.classList.add('hidden');
+            const shareModal = document.getElementById('share-modal');
+            if (shareModal && !shareModal.classList.contains('hidden')) shareModal.classList.add('hidden');
         }
     });
 
@@ -681,5 +687,46 @@ document.addEventListener('DOMContentLoaded', () => {
             fileUploadEmpty.value = '';
         });
     }
+
+    // =========================================================================
+    // TRUST & EDUCATOR HUB CONTROLLER
+    // =========================================================================
+    const trustModal = document.getElementById('trust-modal');
+    const openTrustBtn = document.getElementById('btn-trust-hub');
+    const closeTrustBtn = document.getElementById('close-trust-modal');
+
+    function openTrustModal() {
+        if (trustModal) trustModal.classList.remove('hidden');
+    }
+    function closeTrustModal() {
+        if (trustModal) trustModal.classList.add('hidden');
+    }
+
+    if (openTrustBtn) openTrustBtn.addEventListener('click', openTrustModal);
+    if (closeTrustBtn) closeTrustBtn.addEventListener('click', closeTrustModal);
+    if (trustModal) {
+        trustModal.addEventListener('click', e => {
+            if (e.target === trustModal) closeTrustModal();
+        });
+    }
+
+    // Tab switching inside Trust modal
+    const trustTabBtns = document.querySelectorAll('.trust-tab-btn');
+    const trustTabPanels = document.querySelectorAll('.trust-tab-panel');
+    trustTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            trustTabBtns.forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            trustTabPanels.forEach(p => p.classList.remove('active'));
+
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            const targetPanel = document.getElementById(`tab-panel-${tabId}`);
+            if (targetPanel) targetPanel.classList.add('active');
+        });
+    });
 
 });

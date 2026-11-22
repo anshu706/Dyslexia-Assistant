@@ -131,6 +131,17 @@ const chapters = [
     colorHex: '#A33A1A',
     colorBg: '#f6edda',
     badgeColor: '#c2410c'
+  },
+  {
+    number: '06',
+    title: 'Track streaks & share lessons.',
+    text: 'Celebrate daily reading streaks, master tricky word pairs, export clean PDFs, and share customized lessons with teachers or tutors in one click.',
+    detail: 'Learning Streaks & Share',
+    view: 'reader',
+    colorName: 'Forest Sage',
+    colorHex: '#166534',
+    colorBg: '#dcfce7',
+    badgeColor: '#14532d'
   }
 ];
 

@@ -467,6 +467,15 @@ By the end of the summer, Colin stood tall and strong, his father returned from 
         });
     }
 
+    // PRINT / CLEAN PDF EXPORT
+    const btnReaderPdf = document.getElementById('btn-reader-pdf');
+    if (btnReaderPdf) {
+        btnReaderPdf.addEventListener('click', () => {
+            window.showToast && window.showToast('Preparing clean dyslexia-formatted print/PDF...', '🖨️');
+            setTimeout(() => window.print(), 250);
+        });
+    }
+
     document.addEventListener('mousemove', e => {
         if (!isRulerActive || !rulerEl) return;
         rulerEl.style.setProperty('--mouse-y', `${e.clientY}px`);

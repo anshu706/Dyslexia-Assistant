@@ -4,7 +4,7 @@
  * vendored libraries (PDF.js, Mammoth.js), and dyslexic typography.
  */
 
-const CACHE_NAME = 'dyslexia-assistant-v14';
+const CACHE_NAME = 'dyslexia-assistant-v15';
 
 const ASSETS_TO_CACHE = [
     './',
@@ -37,6 +37,8 @@ const ASSETS_TO_CACHE = [
     './js/simplifier.js',
     './js/ai-assistant.js',
     './js/owl-avatar.js',
+    './js/stats.js',
+    './js/share.js',
     './js/audio.js',
     './js/docs.js',
     './js/pwa.js',
