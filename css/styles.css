@@ -1603,4 +1603,216 @@ input:checked + .slider-switch:before {
   transform: rotate(1.5deg);
 }
 
+/* ==========================================================================
+   MARKET ENHANCEMENTS: STATS, SHARE, TRUST & EXPORT SUITE
+   ========================================================================== */
+
+/* Toolbar Badges & Triggers */
+.btn-streak-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  color: #78350f;
+  border: 1.5px solid #d97706;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.btn-streak-badge:hover {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+
+.btn-tool-share {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1.5px solid #10b981;
+}
+.btn-tool-share:hover {
+  background: #d1fae5;
+}
+
+/* Stat Grid inside Progress Modal */
+.stats-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-metric-card {
+  background: var(--surface-color, #fffdf9);
+  border: 1.5px solid var(--border-color, #9c9c9c);
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-align: center;
+  box-shadow: 2px 2px #00000012;
+}
+.stat-metric-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary, #212121);
+  font-family: var(--font-heading, inherit);
+  line-height: 1.2;
+}
+.stat-metric-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary, #414141);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+
+/* Badges list */
+.stat-badge-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+.stat-badge-card {
+  background: var(--surface-warm, #faf6ee);
+  border: 1.5px solid var(--border-color, #9c9c9c);
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+.stat-badge-card.unlocked {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+.stat-badge-card.locked {
+  opacity: 0.55;
+  filter: grayscale(0.85);
+}
+.stat-badge-icon {
+  font-size: 1.8rem;
+  margin-bottom: 4px;
+}
+.stat-badge-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary, #212121);
+}
+.stat-badge-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #16a34a;
+  margin-top: 2px;
+}
+.stat-badge-card.locked .stat-badge-status {
+  color: #6b7280;
+}
+
+/* Share Modal Styles */
+.share-link-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.share-link-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border-color, #9c9c9c);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  background: var(--bg-color, #fffbf3);
+}
+.share-buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.btn-share-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: all 0.15s ease;
+}
+.btn-share-wa {
+  background: #25d366;
+  color: #ffffff;
+  border-color: #128c7e;
+}
+.btn-share-mail {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+/* Trust & Compliance Hub Tabs */
+.trust-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1.5px solid var(--border-color, #9c9c9c);
+  margin-bottom: 16px;
+}
+.trust-tab-btn {
+  padding: 8px 14px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  color: var(--text-secondary, #414141);
+}
+.trust-tab-btn.active {
+  color: var(--accent-primary, #ec633d);
+  border-bottom-color: var(--accent-primary, #ec633d);
+}
+.trust-tab-panel {
+  display: none;
+}
+.trust-tab-panel.active {
+  display: block;
+}
+.trust-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+.trust-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.trust-check-icon {
+  color: #16a34a;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+/* Print Enhancements */
+@media print {
+  .ai-assistant-widget,
+  .owl-avatar-stage,
+  .owl-tour-overlay,
+  .btn-owl-tour-trigger,
+  .btn-streak-badge,
+  .btn-tool-share,
+  #btn-lexi-toggle {
+    display: none !important;
+  }
+}
+
+
 
