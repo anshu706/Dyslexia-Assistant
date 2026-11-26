@@ -18,10 +18,28 @@ env:
   PROJECT_NAME: dyslexia-assistant
 
 jobs:
+  check-aws-config:
+    name: Check AWS Deployment Configuration
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check AWS account secret
+        id: check
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        run: |
+          if [ -n "$AWS_ACCOUNT_ID" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::AWS_ACCOUNT_ID is not configured; deployment jobs will be skipped."
+          fi
+
   build-and-push:
     name: Build & Push Container to ECR (OIDC)
-    # Only execute if enterprise AWS credentials are configured; otherwise skip gracefully
-    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
+    needs: [check-aws-config]
+    if: ${{ needs.check-aws-config.outputs.configured == 'true' }}
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.set-tag.outputs.tag }}
@@ -56,8 +74,8 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev & Automated Smoke Tests
-    needs: [build-and-push]
-    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
+    needs: [check-aws-config, build-and-push]
+    if: ${{ needs.check-aws-config.outputs.configured == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: development
@@ -105,8 +123,8 @@ jobs:
 
   deploy-prod:
     name: Deploy to Production (Manual Approval Gate)
-    needs: [build-and-push, deploy-dev]
-    if: ${{ secrets.AWS_ACCOUNT_ID != '' }}
+    needs: [check-aws-config, build-and-push, deploy-dev]
+    if: ${{ needs.check-aws-config.outputs.configured == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: production
