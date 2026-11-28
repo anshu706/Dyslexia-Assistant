@@ -6,18 +6,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:all": "node scripts/dev.mjs",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server/server.js",
     "test": "node --test test/*.test.js",
-    "test:security": "node --test test/security.test.js",
-    "test:integration": "node --test test/integration.test.js",
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.119.2",
-    "pg": "^8.23.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-router-dom": "^7.18.6"

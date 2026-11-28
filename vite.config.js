@@ -63,12 +63,6 @@ export default defineConfig({
     strictPort: false,
     // SPA fallback: serve index.html for all unknown paths so React Router works
     historyApiFallback: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    },
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
@@ -78,12 +72,6 @@ export default defineConfig({
   },
   preview: {
     port: 4173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    },
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',

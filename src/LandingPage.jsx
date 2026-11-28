@@ -123,9 +123,9 @@ const chapters = [
   },
   {
     number: '05',
-    title: 'Meet Lexi the Wise Owl.',
-    text: 'An interactive voice and cognitive mascot that jumps in to explain tools, speaks aloud with synchronized lip-sync, and gently reviews writing.',
-    detail: 'Meet Lexi AI',
+    title: 'AI Reading Assistant.',
+    text: 'Ask questions, summarize long documents, or break down difficult words with the built-in AI assistant. Powered locally — your data never leaves your device.',
+    detail: 'Ask AI',
     view: 'reader',
     colorName: 'Terracotta',
     colorHex: '#A33A1A',
@@ -389,7 +389,7 @@ function LandingPage() {
           <div className="plamo-hero-inner">
             <div className="hero-eyebrow">
               <span className="eyebrow-badge">AI COMPANION</span>
-              <span className="eyebrow-handwritten">Meet Lexi: Real-Time Voice &amp; Reading AI</span>
+              <span className="eyebrow-handwritten">AI-Powered · Offline-First · Privacy Focused</span>
             </div>
 
             <h1 className="hero-title">

@@ -33,7 +33,7 @@
     <!-- Content Security Policy (Secure Vibe Coding Step 5: Prod Config) -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' blob: https://*.supabase.co wss://*.supabase.co https://api.dictionaryapi.dev https://generativelanguage.googleapis.com; media-src 'self' blob: https://api.dictionaryapi.dev https://ssl.gstatic.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self' blob: https://api.dictionaryapi.dev https://generativelanguage.googleapis.com; media-src 'self' blob: https://api.dictionaryapi.dev https://ssl.gstatic.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';"
     />
 
     <!-- Vendored Parsers (100% offline-ready, zero external runtime requests) -->
@@ -157,27 +157,6 @@
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <span>Trust & Kit</span>
-          </button>
-          <button
-            class="nav-btn"
-            id="btn-sidebar-account"
-            aria-label="Account and Cloud Sync"
-            title="Account & Cloud Sync"
-            style="position: relative;"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span id="sidebar-account-label">Account</span>
-            <span id="sidebar-sync-dot" style="position: absolute; right: 14px; top: 16px; width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;" aria-hidden="true"></span>
           </button>
           <button
             class="nav-btn"
@@ -640,17 +619,16 @@
               <input type="range" id="focus-sound-volume" class="sound-volume" min="0" max="1" step="0.05" value="0.5" title="Focus Sound Volume" aria-label="Focus Sound Volume" />
             </div>
 
-            <!-- Account & Cloud Sync Trigger Button -->
-            <button
-              type="button"
-              id="btn-account-sync"
+            <!-- Offline Ready Indicator -->
+            <div
+              id="offline-status-badge"
               class="btn-tool"
-              title="Account & Cloud Sync"
-              style="display: flex; align-items: center; gap: 7px; padding: 5px 12px; font-weight: 600;"
+              title="100% Offline-First — All data stays locally on your device"
+              style="display: flex; align-items: center; gap: 7px; padding: 5px 12px; font-weight: 600; cursor: default; pointer-events: none;"
             >
-              <span id="sync-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-              <span id="account-btn-label" style="font-size: 0.85rem;">Offline</span>
-            </button>
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;" aria-hidden="true"></span>
+              <span style="font-size: 0.85rem;">Offline</span>
+            </div>
 
             <!-- Standalone PWA Install Button -->
             <button
@@ -1518,86 +1496,6 @@
       </div>
     </div>
 
-    <!-- AUTH & SYNC MODAL -->
-    <div
-      id="auth-modal"
-      class="modal-backdrop hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="auth-modal-title"
-    >
-      <div class="modal-card" style="max-width: 440px;">
-        <div class="modal-header">
-          <h3 id="auth-modal-title" class="text-lg">Account & Cloud Sync</h3>
-          <button
-            class="icon-btn-sm"
-            id="close-auth-modal"
-            aria-label="Close modal"
-          >
-            ✕
-          </button>
-        </div>
-        <div class="modal-body" id="auth-logged-out-view">
-          <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 16px;">
-            Sign in to securely synchronize your reading documents, notes, and flashcards across all your devices.
-          </p>
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div>
-              <label for="auth-email" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Email Address</label>
-              <input
-                type="email"
-                id="auth-email"
-                class="doc-search-input"
-                placeholder="name@example.com"
-                autocomplete="email"
-                required
-              />
-            </div>
-            <div>
-              <label for="auth-password" style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">Password (min. 8 characters)</label>
-              <input
-                type="password"
-                id="auth-password"
-                class="doc-search-input"
-                placeholder="••••••••"
-                autocomplete="current-password"
-                required
-              />
-            </div>
-            <div id="auth-error-msg" style="color: #c2410c; font-size: 0.85rem; display: none; background: rgba(194, 65, 12, 0.08); padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(194, 65, 12, 0.2);"></div>
-          </div>
-          <div style="display: flex; gap: 10px; margin-top: 22px;">
-            <button type="button" id="btn-login-submit" class="btn btn-primary" style="flex: 1; padding: 10px 16px;">Sign In</button>
-            <button type="button" id="btn-register-submit" class="btn" style="flex: 1; padding: 10px 16px;">Create Account</button>
-          </div>
-          <details style="margin-top:16px;font-size:0.8rem;color:var(--text-muted);cursor:pointer;border-top:1px solid rgba(0,0,0,0.06);padding-top:10px;">
-            <summary style="outline:none;user-select:none;">⚡ Supabase Cloud Settings (Free Tier)</summary>
-            <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
-              <input type="text" id="supabase-url-input" class="doc-search-input" placeholder="https://xyz.supabase.co" style="font-size:0.8rem;" aria-label="Supabase URL" />
-              <input type="password" id="supabase-key-input" class="doc-search-input" placeholder="Anon public key" style="font-size:0.8rem;" aria-label="Supabase Anon Key" />
-              <button type="button" id="btn-save-supabase" class="btn btn-sm" style="align-self:flex-start;padding:6px 14px;font-size:0.8rem;">Save &amp; Connect</button>
-            </div>
-          </details>
-        </div>
-        <div class="modal-body" id="auth-logged-in-view" style="display: none;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-            <div style="width: 36px; height: 36px; border-radius: 50%; background: #cde4d6; color: #166534; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">✓</div>
-            <div>
-              <div style="font-weight: 700; font-size: 0.95rem;" id="logged-in-email">user@example.com</div>
-              <div class="text-muted" style="font-size: 0.8rem;">Cloud synchronization is active</div>
-            </div>
-          </div>
-          <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 20px;">
-            Your documents and flashcards are protected with salted scrypt hashing and session authentication.
-          </p>
-          <div style="display: flex; gap: 10px;">
-            <button type="button" id="btn-sync-now" class="btn btn-primary" style="flex: 1; padding: 10px 16px;">Sync Now</button>
-            <button type="button" id="btn-logout" class="btn" style="flex: 1; padding: 10px 16px; color: #c2410c;">Log Out</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- PROGRESS & STREAK MODAL -->
     <div
       id="progress-modal"
@@ -1769,7 +1667,7 @@
               </li>
               <li class="trust-check-item">
                 <span class="trust-check-icon">✓</span>
-                <div><strong>Optional Cloud Backup:</strong> User accounts use scrypt password hashing and row-level IDOR security.</div>
+                <div><strong>Fully Offline:</strong> All data stays on your device. No accounts, no cloud sync, no server — your work is always yours.</div>
               </li>
             </ul>
           </div>
@@ -1807,7 +1705,6 @@
     <!-- Scripts -->
     <script src="js/security.js"></script>
     <script src="js/storage.js"></script>
-    <script src="js/api.js"></script>
     <script src="js/dictionary.js"></script>
     <script src="js/simplifier.js"></script>
     <script src="js/audio.js"></script>

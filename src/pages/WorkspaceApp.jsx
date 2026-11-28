@@ -742,7 +742,7 @@ const WORKSPACE_HTML = `
             </li>
             <li class="trust-check-item">
               <span class="trust-check-icon">✓</span>
-              <div><strong>Optional Cloud Backup:</strong> User accounts use scrypt password hashing and row-level IDOR security.</div>
+              <div><strong>Fully Offline:</strong> All data stays on your device. No accounts, no cloud sync, no server — your work is always yours.</div>
             </li>
           </ul>
         </div>
