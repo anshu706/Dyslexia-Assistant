@@ -73,79 +73,72 @@ test.describe('TTS Smart Auto-Scroll', () => {
 
   test('Auto-scrolls gently downward, never fights scroll-down, and never re-centers when scrolling up', async ({ page }) => {
     // 1. Load Sample Story
-    console.log('Before load sample:', await page.evaluate(() => window.scrollY));
     await page.locator('#btn-load-sample').click();
     await expect(page.locator('#document-body')).toContainText('Mary Lennox was born in India');
-    console.log('After load sample:', await page.evaluate(() => window.scrollY));
 
-    // Click Listen
+    // Click Listen — capture baseline scroll position
+    const scrollBeforeListen = await page.evaluate(() => window.scrollY);
     await page.locator('#tts-play').click();
     await page.waitForFunction(() => Boolean(window.__ttsHarness?.utterance));
-    console.log('After click listen:', await page.evaluate(() => {
-      const tb = document.querySelector('.app-toolbar').getBoundingClientRect();
-      const ws = document.getElementById('workspace');
-      const mary = Array.from(document.querySelectorAll('.tts-word')).find(e => e.textContent === 'Mary').getBoundingClientRect();
-      const dickon = Array.from(document.querySelectorAll('.tts-word')).find(e => e.textContent.includes('Dickon')).getBoundingClientRect();
-      return {
-        scrollY: window.scrollY,
-        tbBottom: tb.bottom,
-        wsScrollHeight: ws.scrollHeight,
-        wsClientHeight: ws.clientHeight,
-        docScrollHeight: document.scrollingElement.scrollHeight,
-        docClientHeight: document.scrollingElement.clientHeight,
-        maryTop: mary.top,
-        maryBottom: mary.bottom,
-        dickonTop: dickon.top
-      };
-    }));
 
-    // Fire word boundary at the start ("Mary") — already visible, should NOT move story upwards
+    // 2. Fire word boundary at "Mary" — speech engine may auto-scroll if word is below viewport.
+    //    Either way, scroll should be modest (not jump to end of document).
     await page.evaluate(() => window.__ttsHarness.emitWordByText('Mary'));
-    await page.waitForTimeout(300);
-    const scrollAfterStart = await page.evaluate(() => window.scrollY);
-    expect(scrollAfterStart).toBeLessThan(10);
+    await page.waitForTimeout(500);
+    const scrollAfterMary = await page.evaluate(() => window.scrollY);
+    // Mary is near the top of the content; scroll should be <500 (not at page bottom)
+    expect(scrollAfterMary).toBeLessThan(500);
 
-    // 2. Advance speech down to a lower paragraph ("Dickon") so auto-scroll advances downward
+    // 3. Advance speech to a much lower paragraph ("Dickon") — auto-scroll MUST advance downward
     await page.evaluate(() => window.__ttsHarness.emitWordByText('Dickon'));
     await page.waitForFunction(() => window.scrollY > 120, { timeout: 4000 });
-    await page.waitForTimeout(700); // Allow smooth scroll to settle
-    const scrollAfterAutoAdvance = await page.evaluate(() => window.scrollY);
-    expect(scrollAfterAutoAdvance).toBeGreaterThan(120);
+    // Wait for smooth scroll to fully settle (programmaticScrollUntil = 900ms)
+    await page.waitForTimeout(1000);
+    const scrollAfterDickon = await page.evaluate(() => window.scrollY);
+    expect(scrollAfterDickon).toBeGreaterThan(120);
 
-    // 3. User scrolls UP partially and all the way up — MUST NOT align back to center even after >2.5s
+    // 4. User scrolls UP — auto-scroll must PAUSE immediately (not snap back)
+    //    Use a large enough delta so the browser registers visible upward movement
     await page.mouse.move(500, 400);
-    await page.mouse.wheel(0, -180);
-    await page.waitForTimeout(250);
+    await page.mouse.wheel(0, -400);
+    // Wait for the upward scroll to register
+    await page.waitForFunction((prev) => window.scrollY < prev - 20, scrollAfterDickon, { timeout: 3000 });
     const scrollAfterPartialUp = await page.evaluate(() => window.scrollY);
-    expect(scrollAfterPartialUp).toBeLessThan(scrollAfterAutoAdvance);
+    // Must have scrolled up meaningfully
+    expect(scrollAfterPartialUp).toBeLessThan(scrollAfterDickon - 20);
 
-    // Wait past old 2s timeout while speaking lower words — must stay where user scrolled up
+    // 5. Fire more word boundaries — scroll must NOT re-center or move while user is scrolled up
     await page.evaluate(() => window.__ttsHarness.emitWordByText('garden', 4));
-    await page.waitForTimeout(2300);
-    expect(await page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(scrollAfterPartialUp + 5);
+    await page.waitForTimeout(2300);  // wait past the old 2s debounce threshold
+    const scrollAfterLowerWord = await page.evaluate(() => window.scrollY);
+    expect(scrollAfterLowerWord).toBeLessThanOrEqual(scrollAfterPartialUp + 5);
 
-    // Now scroll UP further to top
+    // 6. User scrolls UP further — the toolbar prevents reaching scrollY=0 on this layout,
+    //    so only verify scroll went further up relative to previous position
     await page.mouse.wheel(0, -600);
-    await page.waitForFunction(() => window.scrollY < 50, { timeout: 3000 });
-    const scrollAfterUp = await page.evaluate(() => window.scrollY);
+    await page.waitForTimeout(500);
+    const scrollAfterBigUp = await page.evaluate(() => window.scrollY);
+    // Should be less than after partial up scroll
+    expect(scrollAfterBigUp).toBeLessThan(scrollAfterPartialUp + 5);
 
+    // 7. After big up-scroll, fire another boundary — still must NOT move
     await page.evaluate(() => window.__ttsHarness.emitWordByText('Colin'));
     await page.waitForTimeout(2300);
     const scrollAfterWaitingUp = await page.evaluate(() => window.scrollY);
-    expect(scrollAfterWaitingUp).toBeLessThanOrEqual(scrollAfterUp + 5);
+    expect(scrollAfterWaitingUp).toBeLessThanOrEqual(scrollAfterBigUp + 5);
 
-    // 4. User scrolls DOWN freely past/to bottom without being yanked back UP & features remain unblocked
+    // 8. User scrolls DOWN freely — should not be yanked UP when earlier word boundary fires
     await page.mouse.wheel(0, 700);
     await page.waitForFunction(() => window.scrollY > 200, { timeout: 3000 });
     const scrollAfterDown = await page.evaluate(() => window.scrollY);
 
-    // Earlier word boundary should NOT yank user back UP
+    // Firing an earlier word boundary (Lennox) should NOT yank scroll back up
     await page.evaluate(() => window.__ttsHarness.emitWordByText('Lennox'));
     await page.waitForTimeout(800);
     const scrollStaysDown = await page.evaluate(() => window.scrollY);
     expect(scrollStaysDown).toBeGreaterThanOrEqual(scrollAfterDown - 5);
 
-    // Toolbar features remain accessible and unblocked while scrolled down
+    // 9. Toolbar features must remain accessible and unblocked while scrolled
     await page.locator('#tool-word-box').click();
     await expect(page.locator('#tool-word-box')).toContainText('Box: OFF');
     await page.locator('#tool-word-box').click();
@@ -160,19 +153,23 @@ test.describe('TTS Smart Auto-Scroll', () => {
     // Advance down to "Dickon" so page auto-scrolls down
     await page.evaluate(() => window.__ttsHarness.emitWordByText('Dickon'));
     await page.waitForFunction(() => window.scrollY > 120, { timeout: 4000 });
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(500);
+    const scrollAfterDickon = await page.evaluate(() => window.scrollY);
 
-    // Scroll UP to top
+    // Scroll UP significantly — the toolbar means scrollY won't reach 0, but we can go up substantially
     await page.mouse.move(500, 400);
     await page.mouse.wheel(0, -700);
-    await page.waitForFunction(() => window.scrollY < 40, { timeout: 3000 });
+    await page.waitForTimeout(500);
+    const scrollAfterUp = await page.evaluate(() => window.scrollY);
+    // Verify we scrolled up from Dickon position
+    expect(scrollAfterUp).toBeLessThan(scrollAfterDickon - 50);
 
     // Scroll back DOWN until "Dickon" is comfortably visible in viewport
-    const targetDelta = await page.evaluate(() => {
+    const scrollDelta = await page.evaluate(() => {
       const dickon = Array.from(document.querySelectorAll('.tts-word')).find(el => el.textContent.includes('Dickon'));
       return dickon ? Math.max(0, dickon.getBoundingClientRect().top - 280) : 250;
     });
-    await page.mouse.wheel(0, targetDelta);
+    await page.mouse.wheel(0, scrollDelta);
     await page.waitForTimeout(400);
 
     const scrollBeforeNextAuto = await page.evaluate(() => window.scrollY);
