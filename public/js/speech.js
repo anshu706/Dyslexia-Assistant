@@ -26,6 +26,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let isTestingVoice = false;
 
     // =========================================================================
+    // SMART AUTO-SCROLL — only scrolls when word is out of view,
+    // and pauses auto-scroll briefly whenever the user manually scrolls.
+    // =========================================================================
+    let userScrolling = false;
+    let userScrollTimer = null;
+
+    // Detect manual scroll: pause auto-scroll for 2 seconds
+    window.addEventListener('scroll', () => {
+        userScrolling = true;
+        clearTimeout(userScrollTimer);
+        userScrollTimer = setTimeout(() => { userScrolling = false; }, 2000);
+    }, { passive: true });
+
+    function smartScrollTo(el) {
+        if (userScrolling) return;           // User is scrolling — don't interfere
+        const rect = el.getBoundingClientRect();
+        const viewH = window.innerHeight || document.documentElement.clientHeight;
+        const margin = viewH * 0.2;         // 20% margin from edges
+        // Only scroll if the word is above the top margin or below the bottom margin
+        if (rect.top < margin || rect.bottom > viewH - margin) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // =========================================================================
     // WORD WRAPPING FOR HIGHLIGHT & WORD TRACKING BOX
     // =========================================================================
     function wrapWordsInDOM(node) {
@@ -143,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             ttsWords[i].classList.add('tts-word-boxed');
                         }
 
-                        // Auto-scroll if enabled
+                        // Auto-scroll if enabled — only when word is out of visible area
                         if (settings.autoScroll !== false) {
-                            ttsWords[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            smartScrollTo(ttsWords[i]);
                         }
                         break;
                     }
@@ -172,6 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         synth.speak(currentUtterance);
         isPaused = false;
+        userScrolling = false;   // Reset user-scroll guard when fresh TTS starts
+        clearTimeout(userScrollTimer);
         updateUI();
         window.showToast && window.showToast('Reading aloud...', '🔊');
     }
