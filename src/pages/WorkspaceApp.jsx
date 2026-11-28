@@ -14,7 +14,6 @@
  */
 
 import { useEffect, useRef } from 'react';
-import '../lib/supabase.js';
 
 // ─── CSS files the workspace needs ───────────────────────────────────────────
 const WORKSPACE_CSS = [
@@ -31,7 +30,6 @@ const WORKSPACE_SCRIPTS = [
   '/vendor/mammoth.browser.min.js',
   '/js/security.js',
   '/js/storage.js',
-  '/js/api.js',
   '/js/dictionary.js',
   '/js/simplifier.js',
   '/js/audio.js',
@@ -144,24 +142,6 @@ const WORKSPACE_HTML = `
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <span>Trust &amp; Kit</span>
-        </button>
-        <!-- Account / Cloud Sync button -->
-        <button
-          class="nav-btn"
-          id="btn-sidebar-account"
-          title="Account & Cloud Sync"
-          style="position:relative;"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span id="sidebar-account-label">Offline</span>
-          <span
-            id="sidebar-status-dot"
-            style="position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#f59e0b;"
-            aria-hidden="true"
-          ></span>
         </button>
         <button class="nav-btn" id="btn-settings" title="Settings (Alt+S)">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -359,13 +339,10 @@ const WORKSPACE_HTML = `
             <option value="4">+4px</option>
           </select>
           <div class="tool-divider" aria-hidden="true"></div>
-          <button class="tool-btn" id="btn-account-sync" title="Account & Cloud Sync">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <span id="toolbar-sync-label">Offline</span>
-          </button>
+          <div id="offline-status-badge" class="tool-btn" style="cursor:default;pointer-events:none;display:inline-flex;align-items:center;gap:7px;" title="100% Offline-First — All data saved locally on your device">
+            <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;" aria-hidden="true"></span>
+            <span>Offline</span>
+          </div>
           <button class="tool-btn" id="btn-pwa-install" title="Install Dyslexia Assistant as a desktop or mobile application" style="display:none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -639,60 +616,6 @@ const WORKSPACE_HTML = `
       <div class="modal-footer">
         <button class="btn" id="cancel-paste-btn" style="background:transparent;color:var(--text-muted);font-size:0.9rem;">Cancel</button>
         <button class="btn" id="submit-paste-btn" style="padding:8px 24px;font-size:0.9rem;">Load into Reader</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AUTH & SYNC MODAL -->
-  <div id="auth-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-    <div class="modal-card" style="max-width:440px;">
-      <div class="modal-header">
-        <h3 id="auth-modal-title" class="text-lg">Account &amp; Cloud Sync</h3>
-        <button class="icon-btn-sm" id="close-auth-modal" aria-label="Close modal">✕</button>
-      </div>
-      <div class="modal-body" id="auth-logged-out-view">
-        <p class="text-muted" style="font-size:0.9rem;margin-bottom:16px;">
-          Sign in to securely synchronize your reading documents, notes, and flashcards across all your devices.
-        </p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div>
-            <label for="auth-email" style="display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;">Email Address</label>
-            <input type="email" id="auth-email" class="doc-search-input" placeholder="name@example.com" autocomplete="email" required/>
-          </div>
-          <div>
-            <label for="auth-password" style="display:block;font-size:0.85rem;font-weight:700;margin-bottom:6px;">Password (min. 8 characters)</label>
-            <input type="password" id="auth-password" class="doc-search-input" placeholder="••••••••" autocomplete="current-password" required/>
-          </div>
-          <div id="auth-error-msg" style="color:#c2410c;font-size:0.85rem;display:none;background:rgba(194,65,12,0.08);padding:8px 12px;border-radius:4px;border:1px solid rgba(194,65,12,0.2);"></div>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:22px;">
-          <button type="button" id="btn-login-submit" class="btn btn-primary" style="flex:1;padding:10px 16px;">Sign In</button>
-          <button type="button" id="btn-register-submit" class="btn" style="flex:1;padding:10px 16px;">Create Account</button>
-        </div>
-        <details style="margin-top:16px;font-size:0.8rem;color:var(--text-muted);cursor:pointer;border-top:1px solid rgba(0,0,0,0.06);padding-top:10px;">
-          <summary style="outline:none;user-select:none;">⚡ Supabase Cloud Settings (Free Tier)</summary>
-          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
-            <input type="text" id="supabase-url-input" class="doc-search-input" placeholder="https://xyz.supabase.co" style="font-size:0.8rem;" aria-label="Supabase URL" />
-            <input type="password" id="supabase-key-input" class="doc-search-input" placeholder="Anon public key" style="font-size:0.8rem;" aria-label="Supabase Anon Key" />
-            <button type="button" id="btn-save-supabase" class="btn btn-sm" style="align-self:flex-start;padding:6px 14px;font-size:0.8rem;">Save &amp; Connect</button>
-          </div>
-        </details>
-      </div>
-      <div class="modal-body" id="auth-logged-in-view" style="display:none;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-          <div style="width:36px;height:36px;border-radius:50%;background:#cde4d6;color:#166534;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;">✓</div>
-          <div>
-            <div style="font-weight:700;font-size:0.95rem;" id="logged-in-email">user@example.com</div>
-            <div class="text-muted" style="font-size:0.8rem;">Cloud synchronization is active</div>
-          </div>
-        </div>
-        <p class="text-muted" style="font-size:0.85rem;margin-bottom:20px;">
-          Your documents and flashcards are protected with salted scrypt hashing and session authentication.
-        </p>
-        <div style="display:flex;gap:10px;">
-          <button type="button" id="btn-sync-now" class="btn btn-primary" style="flex:1;padding:10px 16px;">Sync Now</button>
-          <button type="button" id="btn-logout" class="btn" style="flex:1;padding:10px 16px;color:#c2410c;">Log Out</button>
-        </div>
       </div>
     </div>
   </div>
