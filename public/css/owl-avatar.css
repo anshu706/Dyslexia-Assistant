@@ -101,6 +101,13 @@
   will-change: transform, left, top;
 }
 
+/* Hidden state — applied by closeTour() on Skip / Start Reading / Tour close */
+.owl-avatar-stage.hidden {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
 /* Centered welcome stage when no target element */
 .owl-avatar-stage.stage-centered {
   left: 50% !important;

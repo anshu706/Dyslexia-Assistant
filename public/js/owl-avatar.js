@@ -494,11 +494,17 @@
 
         const stage = document.getElementById('owl-avatar-stage');
         const overlay = document.getElementById('owl-tour-overlay');
+        const spotlight = document.getElementById('owl-spotlight-box');
 
         if (overlay) overlay.classList.remove('active');
+        if (spotlight) spotlight.style.display = 'none';
         if (stage) {
             stage.classList.add('hidden');
-            stage.classList.remove('jump-in');
+            stage.classList.remove('jump-in', 'wave-wing', 'point-wing', 'stage-centered');
+            // Clear any positional inline styles so next launch positions cleanly
+            stage.style.left = '';
+            stage.style.top = '';
+            stage.style.transform = '';
         }
 
         // Remember tour completed
@@ -524,10 +530,16 @@
 
     // ─── AUTO-TRIGGER ON FIRST VISIT ──────────────────────────────────────────
     function setupAutoTrigger() {
-        // Wire up any persistent tour button in header
+        // Wire up any persistent tour button in header — toggle: open or close
         const triggerBtn = document.getElementById('btn-owl-tour');
         if (triggerBtn) {
-            triggerBtn.addEventListener('click', () => launchTour(0));
+            triggerBtn.addEventListener('click', () => {
+                if (state.isOpen) {
+                    closeTour();
+                } else {
+                    launchTour(0);
+                }
+            });
         }
 
         // Do not auto-launch in automated test environments (Playwright, Puppeteer, Axe-core)
