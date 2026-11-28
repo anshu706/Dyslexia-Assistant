@@ -26,28 +26,316 @@ document.addEventListener('DOMContentLoaded', () => {
     let isTestingVoice = false;
 
     // =========================================================================
-    // SMART AUTO-SCROLL — only scrolls when word is out of view,
-    // and pauses auto-scroll briefly whenever the user manually scrolls.
+    // SMART AUTO-SCROLL — advances downward as reading nears the bottom edge,
+    // yields immediately to manual scrolling, and stays paused when scrolling up
+    // until the user scrolls back down to the active word or starts fresh TTS.
     // =========================================================================
-    let userScrolling = false;
-    let userScrollTimer = null;
+    let activeWordEl = null;
+    let autoScrollPausedByUser = false;
+    let pauseReason = null; // 'up' | 'down' | null
+    let isInitialScrollPending = false;
+    let programmaticScrollUntil = 0;
+    let programmaticStartY = 0;
+    let programmaticTargetY = 0;
+    let lastKnownScrollY = null;
+    let lastManualScrollAt = 0;
+    let touchStartY = null;
+    let pendingScrollCheckRaf = null;
 
-    // Detect manual scroll: pause auto-scroll for 2 seconds
-    window.addEventListener('scroll', () => {
-        userScrolling = true;
-        clearTimeout(userScrollTimer);
-        userScrollTimer = setTimeout(() => { userScrolling = false; }, 2000);
+    function getScrollContainer() {
+        const appMain = document.getElementById('workspace');
+        if (appMain) {
+            const style = window.getComputedStyle(appMain);
+            if ((style.overflowY === 'auto' || style.overflowY === 'scroll') &&
+                appMain.scrollHeight > appMain.clientHeight + 2) {
+                return appMain;
+            }
+        }
+        return document.scrollingElement || document.documentElement;
+    }
+
+    function isViewportScroller(container) {
+        return !container ||
+            container === document.scrollingElement ||
+            container === document.documentElement ||
+            container === document.body;
+    }
+
+    function getScrollTop(container = getScrollContainer()) {
+        if (isViewportScroller(container)) {
+            return window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        }
+        return container.scrollTop;
+    }
+
+    function getMaxScrollTop(container = getScrollContainer()) {
+        if (isViewportScroller(container)) {
+            const docEl = document.scrollingElement || document.documentElement;
+            return Math.max(0, docEl.scrollHeight - window.innerHeight);
+        }
+        return Math.max(0, container.scrollHeight - container.clientHeight);
+    }
+
+    function scrollContainerTo(container, top, behavior = 'smooth') {
+        if (isViewportScroller(container)) {
+            window.scrollTo({ top, behavior });
+        } else {
+            container.scrollTo({ top, behavior });
+        }
+    }
+
+    function getReadableBounds(container = getScrollContainer()) {
+        const viewH = isViewportScroller(container)
+            ? (window.innerHeight || document.documentElement.clientHeight)
+            : container.clientHeight;
+        const containerTop = isViewportScroller(container)
+            ? 0
+            : container.getBoundingClientRect().top;
+
+        const toolbar = document.querySelector('.app-toolbar');
+        let toolbarBottom = containerTop;
+        if (toolbar) {
+            const tbRect = toolbar.getBoundingClientRect();
+            if (tbRect.bottom > containerTop && tbRect.top <= containerTop + 40) {
+                toolbarBottom = tbRect.bottom;
+            }
+        }
+
+        const safeTop = Math.min(toolbarBottom + 18, containerTop + viewH * 0.4);
+        const bottomPad = Math.min(72, Math.max(36, Math.round(viewH * 0.12)));
+        const safeBottom = containerTop + viewH - bottomPad;
+
+        return { viewH, containerTop, safeTop, safeBottom };
+    }
+
+    function isElementInReadableZone(el, container = getScrollContainer()) {
+        if (!el || !el.isConnected) return false;
+        const rect = el.getBoundingClientRect();
+        const { safeTop, safeBottom } = getReadableBounds(container);
+        return rect.top >= safeTop && rect.bottom <= safeBottom;
+    }
+
+    function pauseAutoScroll(reason) {
+        if (pendingScrollCheckRaf) {
+            cancelAnimationFrame(pendingScrollCheckRaf);
+            pendingScrollCheckRaf = null;
+        }
+        programmaticScrollUntil = 0;
+        isInitialScrollPending = false;
+        autoScrollPausedByUser = true;
+        pauseReason = reason;
+        lastManualScrollAt = performance.now();
+    }
+
+    function evaluateDownwardManualScroll() {
+        lastManualScrollAt = performance.now();
+        isInitialScrollPending = false;
+
+        if (!synth.speaking || !activeWordEl || !activeWordEl.isConnected) return;
+
+        if (isElementInReadableZone(activeWordEl)) {
+            autoScrollPausedByUser = false;
+            pauseReason = null;
+        } else {
+            autoScrollPausedByUser = true;
+            pauseReason = 'down';
+        }
+    }
+
+    function scheduleDownwardCheck() {
+        if (pendingScrollCheckRaf) cancelAnimationFrame(pendingScrollCheckRaf);
+        pendingScrollCheckRaf = requestAnimationFrame(() => {
+            pendingScrollCheckRaf = null;
+            evaluateDownwardManualScroll();
+        });
+    }
+
+    function shouldIgnoreScrollTarget(target) {
+        return Boolean(
+            target &&
+            typeof target.closest === 'function' &&
+            target.closest('.lexi-drawer, .modal-backdrop, .doc-list-items, select, textarea')
+        );
+    }
+
+    window.addEventListener('wheel', e => {
+        if (shouldIgnoreScrollTarget(e.target)) return;
+        if (e.deltaY < -1) {
+            pauseAutoScroll('up');
+        } else if (e.deltaY > 1) {
+            programmaticScrollUntil = 0;
+            scheduleDownwardCheck();
+        }
     }, { passive: true });
 
-    function smartScrollTo(el) {
-        if (userScrolling) return;           // User is scrolling — don't interfere
-        const rect = el.getBoundingClientRect();
-        const viewH = window.innerHeight || document.documentElement.clientHeight;
-        const margin = viewH * 0.2;         // 20% margin from edges
-        // Only scroll if the word is above the top margin or below the bottom margin
-        if (rect.top < margin || rect.bottom > viewH - margin) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.addEventListener('touchstart', e => {
+        if (shouldIgnoreScrollTarget(e.target)) {
+            touchStartY = null;
+            return;
         }
+        touchStartY = e.touches && e.touches[0] ? e.touches[0].clientY : null;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+        if (touchStartY === null || !e.touches || !e.touches[0]) return;
+        const currentTouchY = e.touches[0].clientY;
+        const fingerDeltaY = currentTouchY - touchStartY;
+        if (fingerDeltaY > 6) {
+            // Finger moving down scrolls content UP
+            pauseAutoScroll('up');
+            touchStartY = currentTouchY;
+        } else if (fingerDeltaY < -6) {
+            // Finger moving up scrolls content DOWN
+            programmaticScrollUntil = 0;
+            scheduleDownwardCheck();
+            touchStartY = currentTouchY;
+        }
+    }, { passive: true });
+
+    document.addEventListener('keydown', e => {
+        const tag = e.target?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home') {
+            pauseAutoScroll('up');
+        } else if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'End') {
+            programmaticScrollUntil = 0;
+            scheduleDownwardCheck();
+        }
+    });
+
+    function handleManualOrProgrammaticScroll(e) {
+        const activeContainer = getScrollContainer();
+        const isPageTarget =
+            e.target === window ||
+            e.target === document ||
+            e.target === document.documentElement ||
+            e.target === document.body ||
+            e.target === activeContainer;
+        if (!isPageTarget) return;
+
+        const currentY = getScrollTop(activeContainer);
+        if (lastKnownScrollY === null) {
+            lastKnownScrollY = currentY;
+            return;
+        }
+
+        const delta = currentY - lastKnownScrollY;
+        lastKnownScrollY = currentY;
+        const now = performance.now();
+
+        if (now < programmaticScrollUntil) {
+            const movingDownProgrammatically = programmaticTargetY >= programmaticStartY;
+            if (movingDownProgrammatically && delta < -2) {
+                // User dragged scrollbar UP against programmatic scroll
+                pauseAutoScroll('up');
+                return;
+            }
+            if (!movingDownProgrammatically && delta > 2) {
+                programmaticScrollUntil = 0;
+                evaluateDownwardManualScroll();
+                return;
+            }
+            if (movingDownProgrammatically && currentY > programmaticTargetY + 4) {
+                programmaticScrollUntil = 0;
+                evaluateDownwardManualScroll();
+                return;
+            }
+            if (Math.abs(currentY - programmaticTargetY) <= 3) {
+                programmaticScrollUntil = 0;
+            }
+            return;
+        }
+
+        if (delta < -2) {
+            pauseAutoScroll('up');
+        } else if (delta > 2) {
+            evaluateDownwardManualScroll();
+        }
+    }
+
+    window.addEventListener('scroll', handleManualOrProgrammaticScroll, { passive: true });
+    document.getElementById('workspace')?.addEventListener('scroll', handleManualOrProgrammaticScroll, { passive: true });
+
+    function handleScrollEnd() {
+        programmaticScrollUntil = 0;
+        lastKnownScrollY = getScrollTop();
+    }
+    window.addEventListener('scrollend', handleScrollEnd, { passive: true });
+    document.getElementById('workspace')?.addEventListener('scrollend', handleScrollEnd, { passive: true });
+
+    function resetScrollTracking() {
+        if (pendingScrollCheckRaf) {
+            cancelAnimationFrame(pendingScrollCheckRaf);
+            pendingScrollCheckRaf = null;
+        }
+        activeWordEl = null;
+        autoScrollPausedByUser = false;
+        pauseReason = null;
+        isInitialScrollPending = true;
+        programmaticScrollUntil = 0;
+        lastKnownScrollY = getScrollTop();
+    }
+
+    function smartScrollTo(el) {
+        if (!el || !el.isConnected) return;
+        activeWordEl = el;
+
+        const container = getScrollContainer();
+        const rect = el.getBoundingClientRect();
+        const { safeTop, safeBottom } = getReadableBounds(container);
+        const isAbove = rect.top < safeTop;
+        const isBelow = rect.bottom > safeBottom;
+
+        // If the user previously scrolled DOWN ahead, allow auto-scroll to resume
+        // once speech naturally catches up into the user's current viewport.
+        if (autoScrollPausedByUser) {
+            if (
+                pauseReason === 'down' &&
+                !isAbove &&
+                !isBelow &&
+                performance.now() - lastManualScrollAt > 300
+            ) {
+                autoScrollPausedByUser = false;
+                pauseReason = null;
+            } else {
+                return;
+            }
+        }
+
+        // Already comfortably visible inside readable viewport — do not jump
+        if (!isAbove && !isBelow) {
+            isInitialScrollPending = false;
+            return;
+        }
+
+        // During ongoing playback, never snap UPWARD if the word moved above the viewport;
+        // only allow scrolling up once on initial Listen start if word 0 began off-screen.
+        if (isAbove && !isInitialScrollPending) {
+            return;
+        }
+        isInitialScrollPending = false;
+
+        const currentY = getScrollTop(container);
+        const maxY = getMaxScrollTop(container);
+        const usableH = Math.max(120, safeBottom - safeTop);
+        const desiredViewportY = safeTop + Math.round(usableH * 0.32);
+        const targetY = Math.max(0, Math.min(maxY, Math.round(currentY + (rect.top - desiredViewportY))));
+
+        // Never move upward on normal downward reading progression
+        if (isBelow && targetY <= currentY + 4) return;
+        if (Math.abs(targetY - currentY) < 4) return;
+
+        // Do not restart an active smooth scroll that is already heading to ~this position
+        const now = performance.now();
+        if (now < programmaticScrollUntil && Math.abs(targetY - programmaticTargetY) < 120) {
+            return;
+        }
+
+        programmaticStartY = currentY;
+        programmaticTargetY = targetY;
+        programmaticScrollUntil = now + 900;
+        lastKnownScrollY = currentY;
+        scrollContainerTo(container, targetY, 'smooth');
     }
 
     // =========================================================================
@@ -181,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentUtterance.onend = () => {
             isPaused = false;
+            resetScrollTracking();
             updateUI();
             clearAllHighlights();
         };
@@ -191,14 +480,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.showToast && window.showToast('Speech error: ' + e.error, '⚠');
             }
             isPaused = false;
+            resetScrollTracking();
             updateUI();
             clearAllHighlights();
         };
 
+        resetScrollTracking();
         synth.speak(currentUtterance);
         isPaused = false;
-        userScrolling = false;   // Reset user-scroll guard when fresh TTS starts
-        clearTimeout(userScrollTimer);
         updateUI();
         window.showToast && window.showToast('Reading aloud...', '🔊');
     }
@@ -221,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopSpeaking() {
         synth.cancel();
         isPaused = false;
+        resetScrollTracking();
         clearAllHighlights();
         updateUI();
     }
@@ -345,13 +635,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Space bar play/pause shortcut (when not in textarea/input)
+    // Space bar play/pause shortcut (when not in interactive controls)
     document.addEventListener('keydown', e => {
-        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+        const tag = e.target?.tagName;
+        if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT' || tag === 'BUTTON') return;
         if (e.code === 'Space' && document.getElementById('view-reader')?.classList.contains('active')) {
             e.preventDefault();
-            if (synth.speaking) pauseSpeaking();
+            if (synth.speaking && !isPaused) pauseSpeaking();
             else startSpeaking();
+        }
+    });
+
+    document.addEventListener('da:settingsChanged', e => {
+        if (e.detail && e.detail.autoScroll !== false) {
+            autoScrollPausedByUser = false;
+            pauseReason = null;
         }
     });
 

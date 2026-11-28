@@ -795,7 +795,7 @@ button {
 
 /* Word Lookup Popover */
 .word-lookup-card {
-  position: absolute;
+  position: fixed;
   z-index: 50;
   background: #1a1c20;
   border: 1px solid rgba(255,255,255,0.12);
